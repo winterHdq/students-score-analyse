@@ -60,8 +60,13 @@
               :key="item"
               :label="item"
               :prop="item"
+              :fixed="item.indexOf('班级') >= 0 || item == '姓名'"
+              sortable
               align="center"
-            ></el-table-column>
+              #default="{ row }"
+            >
+              <span>{{ row[item] }}</span>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -78,6 +83,7 @@
 <script>
 import SortDialog from './sortDialog'
 import * as XLSX from 'xlsx/xlsx.mjs'
+import setting from './constant'
 export default {
   name: 'ExcelView',
   components: { SortDialog },
@@ -85,36 +91,7 @@ export default {
     return {
       tables: [],
       curTable: {},
-      subjectMap: [
-        {
-          name: '语文',
-          type: 1
-        },
-        {
-          name: '数学',
-          type: 2
-        },
-        {
-          name: '英语',
-          type: 3
-        },
-        {
-          name: '物理',
-          type: 4
-        },
-        {
-          name: '化学',
-          type: 5
-        },
-        {
-          name: '政治',
-          type: 6
-        },
-        {
-          name: '历史',
-          type: 7
-        }
-      ],
+      subjectMap: setting.subjectMap,
       sortCompareDialog: {
         show: false,
         type: ''
@@ -122,6 +99,14 @@ export default {
     }
   },
   methods: {
+    styleRed(item, key) {
+      console.log(item, key)
+      let include = setting.subjectMap.map(item => item.name)
+      if (include.includes(key)) {
+        return { color: 'red' }
+      }
+      return {}
+    },
     fileChange(file) {
       if (!/\.(xls|xlsx)$/.test(file.name))
         return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
@@ -172,7 +157,7 @@ export default {
     },
     compare() {
       let compareTabel = []
-      let tab2 = this.tables[0].data
+      let tab2 = JSON.parse(JSON.stringify(this.tables[0].data))
       let tab2Len = tab2.length
       this.curTable.data.forEach(item => {
         let isName = false
@@ -186,13 +171,23 @@ export default {
                 newItem[`${k}进退`] = 0 - (item[k] - tab2[i][k])
               }
             }
+            tab2.splice(i, 1)
             compareTabel.push(newItem)
+            tab2Len--
             break
           }
         }
+        // 新增人员
         if (!isName) {
           compareTabel.push(item)
         }
+      })
+      // 删除人员
+      tab2.forEach(item => {
+        compareTabel.push({
+          姓名: item['姓名'],
+          班级: item['班级']
+        })
       })
       let compare = {
         name: '进退比较.xls',

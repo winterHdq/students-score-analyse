@@ -1,14 +1,37 @@
 <template>
   <el-dialog
+    v-if="dialogVisible"
     class="sort-dialog"
     :visible.sync="dialogVisible"
     :title="`${title}分析`"
     @close="onClose"
+    v-loading="loading"
+    element-loading-text="正在拼命计算中，请小主耐心等待"
   >
     <table class="table" border>
       <tr>
-        <th width="100px">{{ title }}</th>
+        <th width="120px">{{ title }}</th>
         <th>班级</th>
+      </tr>
+      <tr v-if="is150">
+        <td>140-150</td>
+        <td>{{ sortObj.score140to149Num }}</td>
+      </tr>
+      <tr v-if="is150">
+        <td>130-139</td>
+        <td>{{ sortObj.score130to139Num }}</td>
+      </tr>
+      <tr v-if="is150">
+        <td>120-129</td>
+        <td>{{ sortObj.score120to129Num }}</td>
+      </tr>
+      <tr v-if="is150">
+        <td>110-119</td>
+        <td>{{ sortObj.score110to119Num }}</td>
+      </tr>
+      <tr v-if="is150">
+        <td>100-109</td>
+        <td>{{ sortObj.score100to109Num }}</td>
       </tr>
       <tr>
         <td>90-99</td>
@@ -142,43 +165,11 @@
 <script>
 import $ from 'jquery'
 import * as XLSX from 'xlsx/xlsx.mjs'
-const subjectMap = {
-  1: {
-    title: '语文',
-    scoreKey: '语文',
-    rankKey: '语名'
-  },
-  2: {
-    title: '数学',
-    scoreKey: '数学',
-    rankKey: '数名'
-  },
-  3: {
-    title: '英语',
-    scoreKey: '英语',
-    rankKey: '英名'
-  },
-  4: {
-    title: '物理',
-    scoreKey: '物理',
-    rankKey: '物名'
-  },
-  5: {
-    title: '化学',
-    scoreKey: '化学',
-    rankKey: '化名'
-  },
-  6: {
-    title: '政治',
-    scoreKey: '政治',
-    rankKey: '政名'
-  },
-  7: {
-    title: '历史',
-    scoreKey: '历史',
-    rankKey: '历名'
-  }
-}
+import setting from './constant'
+const subjectMap = {}
+setting.subjectMap.forEach(item => {
+  subjectMap[item.type] = item
+})
 export default {
   name: 'SortDialog',
   components: {},
@@ -199,23 +190,35 @@ export default {
     return {
       title: '',
       dialogVisible: false,
-      sortObj: {}
+      sortObj: {},
+      config: {},
+      loading: false
+    }
+  },
+  computed: {
+    is150() {
+      return this.config.fullScore == 150
     }
   },
   created() {
-    this.dialogVisible = true
     this.init()
   },
-  mounted() {},
   methods: {
     init() {
-      let config = subjectMap[this.subjectType]
-      let scoreList = this.curTable.sortObj[config.scoreKey]
-      let rankList = this.curTable.sortObj[config.rankKey]
-      this.title = `${config.title}`
+      this.config = subjectMap[this.subjectType]
+      let scoreList = this.curTable.sortObj[this.config.scoreKey]
+      let rankList = this.curTable.sortObj[this.config.rankKey]
+      this.title = `${this.config.name}`
       this.singleSubjectSort(scoreList, rankList)
     },
     singleSubjectSort(list, rankList) {
+      if (!list || !rankList) {
+        this.$message.error('未查到该数据')
+        this.onClose()
+        return
+      }
+      this.dialogVisible = true
+      this.loading = true
       // list = list.sort((a, b) => {
       //   return a.score - b.score
       // })
@@ -230,6 +233,11 @@ export default {
         score70to79Num: 0,
         score80to89Num: 0,
         score90to99Num: 0,
+        score100to109Num: 0,
+        score110to119Num: 0,
+        score120to129Num: 0,
+        score130to139Num: 0,
+        score140to149Num: 0,
         maxScore: list[0], //最高分
         minScore: list[0], //最低分
         pass: [],
@@ -256,6 +264,8 @@ export default {
         averageNum: 0 //均分人数
       }
       let totalScore = 0
+      let passScore = this.config.fullScore * 0.6
+      let excellentScore = this.config.fullScore * 0.85
       list.forEach(item => {
         this.getScoreRange(item, sortObj)
         // 总分
@@ -269,13 +279,13 @@ export default {
           sortObj.minScore = item
         }
         // 及格
-        if (item.score >= 60) {
+        if (item.score >= passScore) {
           sortObj.pass.push(item)
         } else {
           sortObj.noPass.push(item)
         }
         // 优秀
-        if (item.score >= 85) {
+        if (item.score >= excellentScore) {
           sortObj.excellent.push(item)
         }
       })
@@ -331,11 +341,13 @@ export default {
       })
       sortObj.otherTopNum = sortObj.otherTop.length
       this.sortObj = sortObj
+      this.loading = false
     },
     // 获取分段人数
     getScoreRange(item, obj) {
       let fromNum = parseInt(item.score / 10) * 10
-      if (fromNum == 10) fromNum = 9
+      if (!this.is150 && fromNum == 10) fromNum = 9
+      if (this.is150 && fromNum == 15) fromNum = 14
       let toNum = fromNum + 9
       if (!obj[`score${fromNum}to${toNum}`])
         obj[`score${fromNum}to${toNum}`] = []
