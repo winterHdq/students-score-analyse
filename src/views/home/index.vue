@@ -11,14 +11,14 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
-      <el-button type="primary" size="small" class="btn" @click="compare">
+      <el-button type="primary" size="small" class="btn" @click="onCompare">
         进退比较
       </el-button>
     </div>
     <div class="content">
       <div class="left">
         <p
-          v-for="item in tables"
+          v-for="(item, index) in tables"
           :key="item.index"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
@@ -29,14 +29,11 @@
             class="el-icon-download btn"
             @click="exportExcel(item, $event)"
           ></i>
-          <!-- <el-button
-            type="danger"
-            @click="exportExcel(item)"
-            size="mini"
-            class="btn"
-          >
-            导出
-          </el-button> -->
+          <i
+            class="el-icon-delete-solid btn"
+            style="padding-left: 5px"
+            @click="delectTable(index, $event)"
+          ></i>
         </p>
       </div>
       <div class="right">
@@ -60,6 +57,7 @@
             :height="tableHeight"
           >
             <el-table-column
+              fixed
               label="序号"
               type="index"
               align="center"
@@ -70,7 +68,7 @@
               :label="item"
               :prop="item"
               :fixed="item.indexOf('班级') >= 0 || item == '姓名'"
-              sortable
+              :sortable="item.indexOf('班级') == -1 && item !== '姓名'"
               align="center"
               #default="{ row }"
             >
@@ -78,7 +76,6 @@
             </el-table-column>
           </el-table>
         </div>
-        <!-- <div style="width: 2000px; height: 1000px"></div> -->
       </div>
     </div>
     <sort-dialog
@@ -87,17 +84,23 @@
       :curTable="curTable"
       @onClose="sortCompareDialog.show = false"
     ></sort-dialog>
+    <compase-dialog
+      v-if="compaseDialog.show"
+      :tables="tables"
+      @onClose="compaseDialog.show = false"
+    ></compase-dialog>
   </div>
 </template>
 
 <script>
 import $ from 'jquery'
 import SortDialog from './sortDialog'
+import CompaseDialog from './compareDialog'
 import * as XLSX from 'xlsx/xlsx.mjs'
 import setting from './constant'
 export default {
   name: 'ExcelView',
-  components: { SortDialog },
+  components: { SortDialog, CompaseDialog },
   data() {
     return {
       tables: [],
@@ -107,6 +110,9 @@ export default {
       sortCompareDialog: {
         show: false,
         type: ''
+      },
+      compaseDialog: {
+        show: false
       }
     }
   },
@@ -177,48 +183,12 @@ export default {
       XLSX.utils.book_append_sheet(book, sheet)
       XLSX.writeFile(book, `${data.name}`)
     },
-    compare() {
-      let compareTabel = []
-      let tab2 = JSON.parse(JSON.stringify(this.tables[0].data))
-      let tab2Len = tab2.length
-      this.curTable.data.forEach(item => {
-        let isName = false
-        for (let i = 0; i < tab2Len; i++) {
-          if (item['姓名'] == tab2[i]['姓名']) {
-            isName = true
-            let newItem = {}
-            for (let k in item) {
-              newItem[k] = item[k]
-              if (k !== '姓名' && k.indexOf('名') !== -1 && tab2[i][k]) {
-                newItem[`${k}进退`] = 0 - (item[k] - tab2[i][k])
-              }
-            }
-            tab2.splice(i, 1)
-            compareTabel.push(newItem)
-            tab2Len--
-            break
-          }
-        }
-        // 新增人员
-        if (!isName) {
-          compareTabel.push(item)
-        }
-      })
-      // 删除人员
-      tab2.forEach(item => {
-        compareTabel.push({
-          姓名: item['姓名'],
-          班级: item['班级']
-        })
-      })
-      let compare = {
-        name: '进退比较.xls',
-        data: compareTabel,
-        id: Date.now(),
-        th: Object.keys(compareTabel[0])
-      }
-      this.tables.push(compare)
-      this.curTable = compare
+    delectTable(index, e) {
+      e.stopPropagation()
+      this.tables.splice(index, 1)
+    },
+    onCompare() {
+      this.compaseDialog.show = true
     },
     sortCompare(list) {
       console.log(list)
