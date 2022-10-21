@@ -8,6 +8,10 @@
     v-loading="loading"
     element-loading-text="正在拼命计算中，请小主耐心等待"
   >
+    <el-button type="danger" @click="isShowName = !isShowName">
+      {{ isShowName ? '隐藏' : '显示' }}姓名
+    </el-button>
+    <el-button type="primary" @click="exportExcel">导出</el-button>
     <table class="table" border>
       <tr>
         <th width="120px">{{ title }}</th>
@@ -15,80 +19,129 @@
       </tr>
       <tr v-if="is150">
         <td>140-150</td>
-        <td>{{ sortObj.score140to149Num }}</td>
+        <td>
+          {{ sortObj.score140to149Num }}
+          <span v-if="isShowName">：{{ sortObj.score140to149 | toList }}</span>
+        </td>
       </tr>
       <tr v-if="is150">
         <td>130-139</td>
-        <td>{{ sortObj.score130to139Num }}</td>
+        <td>
+          {{ sortObj.score130to139Num }}
+          <span v-if="isShowName">：{{ sortObj.score130to139 | toList }}</span>
+        </td>
       </tr>
       <tr v-if="is150">
         <td>120-129</td>
-        <td>{{ sortObj.score120to129Num }}</td>
+        <td>
+          {{ sortObj.score120to129Num }}
+          <span v-if="isShowName">：{{ sortObj.score120to129 | toList }}</span>
+        </td>
       </tr>
       <tr v-if="is150">
         <td>110-119</td>
-        <td>{{ sortObj.score110to119Num }}</td>
+        <td>
+          {{ sortObj.score110to119Num }}
+          <span v-if="isShowName">：{{ sortObj.score110to119 | toList }}</span>
+        </td>
       </tr>
       <tr v-if="is150">
         <td>100-109</td>
-        <td>{{ sortObj.score100to109Num }}</td>
+        <td>
+          {{ sortObj.score100to109Num }}
+          <span v-if="isShowName">：{{ sortObj.score100to109 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>90-99</td>
-        <td>{{ sortObj.score90to99Num }}</td>
+        <td>
+          {{ sortObj.score90to99Num }}
+          <span v-if="isShowName">：{{ sortObj.score90to99 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>80-89</td>
-        <td>{{ sortObj.score80to89Num }}</td>
+        <td>
+          {{ sortObj.score80to89Num }}
+          <span v-if="isShowName">：{{ sortObj.score80to89 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>70-79</td>
-        <td>{{ sortObj.score70to79Num }}</td>
+        <td>
+          {{ sortObj.score70to79Num }}
+          <span v-if="isShowName">：{{ sortObj.score70to79 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>60-69</td>
-        <td>{{ sortObj.score60to69Num }}</td>
+        <td>
+          {{ sortObj.score60to69Num }}
+          <span v-if="isShowName">：{{ sortObj.score60to69 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>50-59</td>
-        <td>{{ sortObj.score50to59Num }}</td>
+        <td>
+          {{ sortObj.score50to59Num }}
+          <span v-if="isShowName">：{{ sortObj.score50to59 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>40-49</td>
-        <td>{{ sortObj.score40to49Num }}</td>
+        <td>
+          {{ sortObj.score40to49Num }}
+          <span v-if="isShowName">：{{ sortObj.score40to49 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>30-39</td>
-        <td>{{ sortObj.score30to39Num }}</td>
+        <td>
+          {{ sortObj.score30to39Num }}
+          <span v-if="isShowName">：{{ sortObj.score30to39 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>20-29</td>
-        <td>{{ sortObj.score20to29Num }}</td>
+        <td>
+          {{ sortObj.score20to29Num }}
+          <span v-if="isShowName">：{{ sortObj.score20to29 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>10-19</td>
-        <td>{{ sortObj.score10to19Num }}</td>
+        <td>
+          {{ sortObj.score10to19Num }}
+          <span v-if="isShowName">：{{ sortObj.score10to19 | toList }}</span>
+        </td>
       </tr>
       <tr>
-        <td>1-9</td>
-        <td>{{ sortObj.score0to9Num }}</td>
+        <td>0-9</td>
+        <td>
+          {{ sortObj.score0to9Num }}
+          <span v-if="isShowName">：{{ sortObj.score0to9 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>最高分</td>
-        <td>{{ sortObj.maxScore.name }}：{{ sortObj.maxScore.score }}</td>
+        <td>{{ sortObj.maxScore.score }}</td>
       </tr>
       <tr>
         <td>最低分</td>
-        <td>{{ sortObj.minScore.name }}：{{ sortObj.minScore.score }}</td>
+        <td>{{ sortObj.minScore.score }}</td>
       </tr>
       <tr>
         <td>不及格数</td>
-        <td>{{ sortObj.noPassNum }}</td>
+        <td>
+          {{ sortObj.noPassNum }}
+          <span v-if="isShowName">：{{ sortObj.noPass | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>及格数</td>
         <td>
           {{ sortObj.passNum }}
+          <span v-if="isShowName">：{{ sortObj.pass | toList }}</span>
         </td>
       </tr>
       <tr>
@@ -97,7 +150,10 @@
       </tr>
       <tr>
         <td>优秀数</td>
-        <td>{{ sortObj.excellentNum }}</td>
+        <td>
+          {{ sortObj.excellentNum }}
+          <span v-if="isShowName">：{{ sortObj.excellent | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>优秀率%</td>
@@ -109,43 +165,73 @@
       </tr>
       <tr>
         <td>前10名数</td>
-        <td>{{ sortObj.top10Num }}</td>
+        <td>
+          {{ sortObj.top10Num }}
+          <span v-if="isShowName">：{{ sortObj.top10 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前50名数</td>
-        <td>{{ sortObj.top50Num }}</td>
+        <td>
+          {{ sortObj.top50Num }}
+          <span v-if="isShowName">：{{ sortObj.top50 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前100名数</td>
-        <td>{{ sortObj.top100Num }}</td>
+        <td>
+          {{ sortObj.top100Num }}
+          <span v-if="isShowName">：{{ sortObj.top100 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前150名数</td>
-        <td>{{ sortObj.top150Num }}</td>
+        <td>
+          {{ sortObj.top150Num }}
+          <span v-if="isShowName">：{{ sortObj.top150 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前200名数</td>
-        <td>{{ sortObj.top200Num }}</td>
+        <td>
+          {{ sortObj.top200Num }}
+          <span v-if="isShowName">：{{ sortObj.top200 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前250名数</td>
-        <td>{{ sortObj.top250Num }}</td>
+        <td>
+          {{ sortObj.top250Num }}
+          <span v-if="isShowName">：{{ sortObj.top250 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前300名数</td>
-        <td>{{ sortObj.top300Num }}</td>
+        <td>
+          {{ sortObj.top300Num }}
+          <span v-if="isShowName">：{{ sortObj.top300 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前350名数</td>
-        <td>{{ sortObj.top350Num }}</td>
+        <td>
+          {{ sortObj.top350Num }}
+          <span v-if="isShowName">：{{ sortObj.top350 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>前400名数</td>
-        <td>{{ sortObj.top400Num }}</td>
+        <td>
+          {{ sortObj.top400Num }}
+          <span v-if="isShowName">：{{ sortObj.top400 | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>400名后人数</td>
-        <td>{{ sortObj.otherTopNum }}</td>
+        <td>
+          {{ sortObj.otherTopNum }}
+          <span v-if="isShowName">：{{ sortObj.otherTop | toList }}</span>
+        </td>
       </tr>
       <tr>
         <td>平均分</td>
@@ -156,10 +242,9 @@
         <td>{{ sortObj.averageNum }}</td>
       </tr>
     </table>
-    <span slot="footer" class="dialog-footer">
+    <!-- <span slot="footer" class="dialog-footer">
       <el-button @click="onClose">取 消</el-button>
-      <el-button type="primary" @click="exportExcel">导出</el-button>
-    </span>
+    </span> -->
   </el-dialog>
 </template>
 <script>
@@ -186,13 +271,19 @@ export default {
       }
     }
   },
+  filters: {
+    toList(arr) {
+      return (arr || []).map(item => item.name).join('、')
+    }
+  },
   data() {
     return {
       title: '',
       dialogVisible: false,
       sortObj: {},
       config: {},
-      loading: false
+      loading: false,
+      isShowName: true
     }
   },
   computed: {
@@ -386,6 +477,15 @@ export default {
     background-color: transparent;
     border-collapse: collapse;
     border-spacing: 0;
+    tr {
+      th,
+      td {
+        padding: 2px 10px;
+      }
+      td:first-child {
+        text-align: center;
+      }
+    }
   }
 }
 </style>

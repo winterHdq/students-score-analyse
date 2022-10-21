@@ -24,15 +24,19 @@
           :class="{ 'name-item-active': item.id == curTable.id }"
           @click="curTable = item"
         >
-          <span>{{ item.name }}</span>
-          <el-button
+          <span class="name">{{ item.name }}</span>
+          <i
+            class="el-icon-download btn"
+            @click="exportExcel(item, $event)"
+          ></i>
+          <!-- <el-button
             type="danger"
             @click="exportExcel(item)"
             size="mini"
             class="btn"
           >
             导出
-          </el-button>
+          </el-button> -->
         </p>
       </div>
       <div class="right">
@@ -49,7 +53,12 @@
               {{ item.name }}排位
             </el-button>
           </div>
-          <el-table :data="curTable.data" border>
+          <el-table
+            ref="table"
+            :data="curTable.data"
+            border
+            :height="tableHeight"
+          >
             <el-table-column
               label="序号"
               type="index"
@@ -69,6 +78,7 @@
             </el-table-column>
           </el-table>
         </div>
+        <!-- <div style="width: 2000px; height: 1000px"></div> -->
       </div>
     </div>
     <sort-dialog
@@ -81,6 +91,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 import SortDialog from './sortDialog'
 import * as XLSX from 'xlsx/xlsx.mjs'
 import setting from './constant'
@@ -92,10 +103,21 @@ export default {
       tables: [],
       curTable: {},
       subjectMap: setting.subjectMap,
+      tableHeight: 0,
       sortCompareDialog: {
         show: false,
         type: ''
       }
+    }
+  },
+  mounted() {
+    this.tableHeight = $('.content')[0].offsetHeight - 55
+  },
+  watch: {
+    curTable() {
+      this.$nextTick(() => {
+        this.$refs.table && this.$refs.table.doLayout()
+      })
     }
   },
   methods: {
@@ -148,8 +170,8 @@ export default {
       const fileReader = new FileReader()
       fileReader.onloadend = function () {}
     },
-    exportExcel(data) {
-      console.log(data)
+    exportExcel(data, e) {
+      e.stopPropagation()
       const book = XLSX.utils.book_new()
       const sheet = XLSX.utils.json_to_sheet(data.data)
       XLSX.utils.book_append_sheet(book, sheet)
@@ -223,34 +245,48 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+$border-color: #409eff;
 .Excel {
   .btns {
-    padding: 20px;
+    padding: 10px;
   }
   .btn {
     margin-left: 10px;
   }
   .content {
     display: flex;
+    height: calc(100vh - 55px);
     .left {
       width: 200px;
-      border-right: 1px solid;
+      border-right: 2px solid $border-color;
       font-size: 14px;
       flex-shrink: 0;
-      border-top: 1px solid;
+      border-top: 2px solid $border-color;
       .name-item {
         padding: 10px;
-        border-bottom: 1px solid;
+        border-bottom: 1px solid $border-color;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        .name {
+          flex: 1;
+        }
+        .btn {
+          margin: 0 auto;
+          cursor: pointer;
+        }
       }
       .name-item-active {
-        background-color: #7f9bff;
+        background-color: $border-color;
         color: #fff;
       }
     }
     .right {
       flex: 1;
-      border-top: 1px solid;
+      border-top: 2px solid $border-color;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
     }
   }
 }
