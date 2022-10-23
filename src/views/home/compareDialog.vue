@@ -6,7 +6,7 @@
     @close="onClose"
   >
     <el-form :model="formData" ref="form" :rules="rules" inline>
-      <el-form-item label="基准表格" prop="initTableId">
+      <el-form-item label="本次成绩" prop="initTableId">
         <el-select
           v-model="formData.initTableId"
           placeholder="请选择"
@@ -20,7 +20,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="比较表格" prop="compaseTableId">
+      <el-form-item label="上次成绩" prop="compaseTableId">
         <el-select
           v-model="formData.compaseTableId"
           placeholder="请选择"
@@ -35,7 +35,36 @@
         </el-select>
       </el-form-item>
       <br />
-      <el-form-item label="比较列名" prop="compaseTh" style="width: 100%">
+      <el-form-item label="展示列名" prop="showTh">
+        <el-checkbox
+          v-if="formData.initTableId"
+          :indeterminate="checkData.showThIndeterminate"
+          v-model="checkData.showThCheckAll"
+          @change="handleCheckAllChange($event, 'showTh')"
+        >
+          全选
+        </el-checkbox>
+        <el-checkbox-group
+          v-model="formData.showTh"
+          @change="handleCheckChange($event, 'showTh')"
+        >
+          <el-checkbox
+            v-for="item in thList"
+            :key="item"
+            :label="item"
+          ></el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <br />
+      <el-form-item label="比较列名" prop="compaseTh">
+        <el-checkbox
+          v-if="formData.initTableId"
+          :indeterminate="checkData.compaseThIndeterminate"
+          v-model="checkData.compaseThCheckAll"
+          @change="handleCheckAllChange($event, 'compaseTh')"
+        >
+          全选
+        </el-checkbox>
         <el-checkbox-group v-model="formData.compaseTh">
           <el-checkbox
             v-for="item in thList"
@@ -63,8 +92,8 @@
   </el-dialog>
 </template>
 <script>
-import BaseTable from './baseTable'
-import baseMixin from './baseMixin'
+import BaseTable from './base/baseTable'
+import baseMixin from './base/baseMixin'
 export default {
   name: 'CompaseDialog',
   components: { BaseTable },
@@ -82,14 +111,22 @@ export default {
       formData: {
         initTableId: null,
         compaseTableId: null,
-        compaseTh: []
+        compaseTh: [],
+        showTh: []
+      },
+      checkData: {
+        showThCheckAll: false,
+        showThIndeterminate: false,
+        compaseThCheckAll: false,
+        compaseThIndeterminate: false
       },
       initTable: null,
       compaseTable: null,
       rules: {
         initTableId: [{ required: true, message: '请选择' }],
         compaseTableId: [{ required: true, message: '请选择' }],
-        compaseTh: [{ required: true, message: '请选择' }]
+        compaseTh: [{ required: true, message: '请选择' }],
+        showTh: [{ required: true, message: '请选择' }]
       },
       thList: [],
       dialogVisible: false,
@@ -101,6 +138,16 @@ export default {
     this.dialogVisible = true
   },
   methods: {
+    handleCheckAllChange(res, key) {
+      this.formData[key] = res ? this.thList : []
+      this.checkData[`${key}Indeterminate`] = false
+    },
+    handleCheckChange(value, key) {
+      let checkedCount = value.length
+      this.checkData[`${key}CheckAll`] = checkedCount === this.thList.length
+      this.checkData[`${key}Indeterminate`] =
+        checkedCount > 0 && checkedCount < this.thList.length
+    },
     initTableChange(id) {
       if (id == this.formData.compaseTableId) {
         this.$message.error('比较的是同一张表格，请确认')
@@ -110,6 +157,8 @@ export default {
       this.formData.compaseTh = this.thList.filter(
         item => item !== '姓名' && item.indexOf('名') > 0
       )
+      this.formData.showTh = this.thList
+      this.handleCheckChange(this.thList, 'showTh')
     },
     compaseTableChange(id) {
       if (id == this.formData.initTableId) {
@@ -138,6 +187,7 @@ export default {
             isName = true
             let newItem = {}
             for (let k in item) {
+              if (!this.formData.showTh.includes(k)) continue
               newItem[k] = item[k]
               if (this.formData.compaseTh.includes(k) && !isNaN(item[k])) {
                 newItem[`${k}进退`] = 0 - (item[k] - tab2[i][k])

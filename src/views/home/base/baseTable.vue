@@ -1,6 +1,13 @@
 <template>
   <div class="base-table">
-    <el-table ref="table" :data="table.data" border :height="tableHeight">
+    <el-table
+      ref="table"
+      :data="table.data"
+      border
+      stripe
+      highlight-current-row
+      :height="tableHeight"
+    >
       <el-table-column
         fixed
         label="序号"
@@ -17,7 +24,7 @@
         align="center"
         #default="{ row }"
       >
-        <span>{{ row[item] }}</span>
+        <span :style="scoreStyle(row, item)">{{ row[item] }}</span>
       </el-table-column>
     </el-table>
   </div>
@@ -40,7 +47,13 @@ export default {
   data() {
     return {}
   },
-  methods: {}
+  methods: {
+    scoreStyle(row, key) {
+      debugger
+      console.log(row, key)
+      return {}
+    }
+  }
 }
 </script>
 

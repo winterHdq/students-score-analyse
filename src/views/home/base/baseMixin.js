@@ -5,7 +5,6 @@ const baseMixin = {
   },
   methods: {
     baseExportExcel(table) {
-      debugger
       const book = XLSX.utils.book_new()
       const sheet = XLSX.utils.json_to_sheet(table.data)
       XLSX.utils.book_append_sheet(book, sheet)

@@ -250,11 +250,6 @@
 <script>
 import $ from 'jquery'
 import * as XLSX from 'xlsx/xlsx.mjs'
-import setting from './constant'
-const subjectMap = {}
-setting.subjectMap.forEach(item => {
-  subjectMap[item.type] = item
-})
 export default {
   name: 'SortDialog',
   components: {},
@@ -287,6 +282,12 @@ export default {
     }
   },
   computed: {
+    subjectMap() {
+      return this.$store.state.subjectMap
+    },
+    subjectObj() {
+      return this.$store.getters.subjectObj
+    },
     is150() {
       return this.config.fullScore == 150
     }
@@ -296,7 +297,7 @@ export default {
   },
   methods: {
     init() {
-      this.config = subjectMap[this.subjectType]
+      this.config = this.subjectMap[this.subjectType]
       let scoreList = this.curTable.sortObj[this.config.scoreKey]
       let rankList = this.curTable.sortObj[this.config.rankKey]
       this.title = `${this.config.name}`
