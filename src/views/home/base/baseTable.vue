@@ -42,6 +42,19 @@ export default {
       default() {
         return {}
       }
+    },
+    // 是否进退比较
+    isCompase: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    subjectObj() {
+      return this.$store.getters.subjectObj
+    },
+    subjectRankList() {
+      return this.table.th.filter(item => item.indexOf('进退') > 0)
     }
   },
   data() {
@@ -49,8 +62,16 @@ export default {
   },
   methods: {
     scoreStyle(row, key) {
-      debugger
-      console.log(row, key)
+      let { subjectObj, subjectRankList } = this
+      if (this.isCompase) {
+        if (subjectRankList.includes(key) && row[key] < 0) {
+          return { color: 'red' }
+        }
+      } else {
+        if (subjectObj[key] && row[key] < subjectObj[key].passScore) {
+          return { color: 'red' }
+        }
+      }
       return {}
     }
   }

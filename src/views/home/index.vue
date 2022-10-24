@@ -212,10 +212,10 @@ $border-color: #409eff;
     height: calc(100vh - 55px);
     .left {
       width: 200px;
-      border-right: 2px solid $border-color;
+      border-right: 1px solid $border-color;
       font-size: 14px;
       flex-shrink: 0;
-      border-top: 2px solid $border-color;
+      border-top: 1px solid $border-color;
       .name-item {
         padding: 10px;
         border-bottom: 1px solid $border-color;
@@ -237,7 +237,7 @@ $border-color: #409eff;
     }
     .right {
       flex: 1;
-      border-top: 2px solid $border-color;
+      border-top: 1px solid $border-color;
       width: 100%;
       height: 100%;
       overflow: auto;

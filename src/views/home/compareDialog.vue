@@ -84,19 +84,18 @@
       :visible.sync="compaseTableDialog"
       :append-to-body="true"
     >
-      <el-button type="primary" @click="baseExportExcel(compareTable)">
-        导出
-      </el-button>
-      <base-table :table="compareTable"></base-table>
+      <base-export-btn :table="compaseTable"></base-export-btn>
+      <base-table :table="compareTable" :isCompase="true"></base-table>
     </el-dialog>
   </el-dialog>
 </template>
 <script>
 import BaseTable from './base/baseTable'
+import BaseExportBtn from './base/baseExportBtn'
 import baseMixin from './base/baseMixin'
 export default {
   name: 'CompaseDialog',
-  components: { BaseTable },
+  components: { BaseTable, BaseExportBtn },
   mixins: [baseMixin],
   props: {
     tables: {
