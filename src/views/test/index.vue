@@ -25,6 +25,11 @@ export default {
   data() {
     return {
       fileList: [],
+      exportArr: [
+        ['姓名', '语文'],
+        ['小张', 90],
+        ['小红', 80]
+      ],
       export1Data: [
         {
           姓名: '小张',
@@ -109,16 +114,29 @@ export default {
     },
     // 导出
     exportExcel() {
-      //   const wb = XLSX.utils.book_new()
+      const wb = XLSX.utils.book_new()
       //   //   header可设置列名顺序
       //   const sheet = XLSX.utils.json_to_sheet(this.export1Data, {
       //     header: ['语文', '姓名']
       //   })
-      //   const sheet2 = XLSX.utils.json_to_sheet(this.export2Data)
+      const sheet2 = XLSX.utils.aoa_to_sheet(this.exportArr)
       //   // 多张
       //   XLSX.utils.book_append_sheet(wb, sheet, '表格1')
-      //   XLSX.utils.book_append_sheet(wb, sheet2, '表格2')
-      //   XLSX.writeFile(wb, `测试表格.xls`)
+      sheet2.B3.s = {
+        alignment: {
+          vertical: 'center', // 垂直居中
+          horizontal: 'center' // 水平居中
+        },
+        border: {
+          top: { style: 'dashDot', color: 'FFCC00' }
+        },
+        font: {
+          name: '宋体',
+          sz: 10
+        }
+      }
+      XLSX.utils.book_append_sheet(wb, sheet2, '表格2')
+      XLSX.writeFile(wb, `测试表格.xlsx`)
     }
   }
 }

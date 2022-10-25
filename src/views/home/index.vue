@@ -77,9 +77,11 @@ import SortDialog from './sortDialog'
 import CompaseDialog from './compareDialog'
 import * as XLSX from 'xlsx/xlsx.mjs'
 import BaseTable from './base/baseTable'
+import baseMixin from './base/baseMixin'
 export default {
   name: 'ExcelView',
   components: { SortDialog, CompaseDialog, BaseTable },
+  mixins: [baseMixin],
   data() {
     return {
       tables: [],
@@ -161,10 +163,7 @@ export default {
     },
     exportExcel(data, e) {
       e.stopPropagation()
-      const book = XLSX.utils.book_new()
-      const sheet = XLSX.utils.json_to_sheet(data.data)
-      XLSX.utils.book_append_sheet(book, sheet)
-      XLSX.writeFile(book, `${data.name}`)
+      this.baseExportExcel(data)
     },
     delectTable(index, e) {
       e.stopPropagation()

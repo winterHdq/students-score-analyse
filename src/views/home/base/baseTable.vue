@@ -44,7 +44,7 @@ export default {
       }
     },
     // 是否进退比较
-    isCompase: {
+    isCompare: {
       type: Boolean,
       default: false
     }
@@ -63,7 +63,7 @@ export default {
   methods: {
     scoreStyle(row, key) {
       let { subjectObj, subjectRankList } = this
-      if (this.isCompase) {
+      if (this.isCompare) {
         if (subjectRankList.includes(key) && row[key] < 0) {
           return { color: 'red' }
         }

@@ -108,10 +108,14 @@ export default {
         }
         table.push(_item)
       })
-      this.baseExportExcel({
-        data: table,
-        name: this.formData.name
-      })
+      this.baseExportExcel(
+        {
+          ...this.table,
+          data: table,
+          name: this.formData.name
+        },
+        true
+      )
     }
   }
 }

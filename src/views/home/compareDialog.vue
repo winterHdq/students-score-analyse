@@ -84,8 +84,8 @@
       :visible.sync="compaseTableDialog"
       :append-to-body="true"
     >
-      <base-export-btn :table="compaseTable"></base-export-btn>
-      <base-table :table="compareTable" :isCompase="true"></base-table>
+      <base-export-btn :table="compareTable"></base-export-btn>
+      <base-table :table="compareTable" :isCompare="true"></base-table>
     </el-dialog>
   </el-dialog>
 </template>
@@ -120,7 +120,7 @@ export default {
         compaseThIndeterminate: false
       },
       initTable: null,
-      compaseTable: null,
+      preTable: null,
       rules: {
         initTableId: [{ required: true, message: '请选择' }],
         compaseTableId: [{ required: true, message: '请选择' }],
@@ -163,12 +163,12 @@ export default {
       if (id == this.formData.initTableId) {
         this.$message.error('比较的是同一张表格，请确认')
       }
-      this.compaseTable = this.tables.find(item => item.id == id)
+      this.preTable = this.tables.find(item => item.id == id)
     },
     async onSave() {
       await this.$refs.form.validate()
       let res = this.formData.compaseTh.find(
-        item => !this.compaseTable.th.includes(item)
+        item => !this.preTable.th.includes(item)
       )
       if (res) {
         this.$message.error(
@@ -177,7 +177,7 @@ export default {
         return false
       }
       let compareTable = []
-      let tab2 = JSON.parse(JSON.stringify(this.compaseTable.data))
+      let tab2 = JSON.parse(JSON.stringify(this.preTable.data))
       let tab2Len = tab2.length
       this.initTable.data.forEach(item => {
         let isName = false
