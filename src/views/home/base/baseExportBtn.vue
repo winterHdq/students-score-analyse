@@ -1,6 +1,14 @@
 <template>
   <div class="baseExportBtn">
     <el-button type="primary" @click="exportExcelHandle">导出</el-button>
+    <el-button
+      type="success"
+      @click="exportMultipleSheetsExcelHandle"
+      class="btn"
+      v-if="isMultiple"
+    >
+      分表导出
+    </el-button>
     <el-dialog
       top="20vh"
       title="导出"
@@ -39,6 +47,75 @@
         <el-button @click="onExport" type="primary">导出</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      top="20vh"
+      title="分表导出"
+      :visible.sync="dialogVisibleMul"
+      :append-to-body="true"
+      :destroy-on-close="true"
+      width="80%"
+    >
+      <el-form :model="formDataMul" ref="formMul" :rules="rulesMul" inline>
+        <el-table :data="formDataMul.tables" border>
+          <el-table-column
+            type="index"
+            label="序号"
+            width="50"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="表名"
+            #default="{ $index }"
+            width="150"
+            :rules="{ required: true }"
+          >
+            <el-input
+              v-model="formDataMul.tables[$index].name"
+              placeholder="请输入"
+            ></el-input>
+          </el-table-column>
+          <el-table-column
+            label="列名"
+            #default="{ $index }"
+            :rules="{ required: true }"
+          >
+            <el-checkbox-group v-model="formDataMul.tables[$index].column">
+              <el-checkbox
+                v-for="item in thList"
+                :key="item"
+                :label="item"
+              ></el-checkbox>
+            </el-checkbox-group>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            #default="{ $index }"
+            width="80"
+            align="center"
+          >
+            <el-button
+              type="primary"
+              @click="onAddSheet"
+              v-if="$index == formDataMul.tables.length - 1"
+            >
+              添加
+            </el-button>
+            <el-button
+              type="danger"
+              @click="onDelectSheet($index)"
+              style="margin-left: 0px"
+              v-if="formDataMul.tables.length - 1"
+            >
+              删除
+            </el-button>
+          </el-table-column>
+        </el-table>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleMul = false">取消</el-button>
+        <el-button @click="onExportMul" type="primary">导出</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -53,11 +130,15 @@ export default {
       default() {
         return {}
       }
+    },
+    isMultiple: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     thList() {
-      return this.table.th || Object.keys(this.table.data[0])
+      return this.table.column || Object.keys(this.table.data[0])
     }
   },
   data() {
@@ -74,6 +155,12 @@ export default {
       rules: {
         name: [{ required: true, message: '请选择' }],
         column: [{ required: true, message: '请选择' }]
+      },
+
+      dialogVisibleMul: false,
+      rulesMul: {},
+      formDataMul: {
+        tables: []
       }
     }
   },
@@ -96,6 +183,35 @@ export default {
       this.formData.column = this.thList
       this.dialogVisible = true
     },
+    onAddSheet(obj = {}) {
+      this.formDataMul.tables.push({
+        id: Date.now(),
+        name: obj.name || '',
+        column: obj.column || [],
+        data: []
+      })
+    },
+    onDelectSheet(index) {
+      this.formDataMul.tables.splice(index, 1)
+    },
+    // 分表导出
+    exportMultipleSheetsExcelHandle() {
+      this.dialogVisibleMul = true
+      this.formDataMul.tables = []
+      for (let k in this.subjectObj) {
+        let sheet = {
+          name: `${k}进退分析`,
+          column: [
+            '姓名',
+            '班级',
+            this.subjectObj[k].scoreKey,
+            this.subjectObj[k].rankKey,
+            `${this.subjectObj[k].rankKey}进退`
+          ]
+        }
+        this.onAddSheet(sheet)
+      }
+    },
     async onExport() {
       await this.$refs.form.validate()
       let table = []
@@ -116,6 +232,22 @@ export default {
         },
         true
       )
+    },
+    async onExportMul() {
+      await this.$refs.formMul.validate()
+      this.formDataMul.tables.forEach(item => (item.data = []))
+      this.table.data.forEach(list => {
+        this.formDataMul.tables.forEach(table => {
+          let _item = {}
+          for (let k in list) {
+            if (table.column.includes(k)) {
+              _item[k] = list[k]
+            }
+          }
+          table.data.push(_item)
+        })
+      })
+      this.baseExportMulSheetExcel(this.formDataMul.tables, true)
     }
   }
 }
@@ -123,5 +255,9 @@ export default {
 
 <style lang="scss" scoped>
 .baseExportBtn {
+  display: inline-block;
+  .btn {
+    margin-left: 10px;
+  }
 }
 </style>

@@ -37,7 +37,7 @@
         </p>
       </div>
       <div class="right">
-        <div v-if="curTable.th">
+        <div v-if="curTable.column">
           <div style="padding: 10px">
             <el-button
               v-for="item in subjectMap"
@@ -136,17 +136,29 @@ export default {
           type: 'binary'
         })
         // 获取第一张表数据
-        const wsname = workBook.SheetNames[0]
-        const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[wsname])
-        const curTable = {
-          name: file.name,
-          data: tableData,
-          id: Date.now(),
-          th: Object.keys(tableData[0]),
-          sortObj: this.sortCompare(tableData)
-        }
-        this.curTable = curTable
-        this.tables.push(curTable)
+        // const wsname = workBook.SheetNames[0]
+        // const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[wsname])
+        // const curTable = {
+        //   name: file.name,
+        //   data: tableData,
+        //   id: Date.now(),
+        //   column: Object.keys(tableData[0]),
+        //   sortObj: this.sortCompare(tableData)
+        // }
+        // 获取多张表格
+        workBook.SheetNames.forEach(name => {
+          const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[name])
+          if (tableData.length == 0) return
+          const curTable = {
+            name: name.indexOf('Sheet') < 0 ? name : file.name,
+            data: tableData,
+            id: Date.now(),
+            column: Object.keys(tableData[0]),
+            sortObj: this.sortCompare(tableData)
+          }
+          this.tables.push(curTable)
+        })
+        this.curTable = this.tables[0]
       }
     },
     importExcel() {
@@ -191,6 +203,7 @@ export default {
       return sortObj
     },
     openSortDialog(type) {
+      debugger
       this.sortCompareDialog.type = type
       this.sortCompareDialog.show = true
     }

@@ -20,11 +20,11 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="上次成绩" prop="compaseTableId">
+      <el-form-item label="上次成绩" prop="compareTableId">
         <el-select
-          v-model="formData.compaseTableId"
+          v-model="formData.compareTableId"
           placeholder="请选择"
-          @change="compaseTableChange"
+          @change="compareTableChange"
         >
           <el-option
             v-for="item in tables"
@@ -56,16 +56,16 @@
         </el-checkbox-group>
       </el-form-item>
       <br />
-      <el-form-item label="比较列名" prop="compaseTh">
+      <el-form-item label="比较列名" prop="compareTh">
         <el-checkbox
           v-if="formData.initTableId"
-          :indeterminate="checkData.compaseThIndeterminate"
-          v-model="checkData.compaseThCheckAll"
-          @change="handleCheckAllChange($event, 'compaseTh')"
+          :indeterminate="checkData.compareThIndeterminate"
+          v-model="checkData.compareThCheckAll"
+          @change="handleCheckAllChange($event, 'compareTh')"
         >
           全选
         </el-checkbox>
-        <el-checkbox-group v-model="formData.compaseTh">
+        <el-checkbox-group v-model="formData.compareTh">
           <el-checkbox
             v-for="item in thList"
             :key="item"
@@ -81,10 +81,14 @@
     <el-dialog
       title="比较列表"
       width="90%"
-      :visible.sync="compaseTableDialog"
+      :visible.sync="compareTableDialog"
       :append-to-body="true"
+      v-if="compareTableDialog"
     >
-      <base-export-btn :table="compareTable"></base-export-btn>
+      <base-export-btn
+        :table="compareTable"
+        :isMultiple="true"
+      ></base-export-btn>
       <base-table :table="compareTable" :isCompare="true"></base-table>
     </el-dialog>
   </el-dialog>
@@ -94,7 +98,7 @@ import BaseTable from './base/baseTable'
 import BaseExportBtn from './base/baseExportBtn'
 import baseMixin from './base/baseMixin'
 export default {
-  name: 'CompaseDialog',
+  name: 'CompareDialog',
   components: { BaseTable, BaseExportBtn },
   mixins: [baseMixin],
   props: {
@@ -109,27 +113,27 @@ export default {
     return {
       formData: {
         initTableId: null,
-        compaseTableId: null,
-        compaseTh: [],
+        compareTableId: null,
+        compareTh: [],
         showTh: []
       },
       checkData: {
         showThCheckAll: false,
         showThIndeterminate: false,
-        compaseThCheckAll: false,
-        compaseThIndeterminate: false
+        compareThCheckAll: false,
+        compareThIndeterminate: false
       },
       initTable: null,
       preTable: null,
       rules: {
         initTableId: [{ required: true, message: '请选择' }],
-        compaseTableId: [{ required: true, message: '请选择' }],
-        compaseTh: [{ required: true, message: '请选择' }],
+        compareTableId: [{ required: true, message: '请选择' }],
+        compareTh: [{ required: true, message: '请选择' }],
         showTh: [{ required: true, message: '请选择' }]
       },
       thList: [],
       dialogVisible: false,
-      compaseTableDialog: false,
+      compareTableDialog: false,
       compareTable: {}
     }
   },
@@ -148,18 +152,18 @@ export default {
         checkedCount > 0 && checkedCount < this.thList.length
     },
     initTableChange(id) {
-      if (id == this.formData.compaseTableId) {
+      if (id == this.formData.compareTableId) {
         this.$message.error('比较的是同一张表格，请确认')
       }
       this.initTable = this.tables.find(item => item.id == id)
       this.thList = Object.keys(this.initTable.data[0])
-      this.formData.compaseTh = this.thList.filter(
+      this.formData.compareTh = this.thList.filter(
         item => item !== '姓名' && item.indexOf('名') > 0
       )
       this.formData.showTh = this.thList
       this.handleCheckChange(this.thList, 'showTh')
     },
-    compaseTableChange(id) {
+    compareTableChange(id) {
       if (id == this.formData.initTableId) {
         this.$message.error('比较的是同一张表格，请确认')
       }
@@ -167,8 +171,8 @@ export default {
     },
     async onSave() {
       await this.$refs.form.validate()
-      let res = this.formData.compaseTh.find(
-        item => !this.preTable.th.includes(item)
+      let res = this.formData.compareTh.find(
+        item => !this.preTable.column.includes(item)
       )
       if (res) {
         this.$message.error(
@@ -188,7 +192,7 @@ export default {
             for (let k in item) {
               if (!this.formData.showTh.includes(k)) continue
               newItem[k] = item[k]
-              if (this.formData.compaseTh.includes(k) && !isNaN(item[k])) {
+              if (this.formData.compareTh.includes(k) && !isNaN(item[k])) {
                 newItem[`${k}进退`] = 0 - (item[k] - tab2[i][k])
               }
             }
@@ -200,23 +204,34 @@ export default {
         }
         // 新增人员
         if (!isName) {
+          // 补齐数据，为了导出有单元格边框
+          this.formData.compareTh.forEach(k => (item[`${k}进退`] = ''))
           compareTable.push(item)
         }
       })
+      const compareTh = Object.keys(compareTable[0])
       // 删除人员
       tab2.forEach(item => {
-        compareTable.push({
-          姓名: item['姓名']
+        let _item = {}
+        // 补齐数据，为了导出有单元格边框
+        compareTh.forEach(k => {
+          // 排除undefined
+          if (item[k] && isNaN(item[k])) {
+            _item[k] = item[k]
+          } else {
+            _item[k] = ''
+          }
         })
+        compareTable.push(_item)
       })
       let compare = {
         name: '进退比较.xls',
         data: compareTable,
         id: Date.now(),
-        th: Object.keys(compareTable[0])
+        column: compareTh
       }
       this.compareTable = compare
-      this.compaseTableDialog = true
+      this.compareTableDialog = true
     },
     onClose() {
       this.$emit('onClose')

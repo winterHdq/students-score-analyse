@@ -15,9 +15,25 @@ const baseMixin = {
   methods: {
     baseExportExcel(table, isCompare = false) {
       const book = XLSX2.utils.book_new()
+      const sheet = this.sheetHandle(table, isCompare)
+      XLSX2.utils.book_append_sheet(book, sheet)
+      const fileName = table.name.slice(0, table.name.lastIndexOf('.'))
+      XLSX2.writeFile(book, `${fileName}.xlsx`)
+    },
+    // 多表导出
+    baseExportMulSheetExcel(tables, isCompare = false) {
+      const book = XLSX2.utils.book_new()
+      tables.forEach(table => {
+        const sheet = this.sheetHandle(table, isCompare)
+        XLSX2.utils.book_append_sheet(book, sheet, table.name)
+      })
+      XLSX2.writeFile(book, `分科.xlsx`)
+    },
+    // 工作表处理
+    sheetHandle(table, isCompare) {
       const sheet = XLSX2.utils.json_to_sheet(table.data)
-      const headerLen = table.th.length
-      const compaseArr = table.th.filter(item => item.indexOf('进退') > 0)
+      const headerLen = table.column.length
+      const compaseArr = table.column.filter(item => item.indexOf('进退') > 0)
       Object.keys(sheet).forEach((key, index) => {
         if (key.indexOf('!') < 0) {
           sheet[key].s = {
@@ -37,16 +53,14 @@ const baseMixin = {
             }
           }
           this.textColorHandle(
-            table.th[index % headerLen],
+            table.column[index % headerLen],
             sheet[key],
             isCompare,
             compaseArr
           )
         }
       })
-      XLSX2.utils.book_append_sheet(book, sheet)
-      const fileName = table.name.slice(0, table.name.lastIndexOf('.'))
-      XLSX2.writeFile(book, `${fileName}.xlsx`)
+      return sheet
     },
     textColorHandle(key, item, isCompare, compaseArr) {
       const val = item.v

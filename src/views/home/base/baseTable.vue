@@ -15,7 +15,7 @@
         align="center"
       ></el-table-column>
       <el-table-column
-        v-for="item in table.th"
+        v-for="item in table.column"
         :key="item"
         :label="item"
         :prop="item"
@@ -54,7 +54,7 @@ export default {
       return this.$store.getters.subjectObj
     },
     subjectRankList() {
-      return this.table.th.filter(item => item.indexOf('进退') > 0)
+      return this.table.column.filter(item => item.indexOf('进退') > 0)
     }
   },
   data() {

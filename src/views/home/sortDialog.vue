@@ -250,11 +250,11 @@
 </template>
 <script>
 import $ from 'jquery'
-import * as XLSX from 'xlsx/xlsx.mjs'
+import baseMixin from './base/baseMixin'
 export default {
   name: 'SortDialog',
   components: {},
-  mixins: [],
+  mixins: [baseMixin],
   props: {
     subjectType: {
       type: Number,
@@ -279,7 +279,7 @@ export default {
       sortObj: {},
       config: {},
       loading: false,
-      isShowName: true
+      isShowName: false
     }
   },
   computed: {
@@ -298,7 +298,7 @@ export default {
   },
   methods: {
     init() {
-      this.config = this.subjectMap[this.subjectType]
+      this.config = this.subjectMap[this.subjectType - 1]
       let scoreList = this.curTable.sortObj[this.config.scoreKey]
       let rankList = this.curTable.sortObj[this.config.rankKey]
       this.title = `${this.config.name}`
@@ -456,13 +456,20 @@ export default {
         let textContent = item.childNodes[0].textContent
         if (textContent == this.title) return
         _item[this.title] = textContent
-        _item['班级'] = item.childNodes[1].textContent
+        _item['班级'] = item.childNodes[1].textContent.trim()
         data.push(_item)
       })
-      const book = XLSX.utils.book_new()
-      const sheet = XLSX.utils.json_to_sheet(data)
-      XLSX.utils.book_append_sheet(book, sheet)
-      XLSX.writeFile(book, `${this.title}分析表.xls`)
+      const table = {
+        id: Date.now(),
+        column: Object.keys(data),
+        data: data,
+        name: `${this.title}分析表.xls`
+      }
+      this.baseExportExcel(table)
+      // const book = XLSX.utils.book_new()
+      // const sheet = XLSX.utils.json_to_sheet(data)
+      // XLSX.utils.book_append_sheet(book, sheet)
+      // XLSX.writeFile(book, `${this.title}分析表.xls`)
     },
     onClose() {
       this.$emit('onClose')

@@ -20,6 +20,9 @@ export default new Vuex.Store({
       })
       return obj
     },
+    subjectList(state) {
+      return state.subjectMap.map(item => item.name)
+    },
     subjectRankList(state) {
       return state.subjectMap.map(item => item.rankKey)
     }
