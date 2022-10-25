@@ -49,6 +49,13 @@ export default {
       default: false
     }
   },
+  watch: {
+    table() {
+      this.$nextTick(() => {
+        this.$refs.table && this.$refs.table.doLayout()
+      })
+    }
+  },
   computed: {
     subjectObj() {
       return this.$store.getters.subjectObj

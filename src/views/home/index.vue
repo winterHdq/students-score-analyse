@@ -203,7 +203,6 @@ export default {
       return sortObj
     },
     openSortDialog(type) {
-      debugger
       this.sortCompareDialog.type = type
       this.sortCompareDialog.show = true
     }
