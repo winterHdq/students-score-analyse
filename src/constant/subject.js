@@ -47,5 +47,19 @@ export const subjectMap = [
     fullScore: 100,
     scoreKey: '历史',
     rankKey: '历名'
+  },
+  {
+    name: '生物',
+    type: 8,
+    fullScore: 100,
+    scoreKey: '生物',
+    rankKey: '生名'
+  },
+  {
+    name: '地理',
+    type: 9,
+    fullScore: 100,
+    scoreKey: '地理',
+    rankKey: '地名'
   }
 ]
