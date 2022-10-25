@@ -15,4 +15,20 @@
   padding: 0px;
   margin: 0px;
 }
+.table {
+  width: 100%;
+  max-width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
+  tr {
+    th,
+    td {
+      padding: 2px 10px;
+    }
+    td:first-child {
+      text-align: center;
+    }
+  }
+}
 </style>

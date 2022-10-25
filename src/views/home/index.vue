@@ -1,6 +1,7 @@
 <template>
   <div class="Excel">
     <div class="btns">
+      <base-template-btn></base-template-btn>
       <el-upload
         action=""
         accept=".xls,.xlsx"
@@ -9,7 +10,7 @@
         :on-change="fileChange"
         style="display: inline-block"
       >
-        <el-button size="small" type="primary">上传</el-button>
+        <el-button size="small" type="primary" class="btn">上传</el-button>
       </el-upload>
       <el-button type="primary" size="small" class="btn" @click="onCompare">
         进退比较
@@ -73,14 +74,15 @@
 
 <script>
 import $ from 'jquery'
+import * as XLSX from 'xlsx/xlsx.mjs'
 import SortDialog from './sortDialog'
 import CompaseDialog from './compareDialog'
-import * as XLSX from 'xlsx/xlsx.mjs'
 import BaseTable from './base/baseTable'
+import BaseTemplateBtn from './base/baseTemplateBtn'
 import baseMixin from './base/baseMixin'
 export default {
   name: 'ExcelView',
-  components: { SortDialog, CompaseDialog, BaseTable },
+  components: { SortDialog, CompaseDialog, BaseTable, BaseTemplateBtn },
   mixins: [baseMixin],
   data() {
     return {
