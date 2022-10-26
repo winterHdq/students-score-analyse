@@ -52,7 +52,6 @@ export default {
       ['班级', '姓名']
     )
     for (let i = 0; i < 3; i++) {
-      console.log(i)
       const item = {}
       this.table.column.forEach(key => (item[key] = ''))
       this.table.data.push(item)

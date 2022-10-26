@@ -55,6 +55,7 @@
       :destroy-on-close="true"
       width="80%"
     >
+      <el-button @click="onExportMul" type="primary">导出</el-button>
       <el-form :model="formDataMul" ref="formMul" :rules="rulesMul" inline>
         <el-table :data="formDataMul.tables" border>
           <el-table-column
@@ -63,29 +64,31 @@
             width="50"
             align="center"
           ></el-table-column>
-          <el-table-column
-            label="表名"
-            #default="{ $index }"
-            width="150"
-            :rules="{ required: true }"
-          >
-            <el-input
-              v-model="formDataMul.tables[$index].name"
-              placeholder="请输入"
-            ></el-input>
+          <el-table-column label="表名" #default="{ $index }" width="150">
+            <el-form-item :prop="`tables.${$index}.name`" :rules="rules.name">
+              <el-input
+                v-model="formDataMul.tables[$index].name"
+                placeholder="请输入"
+              ></el-input>
+            </el-form-item>
           </el-table-column>
           <el-table-column
             label="列名"
             #default="{ $index }"
             :rules="{ required: true }"
           >
-            <el-checkbox-group v-model="formDataMul.tables[$index].column">
-              <el-checkbox
-                v-for="item in thList"
-                :key="item"
-                :label="item"
-              ></el-checkbox>
-            </el-checkbox-group>
+            <el-form-item
+              :prop="`tables.${$index}.column`"
+              :rules="rules.column"
+            >
+              <el-checkbox-group v-model="formDataMul.tables[$index].column">
+                <el-checkbox
+                  v-for="item in thList"
+                  :key="item"
+                  :label="item"
+                ></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
           </el-table-column>
           <el-table-column
             label="操作"
@@ -111,10 +114,6 @@
           </el-table-column>
         </el-table>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleMul = false">取消</el-button>
-        <el-button @click="onExportMul" type="primary">导出</el-button>
-      </span>
     </el-dialog>
   </div>
 </template>
@@ -153,10 +152,9 @@ export default {
         showThIndeterminate: false
       },
       rules: {
-        name: [{ required: true, message: '请选择' }],
+        name: [{ required: true, message: '请输入' }],
         column: [{ required: true, message: '请选择' }]
       },
-
       dialogVisibleMul: false,
       rulesMul: {},
       formDataMul: {
@@ -234,20 +232,24 @@ export default {
       )
     },
     async onExportMul() {
-      await this.$refs.formMul.validate()
-      this.formDataMul.tables.forEach(item => (item.data = []))
-      this.table.data.forEach(list => {
-        this.formDataMul.tables.forEach(table => {
-          let _item = {}
-          for (let k in list) {
-            if (table.column.includes(k)) {
-              _item[k] = list[k]
+      try {
+        await this.$refs.formMul.validate()
+        this.formDataMul.tables.forEach(item => (item.data = []))
+        this.table.data.forEach(list => {
+          this.formDataMul.tables.forEach(table => {
+            let _item = {}
+            for (let k in list) {
+              if (table.column.includes(k)) {
+                _item[k] = list[k]
+              }
             }
-          }
-          table.data.push(_item)
+            table.data.push(_item)
+          })
         })
-      })
-      this.baseExportMulSheetExcel(this.formDataMul.tables, true)
+        this.baseExportMulSheetExcel(this.formDataMul.tables, true)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }

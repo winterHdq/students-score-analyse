@@ -19,7 +19,7 @@ const baseMixin = {
       XLSX2.utils.book_append_sheet(book, sheet)
       const suffixIndex = table.name.lastIndexOf('.')
       const fileName = table.name.slice(0, suffixIndex == -1 ? 99 : suffixIndex)
-      XLSX2.writeFile(book, `${fileName}.xlsx`)
+      XLSX2.writeFile(book, `${fileName}-${table.className || '班级'}.xlsx`)
     },
     // 多表导出
     baseExportMulSheetExcel(tables, isCompare = false) {
@@ -28,7 +28,7 @@ const baseMixin = {
         const sheet = this.sheetHandle(table, isCompare)
         XLSX2.utils.book_append_sheet(book, sheet, table.name)
       })
-      XLSX2.writeFile(book, `分科.xlsx`)
+      XLSX2.writeFile(book, `分表.xlsx`)
     },
     // 工作表处理
     sheetHandle(table, isCompare) {

@@ -52,7 +52,7 @@ export default {
   watch: {
     table() {
       this.$nextTick(() => {
-        this.$refs.table && this.$refs.table.doLayout()
+        this.doLayout()
       })
     }
   },
@@ -68,6 +68,9 @@ export default {
     return {}
   },
   methods: {
+    doLayout() {
+      this.$refs.table && this.$refs.table.doLayout()
+    },
     scoreStyle(row, key) {
       let { subjectObj, subjectRankList } = this
       if (this.isCompare) {

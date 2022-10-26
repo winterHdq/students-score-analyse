@@ -6,7 +6,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    subjectMap: subjectMap
+    tables: [],
+    curIndex: null,
+    subjectMap
   },
   getters: {
     subjectObj(state) {
@@ -27,7 +29,30 @@ export default new Vuex.Store({
       return state.subjectMap.map(item => item.rankKey)
     }
   },
-  mutations: {},
+  mutations: {
+    getTables(state) {
+      state.tables = JSON.parse(localStorage.getItem('tables')) || []
+    },
+    setTables(state, table) {
+      state.tables = table
+      localStorage.setItem('tables', JSON.stringify(state.tables))
+    },
+    addTable(state, table) {
+      state.tables.push(table)
+      localStorage.setItem('tables', JSON.stringify(state.tables))
+    },
+    deleteTable(state, index) {
+      state.tables.splice(index, 1)
+      localStorage.setItem('tables', JSON.stringify(state.tables))
+    },
+    setCurIndex(state, curIndex) {
+      state.curIndex = curIndex
+      localStorage.setItem('curIndex', curIndex)
+    },
+    getCurIndex(state) {
+      state.curIndex = localStorage.getItem('curIndex')
+    }
+  },
   actions: {},
   modules: {}
 })

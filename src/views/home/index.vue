@@ -1,20 +1,24 @@
 <template>
   <div class="Excel">
     <div class="btns">
-      <base-template-btn></base-template-btn>
-      <el-upload
-        action=""
-        accept=".xls,.xlsx"
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="fileChange"
-        style="display: inline-block"
-      >
-        <el-button size="small" type="primary" class="btn">上传</el-button>
-      </el-upload>
-      <el-button type="primary" size="small" class="btn" @click="onCompare">
-        进退比较
-      </el-button>
+      <div class="left">
+        <el-upload
+          action=""
+          accept=".xls,.xlsx"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="fileChange"
+          style="display: inline-block"
+        >
+          <el-button size="small" type="primary" class="btn">上传</el-button>
+        </el-upload>
+        <el-button type="primary" size="small" class="btn" @click="onCompare">
+          进退比较
+        </el-button>
+      </div>
+      <div class="right">
+        <base-template-btn></base-template-btn>
+      </div>
     </div>
     <div class="content">
       <div class="left">
@@ -23,7 +27,7 @@
           :key="item.index"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
-          @click="curTable = item"
+          @click="$store.commit('setCurIndex', index)"
         >
           <span class="name">{{ item.name }}</span>
           <i
@@ -39,19 +43,26 @@
       </div>
       <div class="right">
         <div v-if="curTable.column">
-          <div style="padding: 10px">
-            <el-button
-              v-for="item in subjectMap"
-              :key="item.type"
-              type="primary"
-              size="small"
-              class="btn"
-              @click="openSortDialog(item.name)"
-            >
-              {{ item.name }}排位
-            </el-button>
+          <div style="padding: 10px" class="btns">
+            <base-class-setting
+              ref="setting"
+              v-model="curTable.className"
+            ></base-class-setting>
+            <template v-if="curTable.sortObj">
+              <el-button
+                v-for="item in subjectMap"
+                :key="item.type"
+                type="primary"
+                size="small"
+                class="btn"
+                @click="openSortDialog(item.name)"
+              >
+                {{ item.name }}分析
+              </el-button>
+            </template>
           </div>
           <base-table
+            ref="baseTable"
             :table-height="tableHeight"
             :table="curTable"
           ></base-table>
@@ -79,16 +90,22 @@ import SortDialog from './sortDialog'
 import CompaseDialog from './compareDialog'
 import BaseTable from './base/baseTable'
 import BaseTemplateBtn from './base/baseTemplateBtn'
+import baseClassSetting from './base/baseClassSetting'
 import baseMixin from './base/baseMixin'
+import { mapState } from 'vuex'
 export default {
   name: 'ExcelView',
-  components: { SortDialog, CompaseDialog, BaseTable, BaseTemplateBtn },
+  components: {
+    SortDialog,
+    CompaseDialog,
+    BaseTable,
+    BaseTemplateBtn,
+    baseClassSetting
+  },
   mixins: [baseMixin],
   data() {
     return {
-      tables: [],
-      curTable: {},
-      tableHeight: 0,
+      tableHeight: 500,
       sortCompareDialog: {
         show: false,
         name: ''
@@ -99,12 +116,21 @@ export default {
     }
   },
   computed: {
-    subjectMap() {
-      return this.$store.state.subjectMap
-    }
+    curTable() {
+      return this.curIndex === null ? {} : this.tables[this.curIndex]
+    },
+    ...mapState({
+      subjectMap: state => state.subjectMap,
+      tables: state => state.tables,
+      curIndex: state => state.curIndex
+    })
+  },
+  created() {
+    this.$store.commit('getTables')
   },
   mounted() {
     this.tableHeight = $('.content')[0].offsetHeight - 55
+    this.$store.commit('getCurIndex')
   },
   watch: {
     curTable() {
@@ -115,7 +141,6 @@ export default {
   },
   methods: {
     styleRed(item, key) {
-      console.log(item, key)
       let include = this.subjectMap.map(item => item.name)
       if (include.includes(key)) {
         return { color: 'red' }
@@ -156,11 +181,12 @@ export default {
             data: tableData,
             id: Date.now(),
             column: Object.keys(tableData[0]),
-            sortObj: this.sortCompare(tableData)
+            sortObj: this.sortCompare(tableData),
+            className: ''
           }
-          this.tables.push(curTable)
+          this.$store.commit('addTable', curTable)
         })
-        this.curTable = this.tables[0]
+        this.$store.commit('setCurIndex', 0)
       }
     },
     importExcel() {
@@ -181,14 +207,15 @@ export default {
     },
     delectTable(index, e) {
       e.stopPropagation()
-      this.tables.splice(index, 1)
-      this.curTable = {}
+      this.$store.commit('deleteTable', index)
+      if (index == this.curIndex) {
+        this.$store.commit('setCurIndex', null)
+      }
     },
     onCompare() {
       this.compaseDialog.show = true
     },
     sortCompare(list) {
-      console.log(list)
       let sortObj = {}
       list.forEach(item => {
         let name = item['姓名']
@@ -204,9 +231,15 @@ export default {
       })
       return sortObj
     },
-    openSortDialog(name) {
-      this.sortCompareDialog.name = name
-      this.sortCompareDialog.show = true
+    async openSortDialog(name) {
+      try {
+        await this.$refs.setting.validate()
+        this.sortCompareDialog.name = name
+        this.sortCompareDialog.show = true
+      } catch (err) {
+        console.log(err)
+        this.$message.error('请先设置班级')
+      }
     }
   }
 }
@@ -215,7 +248,14 @@ export default {
 $border-color: #409eff;
 .Excel {
   .btns {
+    display: flex;
     padding: 10px;
+    .left {
+      flex: 1;
+    }
+    .right {
+      margin: 0 auto;
+    }
   }
   .btn {
     margin-left: 10px;

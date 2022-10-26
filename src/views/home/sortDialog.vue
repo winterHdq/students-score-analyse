@@ -13,10 +13,11 @@
       {{ isShowName ? '隐藏' : '显示' }}姓名
     </el-button>
     <el-button type="primary" @click="exportExcel">导出</el-button>
+    <el-button type="primary" @click="onAddTable">添加到列表</el-button>
     <table class="table" border>
       <tr>
         <th width="120px">{{ title }}</th>
-        <th>班级</th>
+        <th>{{ curTable.className }}</th>
       </tr>
       <tr v-if="is150">
         <td>140-150</td>
@@ -448,28 +449,35 @@ export default {
       obj[`score${fromNum}to${toNum}Num`] =
         obj[`score${fromNum}to${toNum}`].length
     },
-    // 导出
-    exportExcel() {
+    tableHandle() {
       let data = []
       $('.table')[0].childNodes.forEach(item => {
         let _item = {}
         let textContent = item.childNodes[0].textContent
         if (textContent == this.title) return
         _item[this.title] = textContent
-        _item['班级'] = item.childNodes[1].textContent.trim()
+        _item[this.curTable.className] = item.childNodes[1].textContent.trim()
         data.push(_item)
       })
       const table = {
         id: Date.now(),
-        column: Object.keys(data),
+        column: Object.keys(data[0]),
         data: data,
-        name: `${this.title}分析表.xls`
+        name: `${this.curTable.name}-${this.curTable.className}-${this.title}分析表`,
+        className: this.curTable.className
       }
+      return table
+    },
+    // 导出
+    exportExcel() {
+      const table = this.tableHandle()
       this.baseExportExcel(table)
-      // const book = XLSX.utils.book_new()
-      // const sheet = XLSX.utils.json_to_sheet(data)
-      // XLSX.utils.book_append_sheet(book, sheet)
-      // XLSX.writeFile(book, `${this.title}分析表.xls`)
+    },
+    // 添加到列表
+    onAddTable() {
+      const table = this.tableHandle()
+      this.$store.commit('addTable', table)
+      this.onClose()
     },
     onClose() {
       this.$emit('onClose')
