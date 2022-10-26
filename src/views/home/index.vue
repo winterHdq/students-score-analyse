@@ -12,8 +12,16 @@
         >
           <el-button size="small" type="primary" class="btn">上传</el-button>
         </el-upload>
-        <el-button type="primary" size="small" class="btn" @click="onCompare">
+        <el-button
+          type="primary"
+          size="small"
+          class="btn"
+          @click="compaseDialog.show = true"
+        >
           进退比较
+        </el-button>
+        <el-button type="primary" size="small" class="btn" @click="onDelete">
+          一键删除
         </el-button>
       </div>
       <div class="right">
@@ -27,7 +35,7 @@
           :key="item.index"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
-          @click="$store.commit('setCurIndex', index)"
+          @click="$store.commit('setCurTableId', item.id)"
         >
           <span class="name">{{ item.name }}</span>
           <i
@@ -37,7 +45,7 @@
           <i
             class="el-icon-delete-solid btn"
             style="padding-left: 5px"
-            @click="delectTable(index, $event)"
+            @click="delectTable(item, index, $event)"
           ></i>
         </p>
       </div>
@@ -116,21 +124,20 @@ export default {
     }
   },
   computed: {
-    curTable() {
-      return this.curIndex === null ? {} : this.tables[this.curIndex]
-    },
     ...mapState({
       subjectMap: state => state.subjectMap,
-      tables: state => state.tables,
-      curIndex: state => state.curIndex
-    })
+      tables: state => state.tables
+    }),
+    curTable() {
+      return this.$store.getters.curTable || {}
+    }
   },
   created() {
     this.$store.commit('getTables')
   },
   mounted() {
     this.tableHeight = $('.content')[0].offsetHeight - 55
-    this.$store.commit('getCurIndex')
+    this.$store.commit('getCurTableId')
   },
   watch: {
     curTable() {
@@ -154,6 +161,7 @@ export default {
       this.importFile(file)
     },
     importFile(file) {
+      let curTableId = this.curTable
       const reader = new FileReader()
       reader.readAsArrayBuffer(file.raw)
       reader.onload = ev => {
@@ -185,35 +193,10 @@ export default {
             className: ''
           }
           this.$store.commit('addTable', curTable)
+          curTableId = curTable.id
         })
-        this.$store.commit('setCurIndex', 0)
+        this.$store.commit('setCurTableId', curTableId)
       }
-    },
-    importExcel() {
-      this.$refs.importInput.click()
-    },
-    handleImport(e) {
-      const files = e.target.files
-      if (!files.length) return
-      const fileName = files[0].name.toLowerCase()
-      if (!/\.(xls|xlsx)$/.test(fileName))
-        return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
-      const fileReader = new FileReader()
-      fileReader.onloadend = function () {}
-    },
-    exportExcel(data, e) {
-      e.stopPropagation()
-      this.baseExportExcel(data)
-    },
-    delectTable(index, e) {
-      e.stopPropagation()
-      this.$store.commit('deleteTable', index)
-      if (index == this.curIndex) {
-        this.$store.commit('setCurIndex', null)
-      }
-    },
-    onCompare() {
-      this.compaseDialog.show = true
     },
     sortCompare(list) {
       let sortObj = {}
@@ -230,6 +213,30 @@ export default {
         }
       })
       return sortObj
+    },
+    handleImport(e) {
+      const files = e.target.files
+      if (!files.length) return
+      const fileName = files[0].name.toLowerCase()
+      if (!/\.(xls|xlsx)$/.test(fileName))
+        return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
+      const fileReader = new FileReader()
+      fileReader.onloadend = function () {}
+    },
+    exportExcel(data, e) {
+      e.stopPropagation()
+      this.baseExportExcel(data)
+    },
+    delectTable(item, index, e) {
+      e.stopPropagation()
+      this.$store.commit('deleteTable', index)
+      if (item.id == this.curTableId) {
+        this.$store.commit('setCurTableId', null)
+      }
+    },
+    onDelete() {
+      this.$store.commit('setCurTableId', null)
+      this.$store.commit('setTables', [])
     },
     async openSortDialog(name) {
       try {

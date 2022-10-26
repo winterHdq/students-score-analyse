@@ -38,9 +38,6 @@ export default {
   computed: {
     tables() {
       return this.$store.state.tables
-    },
-    curIndex() {
-      return this.$store.state.curIndex
     }
   },
   watch: {
@@ -65,7 +62,6 @@ export default {
   methods: {
     changeHandle(val) {
       this.$emit('input', val)
-      this.tables[this.curIndex].className = val
       this.$store.commit('setTables', this.tables)
     },
     async validate() {

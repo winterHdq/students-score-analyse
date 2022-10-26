@@ -7,10 +7,13 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     tables: [],
-    curIndex: null,
+    curTableId: null,
     subjectMap
   },
   getters: {
+    curTable(state) {
+      return state.tables.find(item => item.id == state.curTableId)
+    },
     subjectObj(state) {
       let obj = {}
       state.subjectMap.forEach(item => {
@@ -45,12 +48,12 @@ export default new Vuex.Store({
       state.tables.splice(index, 1)
       localStorage.setItem('tables', JSON.stringify(state.tables))
     },
-    setCurIndex(state, curIndex) {
-      state.curIndex = curIndex
-      localStorage.setItem('curIndex', curIndex)
+    setCurTableId(state, curTableId) {
+      state.curTableId = curTableId
+      localStorage.setItem('curTableId', curTableId)
     },
-    getCurIndex(state) {
-      state.curIndex = localStorage.getItem('curIndex')
+    getCurTableId(state) {
+      state.curTableId = localStorage.getItem('curTableId')
     }
   },
   actions: {},

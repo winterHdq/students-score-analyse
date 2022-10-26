@@ -9,11 +9,11 @@
     v-loading="loading"
     element-loading-text="正在拼命计算中，请小主耐心等待"
   >
-    <el-button type="danger" @click="isShowName = !isShowName">
+    <el-button type="warning" @click="isShowName = !isShowName">
       {{ isShowName ? '隐藏' : '显示' }}姓名
     </el-button>
     <el-button type="primary" @click="exportExcel">导出</el-button>
-    <el-button type="primary" @click="onAddTable">添加到列表</el-button>
+    <el-button type="danger" @click="onAddTable">添加到列表</el-button>
     <table class="table" border>
       <tr>
         <th width="120px">{{ title }}</th>
