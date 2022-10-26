@@ -35,7 +35,7 @@
           :key="item.index"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
-          @click="$store.commit('setCurTableId', item.id)"
+          @click="changeTable(item)"
         >
           <span class="name">{{ item.name }}</span>
           <i
@@ -189,8 +189,9 @@ export default {
             data: tableData,
             id: Date.now(),
             column: Object.keys(tableData[0]),
-            sortObj: this.sortCompare(tableData),
-            className: ''
+            className: '',
+            isCompare: false,
+            sortObj: this.sortCompare(tableData)
           }
           this.$store.commit('addTable', curTable)
           curTableId = curTable.id
@@ -222,6 +223,9 @@ export default {
         return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
       const fileReader = new FileReader()
       fileReader.onloadend = function () {}
+    },
+    changeTable(item) {
+      this.$store.commit('setCurTableId', item.id)
     },
     exportExcel(data, e) {
       e.stopPropagation()

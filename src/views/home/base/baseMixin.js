@@ -13,25 +13,25 @@ const baseMixin = {
     }
   },
   methods: {
-    baseExportExcel(table, isCompare = false) {
+    baseExportExcel(table) {
       const book = XLSX2.utils.book_new()
-      const sheet = this.sheetHandle(table, isCompare)
+      const sheet = this.sheetHandle(table)
       XLSX2.utils.book_append_sheet(book, sheet)
       const suffixIndex = table.name.lastIndexOf('.')
       const fileName = table.name.slice(0, suffixIndex == -1 ? 99 : suffixIndex)
       XLSX2.writeFile(book, `${fileName}-${table.className || '班级'}.xlsx`)
     },
     // 多表导出
-    baseExportMulSheetExcel(tables, isCompare = false) {
+    baseExportMulSheetExcel(tables) {
       const book = XLSX2.utils.book_new()
       tables.forEach(table => {
-        const sheet = this.sheetHandle(table, isCompare)
+        const sheet = this.sheetHandle(table)
         XLSX2.utils.book_append_sheet(book, sheet, table.name)
       })
       XLSX2.writeFile(book, `分表.xlsx`)
     },
     // 工作表处理
-    sheetHandle(table, isCompare) {
+    sheetHandle(table) {
       const sheet = XLSX2.utils.json_to_sheet(table.data)
       const headerLen = table.column.length
       const compaseArr = table.column.filter(item => item.indexOf('进退') > 0)
@@ -56,7 +56,7 @@ const baseMixin = {
           this.textColorHandle(
             table.column[index % headerLen],
             sheet[key],
-            isCompare,
+            table.isCompare,
             compaseArr
           )
         }

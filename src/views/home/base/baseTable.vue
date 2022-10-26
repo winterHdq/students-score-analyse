@@ -42,11 +42,6 @@ export default {
       default() {
         return {}
       }
-    },
-    // 是否进退比较
-    isCompare: {
-      type: Boolean,
-      default: false
     }
   },
   watch: {
@@ -73,7 +68,7 @@ export default {
     },
     scoreStyle(row, key) {
       let { subjectObj, subjectRankList } = this
-      if (this.isCompare) {
+      if (this.table.isCompare) {
         if (subjectRankList.includes(key) && row[key] < 0) {
           return { color: 'red' }
         }

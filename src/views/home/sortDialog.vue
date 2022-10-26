@@ -464,7 +464,8 @@ export default {
         column: Object.keys(data[0]),
         data: data,
         name: `${this.curTable.name}-${this.curTable.className}-${this.title}分析表`,
-        className: this.curTable.className
+        className: this.curTable.className,
+        isCompare: false
       }
       return table
     },

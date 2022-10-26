@@ -112,7 +112,7 @@
       <el-button type="danger" @click="onAddList" style="margin-left: 10px">
         添加到列表
       </el-button>
-      <base-table :table="compareTable" :isCompare="true"></base-table>
+      <base-table :table="compareTable"></base-table>
     </el-dialog>
   </el-dialog>
 </template>
@@ -235,7 +235,11 @@ export default {
             for (let k in item) {
               newItem[k] = item[k]
               if (this.formData.compareTh.includes(k) && !isNaN(item[k])) {
-                newItem[`${k}进退`] = 0 - subtract(item[k], tab2[i][k])
+                newItem[`${k}进退`] = subtract(item[k], tab2[i][k])
+                // 名次是越小越好
+                if (k.indexOf('名') > 0) {
+                  newItem[`${k}进退`] = 0 - newItem[`${k}进退`]
+                }
               }
             }
             tab2.splice(i, 1)
@@ -271,7 +275,8 @@ export default {
         data: compareTable,
         id: Date.now(),
         column: compareTh,
-        className: `${this.initTable.className}`
+        className: `${this.initTable.className}`,
+        isCompare: true
       }
       this.compareTable = compare
       this.compareTableDialog = true
