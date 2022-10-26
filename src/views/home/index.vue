@@ -46,7 +46,7 @@
               type="primary"
               size="small"
               class="btn"
-              @click="openSortDialog(item.type)"
+              @click="openSortDialog(item.name)"
             >
               {{ item.name }}排位
             </el-button>
@@ -60,7 +60,7 @@
     </div>
     <sort-dialog
       v-if="sortCompareDialog.show"
-      :subjectType="sortCompareDialog.type"
+      :subjectName="sortCompareDialog.name"
       :curTable="curTable"
       @onClose="sortCompareDialog.show = false"
     ></sort-dialog>
@@ -91,7 +91,7 @@ export default {
       tableHeight: 0,
       sortCompareDialog: {
         show: false,
-        type: ''
+        name: ''
       },
       compaseDialog: {
         show: false
@@ -204,8 +204,8 @@ export default {
       })
       return sortObj
     },
-    openSortDialog(type) {
-      this.sortCompareDialog.type = type
+    openSortDialog(name) {
+      this.sortCompareDialog.name = name
       this.sortCompareDialog.show = true
     }
   }

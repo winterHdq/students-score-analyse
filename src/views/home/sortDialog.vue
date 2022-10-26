@@ -256,8 +256,8 @@ export default {
   components: {},
   mixins: [baseMixin],
   props: {
-    subjectType: {
-      type: Number,
+    subjectName: {
+      type: String,
       required: true
     },
     curTable: {
@@ -298,7 +298,7 @@ export default {
   },
   methods: {
     init() {
-      this.config = this.subjectMap[this.subjectType - 1]
+      this.config = this.subjectObj[this.subjectName]
       let scoreList = this.curTable.sortObj[this.config.scoreKey]
       let rankList = this.curTable.sortObj[this.config.rankKey]
       this.title = `${this.config.name}`

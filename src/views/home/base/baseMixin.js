@@ -17,7 +17,8 @@ const baseMixin = {
       const book = XLSX2.utils.book_new()
       const sheet = this.sheetHandle(table, isCompare)
       XLSX2.utils.book_append_sheet(book, sheet)
-      const fileName = table.name.slice(0, table.name.lastIndexOf('.'))
+      const suffixIndex = table.name.lastIndexOf('.')
+      const fileName = table.name.slice(0, suffixIndex == -1 ? 99 : suffixIndex)
       XLSX2.writeFile(book, `${fileName}.xlsx`)
     },
     // 多表导出
