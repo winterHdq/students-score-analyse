@@ -120,7 +120,7 @@
 import BaseTable from './base/baseTable'
 import BaseExportBtn from './base/baseExportBtn'
 import baseMixin from './base/baseMixin'
-import { isRepeat } from '@/common/utils'
+import { isRepeat, subtract } from '@/common/utils'
 export default {
   name: 'CompareDialog',
   components: { BaseTable, BaseExportBtn },
@@ -235,7 +235,7 @@ export default {
             for (let k in item) {
               newItem[k] = item[k]
               if (this.formData.compareTh.includes(k) && !isNaN(item[k])) {
-                newItem[`${k}进退`] = 0 - (item[k] - tab2[i][k])
+                newItem[`${k}进退`] = 0 - subtract(item[k], tab2[i][k])
               }
             }
             tab2.splice(i, 1)
