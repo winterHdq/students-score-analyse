@@ -37,6 +37,7 @@
           :class="{ 'name-item-active': item.id == curTable.id }"
           @click="changeTable(item)"
         >
+          <span class="className">{{ item.className }}</span>
           <span class="name">{{ item.name }}</span>
           <i
             class="el-icon-download btn"
@@ -281,11 +282,22 @@ $border-color: #409eff;
       flex-shrink: 0;
       border-top: 1px solid $border-color;
       .name-item {
-        padding: 10px;
+        padding: 15px 5px 10px 5px;
         border-bottom: 1px solid $border-color;
         cursor: pointer;
         display: flex;
         align-items: center;
+        position: relative;
+        .className {
+          position: absolute;
+          z-index: 2;
+          background: #c4c04f;
+          top: 0px;
+          right: 0px;
+          font-size: 13px;
+          padding: 0 5px;
+          font-weight: bold;
+        }
         .name {
           flex: 1;
         }

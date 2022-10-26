@@ -452,6 +452,7 @@ export default {
     tableHandle() {
       let data = []
       $('.table')[0].childNodes.forEach(item => {
+        if (item.tagName !== 'TR') return
         let _item = {}
         let textContent = item.childNodes[0].textContent
         if (textContent == this.title) return
@@ -478,6 +479,7 @@ export default {
     onAddTable() {
       const table = this.tableHandle()
       this.$store.commit('addTable', table)
+      this.$store.commit('setCurTableId', table.id)
       this.onClose()
     },
     onClose() {

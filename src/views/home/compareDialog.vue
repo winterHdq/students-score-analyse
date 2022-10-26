@@ -283,6 +283,7 @@ export default {
     },
     onAddList() {
       this.$store.commit('addTable', this.compareTable)
+      this.$store.commit('setCurTableId', this.compareTable.id)
       this.onClose()
     },
     onClose() {
