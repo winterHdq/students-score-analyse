@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/home/index.vue'
-// import TestView from '../views/test/index'
 
 Vue.use(VueRouter)
 
@@ -16,6 +15,12 @@ const routes = [
     name: 'test',
     component: () =>
       import('../views/test/index' /* webpackChunkName: "test-view" */)
+  },
+  {
+    path: '/echarts',
+    name: 'echarts',
+    component: () =>
+      import('../views/test/echarts' /* webpackChunkName: "echarts-view" */)
   }
 ]
 

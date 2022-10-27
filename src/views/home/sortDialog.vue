@@ -314,7 +314,7 @@ export default {
       this.dialogVisible = true
       this.loading = true
       // list = list.sort((a, b) => {
-      //   return a.score - b.score
+      //   return b.score - a.score
       // })
       let sortObj = {
         score0to9Num: 0,

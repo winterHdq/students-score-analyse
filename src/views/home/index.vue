@@ -259,6 +259,7 @@ export default {
 <style lang="scss" scoped>
 $border-color: #409eff;
 .Excel {
+  background-color: #dfecf7;
   .btns {
     display: flex;
     padding: 10px;
