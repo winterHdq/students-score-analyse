@@ -14,243 +14,25 @@
     </el-button>
     <el-button type="primary" @click="exportExcel">导出</el-button>
     <el-button type="danger" @click="onAddTable">添加到列表</el-button>
-    <table class="table" border>
-      <tr>
-        <th width="120px">{{ title }}</th>
-        <th>{{ curTable.className }}</th>
-      </tr>
-      <tr v-if="is150">
-        <td>140-150</td>
-        <td>
-          {{ sortObj.score140to149Num }}
-          <span v-if="isShowName">：{{ sortObj.score140to149 | toList }}</span>
-        </td>
-      </tr>
-      <tr v-if="is150">
-        <td>130-139</td>
-        <td>
-          {{ sortObj.score130to139Num }}
-          <span v-if="isShowName">：{{ sortObj.score130to139 | toList }}</span>
-        </td>
-      </tr>
-      <tr v-if="is150">
-        <td>120-129</td>
-        <td>
-          {{ sortObj.score120to129Num }}
-          <span v-if="isShowName">：{{ sortObj.score120to129 | toList }}</span>
-        </td>
-      </tr>
-      <tr v-if="is150">
-        <td>110-119</td>
-        <td>
-          {{ sortObj.score110to119Num }}
-          <span v-if="isShowName">：{{ sortObj.score110to119 | toList }}</span>
-        </td>
-      </tr>
-      <tr v-if="is150">
-        <td>100-109</td>
-        <td>
-          {{ sortObj.score100to109Num }}
-          <span v-if="isShowName">：{{ sortObj.score100to109 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>90-99</td>
-        <td>
-          {{ sortObj.score90to99Num }}
-          <span v-if="isShowName">：{{ sortObj.score90to99 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>80-89</td>
-        <td>
-          {{ sortObj.score80to89Num }}
-          <span v-if="isShowName">：{{ sortObj.score80to89 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>70-79</td>
-        <td>
-          {{ sortObj.score70to79Num }}
-          <span v-if="isShowName">：{{ sortObj.score70to79 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>60-69</td>
-        <td>
-          {{ sortObj.score60to69Num }}
-          <span v-if="isShowName">：{{ sortObj.score60to69 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>50-59</td>
-        <td>
-          {{ sortObj.score50to59Num }}
-          <span v-if="isShowName">：{{ sortObj.score50to59 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>40-49</td>
-        <td>
-          {{ sortObj.score40to49Num }}
-          <span v-if="isShowName">：{{ sortObj.score40to49 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>30-39</td>
-        <td>
-          {{ sortObj.score30to39Num }}
-          <span v-if="isShowName">：{{ sortObj.score30to39 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>20-29</td>
-        <td>
-          {{ sortObj.score20to29Num }}
-          <span v-if="isShowName">：{{ sortObj.score20to29 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>10-19</td>
-        <td>
-          {{ sortObj.score10to19Num }}
-          <span v-if="isShowName">：{{ sortObj.score10to19 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>0-9</td>
-        <td>
-          {{ sortObj.score0to9Num }}
-          <span v-if="isShowName">：{{ sortObj.score0to9 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>最高分</td>
-        <td>{{ sortObj.maxScore.score }}</td>
-      </tr>
-      <tr>
-        <td>最低分</td>
-        <td>{{ sortObj.minScore.score }}</td>
-      </tr>
-      <tr>
-        <td>不及格数</td>
-        <td>
-          {{ sortObj.noPassNum }}
-          <span v-if="isShowName">：{{ sortObj.noPass | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>及格数</td>
-        <td>
-          {{ sortObj.passNum }}
-          <span v-if="isShowName">：{{ sortObj.pass | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>及格率%</td>
-        <td>{{ sortObj.passRate }}</td>
-      </tr>
-      <tr>
-        <td>优秀数</td>
-        <td>
-          {{ sortObj.excellentNum }}
-          <span v-if="isShowName">：{{ sortObj.excellent | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>优秀率%</td>
-        <td>{{ sortObj.excellentRate }}</td>
-      </tr>
-      <tr>
-        <td>与考人数</td>
-        <td>{{ sortObj.peopleNum }}</td>
-      </tr>
-      <tr>
-        <td>前10名数</td>
-        <td>
-          {{ sortObj.top10Num }}
-          <span v-if="isShowName">：{{ sortObj.top10 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前50名数</td>
-        <td>
-          {{ sortObj.top50Num }}
-          <span v-if="isShowName">：{{ sortObj.top50 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前100名数</td>
-        <td>
-          {{ sortObj.top100Num }}
-          <span v-if="isShowName">：{{ sortObj.top100 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前150名数</td>
-        <td>
-          {{ sortObj.top150Num }}
-          <span v-if="isShowName">：{{ sortObj.top150 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前200名数</td>
-        <td>
-          {{ sortObj.top200Num }}
-          <span v-if="isShowName">：{{ sortObj.top200 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前250名数</td>
-        <td>
-          {{ sortObj.top250Num }}
-          <span v-if="isShowName">：{{ sortObj.top250 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前300名数</td>
-        <td>
-          {{ sortObj.top300Num }}
-          <span v-if="isShowName">：{{ sortObj.top300 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前350名数</td>
-        <td>
-          {{ sortObj.top350Num }}
-          <span v-if="isShowName">：{{ sortObj.top350 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>前400名数</td>
-        <td>
-          {{ sortObj.top400Num }}
-          <span v-if="isShowName">：{{ sortObj.top400 | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>400名后人数</td>
-        <td>
-          {{ sortObj.otherTopNum }}
-          <span v-if="isShowName">：{{ sortObj.otherTop | toList }}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>平均分</td>
-        <td>{{ sortObj.average }}</td>
-      </tr>
-      <tr>
-        <td>均分人数</td>
-        <td>{{ sortObj.averageNum }}</td>
-      </tr>
-    </table>
+    <el-table :data="scoreTable" border height="500px">
+      <el-table-column
+        :label="title"
+        prop="label"
+        width="100"
+        align="center"
+      ></el-table-column>
+      <el-table-column #default="{ row }" :label="curTable.className">
+        {{ row.value }}
+        <span v-if="isShowName && row.isName">：{{ row.data | toList }}</span>
+      </el-table-column>
+    </el-table>
+
     <!-- <span slot="footer" class="dialog-footer">
       <el-button @click="onClose">取 消</el-button>
     </span> -->
   </el-dialog>
 </template>
 <script>
-import $ from 'jquery'
 import baseMixin from './base/baseMixin'
 export default {
   name: 'SortDialog',
@@ -269,8 +51,12 @@ export default {
     }
   },
   filters: {
-    toList(arr) {
-      return (arr || []).map(item => item.name).join('、')
+    toList(val) {
+      if (Array.isArray(val)) {
+        return val.map(item => item.name).join('、')
+      } else {
+        return val.name || ''
+      }
     }
   },
   data() {
@@ -280,7 +66,72 @@ export default {
       sortObj: {},
       config: {},
       loading: false,
-      isShowName: false
+      isShowName: false,
+      scoreList: [], // 分数列表，由大到小排序
+      scoreRegionList: [],
+      otherList: [
+        {
+          label: '最高分',
+          value: 0,
+          key: 'maxScore',
+          isName: true
+        },
+        {
+          label: '最低分',
+          value: 0,
+          key: 'minScore',
+          isName: true
+        },
+        {
+          label: '不及格数',
+          value: 0,
+          key: 'pass',
+          isName: true
+        },
+        {
+          label: '及格数',
+          value: 0,
+          key: 'noPass',
+          isName: true
+        },
+        {
+          label: '及格率%',
+          value: 0,
+          key: 'passRate'
+        },
+        {
+          label: '优秀数',
+          value: 0,
+          key: 'excellent',
+          isName: true
+        },
+        {
+          label: '优秀率%',
+          value: 0,
+          key: 'excellentRate'
+        },
+        {
+          label: '与考人数',
+          value: 0,
+          key: 'peopleNum'
+        }
+      ],
+      rangRegionList: [],
+      averageList: [
+        {
+          label: '平均分',
+          value: 0,
+          key: 'average'
+        },
+        {
+          label: '均分人数',
+          value: 0,
+          key: 'averageList',
+          isName: true
+        }
+      ],
+      // 分析列表
+      scoreTable: []
     }
   },
   computed: {
@@ -295,11 +146,62 @@ export default {
     }
   },
   created() {
+    this.config = this.subjectObj[this.subjectName]
+    this.scoreRegionList = this.getScoreRegionList()
+    this.rangRegionList = this.getRangRegionList()
     this.init()
   },
   methods: {
+    // 获取分数区间
+    getScoreRegionList() {
+      let scoreList = []
+      for (let i = 14; i >= 0; i--) {
+        let startScore = i * 10
+        let endScore = startScore + 9
+        scoreList.push({
+          label: `${startScore}-${endScore}`,
+          value: 0,
+          key: `score${startScore}to${endScore}`,
+          isName: true
+        })
+      }
+      if (this.is150) {
+        scoreList[0].label = '140-150'
+      } else {
+        scoreList.splice(0, 5)
+        scoreList[0].label = '90-100'
+      }
+      return scoreList
+    },
+    // 获取排名区间
+    getRangRegionList() {
+      let rangList = [
+        {
+          label: '前10名',
+          value: 0,
+          key: 'top10',
+          isAdd: true,
+          isName: true
+        }
+      ]
+      for (let i = 50; i <= 400; i += 50) {
+        rangList.push({
+          label: `前${i}名`,
+          value: 0,
+          key: `top${i}`,
+          isAdd: true,
+          isName: true
+        })
+      }
+      rangList.push({
+        label: '400名后',
+        value: 0,
+        key: 'otherTop',
+        isName: true
+      })
+      return rangList
+    },
     init() {
-      this.config = this.subjectObj[this.subjectName]
       let scoreList = this.curTable.sortObj[this.config.scoreKey]
       let rankList = this.curTable.sortObj[this.config.rankKey]
       this.title = `${this.config.name}`
@@ -311,33 +213,17 @@ export default {
         this.onClose()
         return
       }
+      const scoreTable = []
       this.dialogVisible = true
       this.loading = true
-      // list = list.sort((a, b) => {
-      //   return b.score - a.score
-      // })
+      this.scoreList = list.sort((a, b) => {
+        return b.score - a.score
+      })
       let sortObj = {
-        score0to9Num: 0,
-        score10to19Num: 0,
-        score20to29Num: 0,
-        score30to39Num: 0,
-        score40to49Num: 0,
-        score50to59Num: 0,
-        score60to69Num: 0,
-        score70to79Num: 0,
-        score80to89Num: 0,
-        score90to99Num: 0,
-        score100to109Num: 0,
-        score110to119Num: 0,
-        score120to129Num: 0,
-        score130to139Num: 0,
-        score140to149Num: 0,
-        maxScore: list[0], //最高分
-        minScore: list[0], //最低分
+        maxScore: 0, //最高分
+        minScore: 0, //最低分
         pass: [],
-        passNum: 0, //及格数
         noPass: [],
-        noPassNum: 0, // 不及格数
         passRate: 0, // 及格率
         excellent: [],
         excellentNum: 0, //优秀数
@@ -354,24 +240,19 @@ export default {
         top400: [],
         otherTop: [],
         average: 0, //平均分
-        averageList: [],
-        averageNum: 0 //均分人数
+        averageList: []
       }
       let totalScore = 0
       let passScore = this.config.fullScore * 0.6
       let excellentScore = this.config.fullScore * 0.85
+      // 最高分
+      sortObj.maxScore = this.scoreList[0]
+      // 最低分
+      sortObj.minScore = this.scoreList[this.scoreList.length - 1]
       list.forEach(item => {
         this.getScoreRange(item, sortObj)
         // 总分
         totalScore += item.score
-        // 获得最高分
-        if (item.score > sortObj.maxScore.score) {
-          sortObj.maxScore = item
-        }
-        // 获取最低分
-        if (item.score < sortObj.minScore.score) {
-          sortObj.minScore = item
-        }
         // 及格
         if (item.score >= passScore) {
           sortObj.pass.push(item)
@@ -383,27 +264,35 @@ export default {
           sortObj.excellent.push(item)
         }
       })
-      sortObj.passNum = sortObj.pass.length
-      sortObj.noPassNum = sortObj.noPass.length
-      sortObj.passRate = ((sortObj.passNum / sortObj.peopleNum) * 100).toFixed(
-        2
-      )
-      sortObj.excellentNum = sortObj.excellent.length
+      // 及格率
+      sortObj.passRate = (
+        (sortObj.pass.length / sortObj.peopleNum) *
+        100
+      ).toFixed(2)
+      // 优秀率
       sortObj.excellentRate = (
-        (sortObj.excellentNum / sortObj.peopleNum) *
+        (sortObj.excellent.length / sortObj.peopleNum) *
         100
       ).toFixed(2)
 
-      // 平均分
-      sortObj.average = (totalScore / sortObj.peopleNum).toFixed(2)
-      // 获取均分人数
-      list.forEach(item => {
-        if (item.score >= sortObj.average) {
-          sortObj.averageList.push(item)
-        }
+      this.scoreRegionList.forEach(item => {
+        item.data = sortObj[item.key] || []
+        item.value = item.data.length
+        scoreTable.push(item)
       })
-      sortObj.averageNum = sortObj.averageList.length
-
+      this.otherList.forEach(item => {
+        let val = sortObj[item.key]
+        if (Array.isArray(val)) {
+          item.data = val
+          item.value = val.length
+        } else if (val instanceof Object) {
+          item.data = val
+          item.value = val.score
+        } else {
+          item.value = val
+        }
+        scoreTable.push(item)
+      })
       // 排名
       rankList.forEach(item => {
         if (item.score > 0 && item.score <= 10) {
@@ -428,12 +317,36 @@ export default {
           sortObj.otherTop.push(item)
         }
       })
-      let scoreArr = [10, 50, 100, 150, 200, 250, 300, 350, 400]
-      scoreArr.forEach((v, i) => {
-        sortObj[`top${v}Num`] =
-          sortObj[`top${v}`].length + (sortObj[`top${scoreArr[i - 1]}Num`] || 0)
+      let topNum = 0
+      this.rangRegionList.forEach(item => {
+        item.data = sortObj[item.key] || []
+        // 累加
+        item.value = item.isAdd ? item.data.length + topNum : item.data.length
+        topNum = item.value
+        scoreTable.push(item)
       })
-      sortObj.otherTopNum = sortObj.otherTop.length
+
+      // 平均分
+      sortObj.average = (totalScore / sortObj.peopleNum).toFixed(2)
+      // 获取均分人数
+      list.forEach(item => {
+        if (item.score >= sortObj.average) {
+          sortObj.averageList.push(item)
+        }
+      })
+      sortObj.averageNum = sortObj.averageList.length
+
+      this.averageList.forEach(item => {
+        const val = sortObj[item.key]
+        if (Array.isArray(val)) {
+          item.data = val
+          item.value = val.length
+        } else {
+          item.value = sortObj[item.key]
+        }
+        scoreTable.push(item)
+      })
+      this.scoreTable = scoreTable
       this.sortObj = sortObj
       this.loading = false
     },
@@ -446,20 +359,20 @@ export default {
       if (!obj[`score${fromNum}to${toNum}`])
         obj[`score${fromNum}to${toNum}`] = []
       obj[`score${fromNum}to${toNum}`].push(item)
-      obj[`score${fromNum}to${toNum}Num`] =
-        obj[`score${fromNum}to${toNum}`].length
     },
     tableHandle() {
       let data = []
-      $('.table')[0].childNodes.forEach(item => {
-        if (item.tagName !== 'TR') return
-        let _item = {}
-        let textContent = item.childNodes[0].textContent
-        if (textContent == this.title) return
-        _item[this.title] = textContent
-        _item[this.curTable.className] = item.childNodes[1].textContent.trim()
-        data.push(_item)
-      })
+      this.$el
+        .getElementsByTagName('table')[1]
+        .childNodes[1].childNodes.forEach(item => {
+          if (item.tagName !== 'TR') return
+          let _item = {}
+          let textContent = item.childNodes[0].textContent
+          if (textContent == this.title) return
+          _item[this.title] = textContent
+          _item[this.curTable.className] = item.childNodes[1].textContent.trim()
+          data.push(_item)
+        })
       const table = {
         id: Date.now(),
         column: Object.keys(data[0]),
