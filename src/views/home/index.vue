@@ -52,29 +52,40 @@
       </div>
       <div class="right">
         <div v-if="curTable.column">
-          <div style="padding: 10px" class="btns">
-            <base-class-setting
-              ref="setting"
-              v-model="curTable.className"
-            ></base-class-setting>
-            <template v-if="curTable.sortObj">
-              <el-button
-                v-for="item in subjectMap"
-                :key="item.type"
-                type="primary"
-                size="small"
-                class="btn"
-                @click="openSortDialog(item.name)"
-              >
-                {{ item.name }}分析
-              </el-button>
-            </template>
-          </div>
-          <base-table
-            ref="baseTable"
+          <sort-template
+            v-if="curTable.template == 'sortTemplate'"
+            :subjects="curTable.extend.subjects"
+            :curTable="curTable"
+            :sortObj="curTable.extend.sortObj"
+            :extendData="curTable.extend.extendData"
+            :scoreTable="curTable.extend.scoreTable"
             :table-height="tableHeight"
-            :table="curTable"
-          ></base-table>
+          ></sort-template>
+          <template v-else>
+            <div style="padding: 10px" class="btns">
+              <base-class-setting
+                ref="setting"
+                v-model="curTable.className"
+              ></base-class-setting>
+              <template v-if="curTable.sortObj">
+                <el-button
+                  v-for="item in subjectMap"
+                  :key="item.type"
+                  type="primary"
+                  size="small"
+                  class="btn"
+                  @click="openSortDialog(item.name)"
+                >
+                  {{ item.name }}分析
+                </el-button>
+              </template>
+            </div>
+            <base-table
+              ref="baseTable"
+              :table-height="tableHeight"
+              :table="curTable"
+            ></base-table>
+          </template>
         </div>
       </div>
     </div>
@@ -99,6 +110,7 @@ import SortDialog from './sortDialog'
 import CompaseDialog from './compareDialog'
 import BaseTable from './base/baseTable'
 import BaseTemplateBtn from './base/baseTemplateBtn'
+import SortTemplate from './template/sortTemplate'
 import baseClassSetting from './base/baseClassSetting'
 import baseMixin from './base/baseMixin'
 import { mapState } from 'vuex'
@@ -109,7 +121,8 @@ export default {
     CompaseDialog,
     BaseTable,
     BaseTemplateBtn,
-    baseClassSetting
+    baseClassSetting,
+    SortTemplate
   },
   mixins: [baseMixin],
   data() {

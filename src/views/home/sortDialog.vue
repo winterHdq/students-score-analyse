@@ -5,38 +5,31 @@
     :visible.sync="dialogVisible"
     :title="`${title}排位`"
     width="80%"
+    top="5vh"
     @close="onClose"
     v-loading="loading"
     element-loading-text="正在拼命计算中，请小主耐心等待"
   >
-    <el-button type="warning" @click="isShowName = !isShowName">
-      {{ isShowName ? '隐藏' : '显示' }}姓名
-    </el-button>
-    <el-button type="primary" @click="exportExcel">导出</el-button>
-    <el-button type="danger" @click="onAddTable">添加到列表</el-button>
-    <el-table :data="scoreTable" border height="500px">
-      <el-table-column
-        :label="title"
-        prop="label"
-        width="100"
-        align="center"
-      ></el-table-column>
-      <el-table-column #default="{ row }" :label="curTable.className">
-        {{ row.value }}
-        <span v-if="isShowName && row.isName">：{{ row.data | toList }}</span>
-      </el-table-column>
-    </el-table>
-
-    <!-- <span slot="footer" class="dialog-footer">
-      <el-button @click="onClose">取 消</el-button>
-    </span> -->
+    <sort-template
+      :curTable="curTable"
+      :scoreTable="scoreTable"
+      :sortObj="sortObj"
+      :subjects="title"
+      :extendData="{
+        scoreList,
+        scoreRegionList,
+        rangRegionList
+      }"
+      @onAddTable="onClose"
+    ></sort-template>
   </el-dialog>
 </template>
 <script>
 import baseMixin from './base/baseMixin'
+import SortTemplate from './template/sortTemplate.vue'
 export default {
   name: 'SortDialog',
-  components: {},
+  components: { SortTemplate },
   mixins: [baseMixin],
   props: {
     subjectName: {
