@@ -12,6 +12,7 @@
         <el-button type="primary" @click="exportExcel">导出</el-button>
         <el-button type="danger" @click="onAddTable">添加到列表</el-button>
       </div>
+      <div class="content">{{ subjects }}</div>
       <div class="right">
         <el-radio-group v-model="radio">
           <el-radio-button :label="1">表格</el-radio-button>
@@ -161,7 +162,7 @@ export default {
       this.echartsScoreName = this.$echarts.init(
         document.getElementById('scoreName')
       )
-      this.echartsScoreName.setOption({
+      const options = {
         title: {
           text: '成绩排序表',
           textStyle: this.echartTitleStyle
@@ -212,14 +213,15 @@ export default {
             }
           }
         ]
-      })
+      }
+      this.echartsScoreName.setOption(options)
     },
     // 分数段柱状图
     echartsScoreRegionInit() {
       this.echartsScoreRegion = this.$echarts.init(
         document.getElementById('scoreRegion')
       )
-      this.echartsScoreRegion.setOption({
+      const options = {
         title: {
           text: '成绩分析表',
           textStyle: this.echartTitleStyle
@@ -248,20 +250,24 @@ export default {
             name: '人数',
             data: this.extendData.scoreRegionList.map(item => item.value),
             type: 'bar',
+            label: {
+              show: true
+            },
             showBackground: true,
             backgroundStyle: {
               color: 'rgba(220, 220, 220, 0.8)'
             }
           }
         ]
-      })
+      }
+      this.echartsScoreRegion.setOption(options)
     },
     // 名次段柱状图
     echartsRangRegionInit() {
       this.echartsRangRegion = this.$echarts.init(
         document.getElementById('rangRegion')
       )
-      this.echartsRangRegion.setOption({
+      const options = {
         title: {
           text: '名次分析表',
           textStyle: this.echartTitleStyle
@@ -290,30 +296,28 @@ export default {
             name: '人数',
             data: this.extendData.rangRegionList.map(item => item.value),
             type: 'bar',
+            label: {
+              show: true
+            },
             showBackground: true,
             backgroundStyle: {
               color: 'rgba(220, 220, 220, 0.8)'
             }
           }
         ]
-      })
+      }
+      this.echartsRangRegion.setOption(options)
     },
     // 及格率
     echartsPassInit() {
       this.echartsPass = this.$echarts.init(document.getElementById('pass'))
-      this.echartsPass.setOption({
+      let options = {
         title: {
           text: '及格率',
           textStyle: this.echartTitleStyle
         },
         tooltip: {
           trigger: 'item'
-        },
-        legend: {
-          show: true,
-          zlevel: 0,
-          z: 2,
-          left: 'center'
         },
         series: [
           {
@@ -322,8 +326,9 @@ export default {
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
             label: {
-              show: false,
-              position: 'center'
+              show: true,
+              position: 'inside',
+              formatter: '{d}%'
             },
             emphasis: {
               label: {
@@ -340,27 +345,36 @@ export default {
               { value: this.sortObj.noPass.length, name: '不及格数' }
             ]
           }
-        ]
-      })
+        ],
+        legend: {
+          show: true,
+          zlevel: 0,
+          z: 2,
+          left: 'center',
+          formatter(name) {
+            console.log(name)
+            const val =
+              name == '及格数'
+                ? options.series[0].data[0].value
+                : options.series[0].data[1].value
+            return `${name}：${val}`
+          }
+        }
+      }
+      this.echartsPass.setOption(options)
     },
     // 优秀率
     echartsexcellentInit() {
       this.echartsexcellent = this.$echarts.init(
         document.getElementById('excellent')
       )
-      this.echartsexcellent.setOption({
+      const options = {
         title: {
           text: '优秀率',
           textStyle: this.echartTitleStyle
         },
         tooltip: {
           trigger: 'item'
-        },
-        legend: {
-          show: true,
-          zlevel: 0,
-          z: 2,
-          left: 'center'
         },
         series: [
           {
@@ -369,8 +383,9 @@ export default {
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
             label: {
-              show: false,
-              position: 'center'
+              show: true,
+              position: 'inside',
+              formatter: '{d}%'
             },
             emphasis: {
               label: {
@@ -390,8 +405,23 @@ export default {
               }
             ]
           }
-        ]
-      })
+        ],
+        legend: {
+          show: true,
+          zlevel: 0,
+          z: 2,
+          left: 'center',
+          formatter(name) {
+            console.log(name)
+            const val =
+              name == '优秀数'
+                ? options.series[0].data[0].value
+                : options.series[0].data[1].value
+            return `${name}：${val}`
+          }
+        }
+      }
+      this.echartsexcellent.setOption(options)
     },
     // 注销
     destroyedEchart() {
@@ -452,8 +482,11 @@ export default {
   .btns {
     display: flex;
     padding: 13px;
-    .left {
+    .content {
       flex: 1;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
     }
     .right {
       margin: 0 auto;

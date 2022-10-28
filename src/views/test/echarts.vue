@@ -476,8 +476,9 @@ export default {
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
             label: {
-              show: false,
-              position: 'center'
+              show: true,
+              position: 'inside',
+              formatter: '{b}：({d}%)'
             },
             emphasis: {
               label: {
@@ -487,7 +488,7 @@ export default {
               }
             },
             labelLine: {
-              show: false
+              show: true
             },
             data: [
               { value: 36, name: '及格数' },

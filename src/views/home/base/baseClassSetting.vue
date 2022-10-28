@@ -78,6 +78,10 @@ export default {
     .el-form-item--small.el-form-item {
       margin-bottom: 0px;
     }
+    .el-form-item--mini .el-form-item__content,
+    .el-form-item--mini .el-form-item__label {
+      color: #fff;
+    }
   }
 }
 </style>
