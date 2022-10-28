@@ -14,18 +14,13 @@
       </div>
       <div class="content">{{ subjects }}</div>
       <div class="right">
-        <el-radio-group v-model="radio">
+        <el-radio-group v-model="radio" @change="typeChangeHandle">
           <el-radio-button :label="1">表格</el-radio-button>
           <el-radio-button :label="2">图表</el-radio-button>
         </el-radio-group>
       </div>
     </div>
-    <el-table
-      :data="scoreTable"
-      border
-      :height="tableHeight"
-      v-show="radio == 1"
-    >
+    <el-table :data="scoreTable" border :height="tableHeight" v-if="radio == 1">
       <el-table-column
         :label="subjects"
         prop="label"
@@ -37,7 +32,7 @@
         <span v-if="isShowName && row.isName">：{{ row.data | toList }}</span>
       </el-table-column>
     </el-table>
-    <div v-show="radio == 2">
+    <div v-else>
       <div
         style="width: auto; height: 300px"
         id="scoreName"
@@ -122,8 +117,7 @@ export default {
   watch: {
     'curTable.id': {
       handler() {
-        this.destroyedEchart()
-        this.echartInit()
+        this.typeChangeHandle()
       }
     }
   },
@@ -143,19 +137,24 @@ export default {
       }
     }
   },
-  mounted() {
-    this.echartInit()
+  created() {
+    this.typeChangeHandle()
   },
   destroyed() {
     this.destroyedEchart()
   },
   methods: {
     echartInit() {
-      this.echartsScoreNameInit()
-      this.echartsScoreRegionInit()
-      this.echartsRangRegionInit()
-      this.echartsPassInit()
-      this.echartsexcellentInit()
+      this.$nextTick(() => {
+        this.echartsScoreNameInit()
+        this.echartsScoreRegionInit()
+        this.echartsRangRegionInit()
+        this.echartsPassInit()
+        this.echartsexcellentInit()
+      })
+    },
+    typeChangeHandle() {
+      this.radio == 1 ? this.destroyedEchart() : this.echartInit()
     },
     // 分数折线表
     echartsScoreNameInit() {
@@ -358,7 +357,6 @@ export default {
           z: 2,
           left: 'center',
           formatter(name) {
-            console.log(name)
             const val =
               name == '及格数'
                 ? options.series[0].data[0].value
@@ -431,11 +429,11 @@ export default {
     },
     // 注销
     destroyedEchart() {
-      this.echartsScoreName.dispose()
-      this.echartsScoreRegion.dispose()
-      this.echartsRangRegion.dispose()
-      this.echartsPass.dispose()
-      this.echartsexcellent.dispose()
+      this.echartsScoreName && this.echartsScoreName.dispose()
+      this.echartsScoreRegion && this.echartsScoreRegion.dispose()
+      this.echartsRangRegion && this.echartsRangRegion.dispose()
+      this.echartsPass && this.echartsPass.dispose()
+      this.echartsexcellent && this.echartsexcellent.dispose()
     },
     // 导出
     exportExcel() {
