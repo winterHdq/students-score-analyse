@@ -37,14 +37,34 @@
       </el-table-column>
     </el-table>
     <div v-show="radio == 2">
-      <div style="width: auto; height: 300px" id="scoreName"></div>
+      <div
+        style="width: auto; height: 300px"
+        id="scoreName"
+        class="echartitem"
+      ></div>
       <div style="display: flex">
-        <div style="width: 50%; height: 300px" id="scoreRegion"></div>
-        <div style="width: 50%; height: 300px" id="rangRegion"></div>
+        <div
+          style="width: 50%; height: 300px"
+          id="scoreRegion"
+          class="echartitem"
+        ></div>
+        <div
+          style="width: 50%; height: 300px"
+          id="rangRegion"
+          class="echartitem"
+        ></div>
       </div>
       <div style="display: flex">
-        <div style="width: 50%; height: 200px" id="pass"></div>
-        <div style="width: 50%; height: 200px" id="excellent"></div>
+        <div
+          style="width: 50%; height: 200px"
+          id="pass"
+          class="echartitem"
+        ></div>
+        <div
+          style="width: 50%; height: 200px"
+          id="excellent"
+          class="echartitem"
+        ></div>
       </div>
     </div>
   </div>
@@ -150,6 +170,7 @@ export default {
           axisLabel: { interval: 0, rotate: 45 }
         },
         yAxis: {
+          name: '分数',
           type: 'value'
         },
         series: [
@@ -344,7 +365,6 @@ export default {
     },
     // 注销
     destroyedEchart() {
-      debugger
       this.echartsScoreName.dispose()
       this.echartsScoreRegion.dispose()
       this.echartsRangRegion.dispose()
@@ -408,6 +428,13 @@ export default {
     .right {
       margin: 0 auto;
     }
+  }
+  .echartitem {
+    border: 1px solid #e5e7eb;
+    box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
+    margin: 5px;
+    border-radius: 5px;
+    background: #fff;
   }
 }
 </style>

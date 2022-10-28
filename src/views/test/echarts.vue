@@ -1,10 +1,18 @@
 <!-- 官网：https://echarts.apache.org/handbook/zh/get-started/ -->
 <template>
   <div class="Echarts">
-    <div style="width: 1200px; height: 300px" id="score"></div>
-    <div style="width: 800px; height: 300px" id="rang"></div>
-    <div style="width: auto; height: 300px" id="scoreName"></div>
-    <div style="width: 200px; height: 300px" id="pass"></div>
+    <div
+      style="width: 1200px; height: 300px"
+      id="score"
+      class="echartitem"
+    ></div>
+    <div style="width: 800px; height: 300px" id="rang" class="echartitem"></div>
+    <div
+      style="width: auto; height: 300px"
+      id="scoreName"
+      class="echartitem"
+    ></div>
+    <div style="width: 200px; height: 300px" id="pass" class="echartitem"></div>
   </div>
 </template>
 <script>
@@ -396,7 +404,10 @@ export default {
         title: {
           text: '英语',
           textStyle: {
-            color: '#777'
+            color: '#777',
+            fontSize: '16px',
+            lineHeight: 30,
+            textBorderColor: '#5e75c3'
           }
         },
         tooltip: {
@@ -412,7 +423,11 @@ export default {
           axisLabel: { interval: 0, rotate: 45 }
         },
         yAxis: {
-          type: 'value'
+          name: '分数',
+          type: 'value',
+          nameTextStyle: {
+            padding: [0, 50, 5, 0]
+          }
         },
         series: [
           {
@@ -489,5 +504,11 @@ export default {
 
 <style lang="scss" scoped>
 .Echarts {
+  .echartitem {
+    border: 1px solid #e5e7eb;
+    box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
+    margin: 10px;
+    border-radius: 5px;
+  }
 }
 </style>

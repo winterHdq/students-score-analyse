@@ -376,18 +376,6 @@ export default {
       }
       return table
     },
-    // 导出
-    exportExcel() {
-      const table = this.tableHandle()
-      this.baseExportExcel(table)
-    },
-    // 添加到列表
-    onAddTable() {
-      const table = this.tableHandle()
-      this.$store.commit('addTable', table)
-      this.$store.commit('setCurTableId', table.id)
-      this.onClose()
-    },
     onClose() {
       this.$emit('onClose')
     }

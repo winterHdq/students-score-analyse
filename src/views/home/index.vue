@@ -10,17 +10,17 @@
           :on-change="fileChange"
           style="display: inline-block"
         >
-          <el-button size="small" type="primary" class="btn">上传</el-button>
+          <el-button type="primary" class="btn">上传</el-button>
         </el-upload>
         <el-button
           type="primary"
-          size="small"
           class="btn"
           @click="compaseDialog.show = true"
         >
           进退比较
         </el-button>
-        <el-button type="primary" size="small" class="btn" @click="onDelete">
+        <base-mul-sheet-export-btn class="btn"></base-mul-sheet-export-btn>
+        <el-button type="primary" class="btn" @click="onDelete">
           一键删除
         </el-button>
       </div>
@@ -111,7 +111,8 @@ import CompaseDialog from './compareDialog'
 import BaseTable from './base/baseTable'
 import BaseTemplateBtn from './base/baseTemplateBtn'
 import SortTemplate from './template/sortTemplate'
-import baseClassSetting from './base/baseClassSetting'
+import BaseClassSetting from './base/baseClassSetting'
+import BaseMulSheetExportBtn from './base/baseMulSheetExportBtn'
 import baseMixin from './base/baseMixin'
 import { mapState } from 'vuex'
 export default {
@@ -121,8 +122,9 @@ export default {
     CompaseDialog,
     BaseTable,
     BaseTemplateBtn,
-    baseClassSetting,
-    SortTemplate
+    BaseClassSetting,
+    SortTemplate,
+    BaseMulSheetExportBtn
   },
   mixins: [baseMixin],
   data() {

@@ -22,57 +22,66 @@ const baseMixin = {
       XLSX2.writeFile(book, `${fileName}-${table.className || '班级'}.xlsx`)
     },
     // 多表导出
-    baseExportMulSheetExcel(tables) {
+    baseExportMulSheetExcel(table) {
       const book = XLSX2.utils.book_new()
-      tables.forEach(table => {
-        const sheet = this.sheetHandle(table)
-        XLSX2.utils.book_append_sheet(book, sheet, table.name)
+      table.sheets.forEach(item => {
+        const sheet = this.sheetHandle(item)
+        XLSX2.utils.book_append_sheet(book, sheet, item.name)
       })
-      XLSX2.writeFile(book, `分表.xlsx`)
+      XLSX2.writeFile(book, `${table.name}.xlsx`)
     },
     // 工作表处理
     sheetHandle(table) {
-      const sheet = XLSX2.utils.json_to_sheet(table.data)
-      const headerLen = table.column.length
-      const compaseArr = table.column.filter(item => item.indexOf('进退') > 0)
-      Object.keys(sheet).forEach((key, index) => {
-        if (key.indexOf('!') < 0) {
-          sheet[key].s = {
-            alignment: {
-              vertical: 'center', // 垂直居中
-              horizontal: 'center' // 水平居中
-            },
-            border: {
-              top: { style: 'thin' },
-              bottom: { style: 'thin' },
-              left: { style: 'thin' },
-              right: { style: 'thin' }
-            },
-            font: {
-              name: '宋体',
-              sz: 10
+      try {
+        const sheet = XLSX2.utils.json_to_sheet(table.data)
+        const headerLen = table.column.length
+        const compaseArr = table.column.filter(item => item.indexOf('进退') > 0)
+        Object.keys(sheet).forEach((key, index) => {
+          if (key.indexOf('!') < 0) {
+            sheet[key].s = {
+              alignment: {
+                vertical: 'center', // 垂直居中
+                horizontal: 'center' // 水平居中
+              },
+              border: {
+                top: { style: 'thin' },
+                bottom: { style: 'thin' },
+                left: { style: 'thin' },
+                right: { style: 'thin' }
+              },
+              font: {
+                name: '宋体',
+                sz: 10
+              }
             }
+            this.textColorHandle(
+              table.column[index % headerLen],
+              sheet[key],
+              table.isCompare,
+              compaseArr
+            )
           }
-          this.textColorHandle(
-            table.column[index % headerLen],
-            sheet[key],
-            table.isCompare,
-            compaseArr
-          )
-        }
-      })
-      return sheet
+        })
+        return sheet
+      } catch (e) {
+        this.$message.error('啊欧，数据出错，导出失败')
+      }
     },
     textColorHandle(key, item, isCompare, compaseArr) {
-      const val = item.v
-      if (isCompare) {
-        if (compaseArr.includes(key) && val < 0) {
-          item.s.font.color = { rgb: 'FF0000' }
+      try {
+        const val = item.v
+        if (isCompare) {
+          if (compaseArr.includes(key) && val < 0) {
+            item.s.font.color = { rgb: 'FF0000' }
+          }
+        } else {
+          if (this.subjectObj[key] && val < this.subjectObj[key].passScore) {
+            item.s.font.color = { rgb: 'FF0000' }
+          }
         }
-      } else {
-        if (this.subjectObj[key] && val < this.subjectObj[key].passScore) {
-          item.s.font.color = { rgb: 'FF0000' }
-        }
+      } catch (e) {
+        console.log(e)
+        this.$message.error('样式错误，导出失败')
       }
     }
   }

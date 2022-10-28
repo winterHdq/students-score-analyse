@@ -138,6 +138,9 @@ export default {
   computed: {
     thList() {
       return this.table.column || Object.keys(this.table.data[0])
+    },
+    subjectList() {
+      return this.$store.getters.subjectList
     }
   },
   data() {
@@ -162,8 +165,6 @@ export default {
       }
     }
   },
-  created() {},
-  mounted() {},
   methods: {
     handleCheckAllChange(res) {
       this.formData.column = res ? this.thList : []
@@ -186,7 +187,8 @@ export default {
         id: Date.now(),
         name: obj.name || '',
         column: obj.column || [],
-        data: []
+        data: [],
+        isCompare: true
       })
     },
     onDelectSheet(index) {
@@ -196,19 +198,19 @@ export default {
     exportMultipleSheetsExcelHandle() {
       this.dialogVisibleMul = true
       this.formDataMul.tables = []
-      for (let k in this.subjectObj) {
-        let sheet = {
-          name: `${k}进退分析`,
-          column: [
-            '姓名',
-            '班级',
-            this.subjectObj[k].scoreKey,
-            this.subjectObj[k].rankKey,
-            `${this.subjectObj[k].rankKey}进退`
-          ]
+      this.thList.forEach(k => {
+        if (this.subjectList.includes(k)) {
+          let sheet = {
+            name: `${k}进退分析`,
+            column: ['姓名', '班级', k]
+          }
+          this.thList.includes(this.subjectObj[k].rankKey) &&
+            sheet.column.push(this.subjectObj[k].rankKey)
+          this.thList.includes(`${this.subjectObj[k].rankKey}进退`) &&
+            sheet.column.push(`${this.subjectObj[k].rankKey}进退`)
+          this.onAddSheet(sheet)
         }
-        this.onAddSheet(sheet)
-      }
+      })
     },
     async onExport() {
       await this.$refs.form.validate()
@@ -246,7 +248,11 @@ export default {
             table.data.push(_item)
           })
         })
-        this.baseExportMulSheetExcel(this.formDataMul.tables, true)
+        const table = {
+          name: '分科',
+          sheets: this.formDataMul.tables
+        }
+        this.baseExportMulSheetExcel(table)
       } catch (err) {
         console.log(err)
       }
