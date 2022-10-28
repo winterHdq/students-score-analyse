@@ -162,6 +162,7 @@ export default {
       this.echartsScoreName = this.$echarts.init(
         document.getElementById('scoreName')
       )
+      const _this = this
       const options = {
         title: {
           text: '成绩排序表',
@@ -209,7 +210,12 @@ export default {
                   type: 'average',
                   name: '平均分'
                 }
-              ]
+              ],
+              label: {
+                formatter(item) {
+                  return `${item.name}：${item.value}\n均分人数：${_this.sortObj.averageNum}`
+                }
+              }
             }
           }
         ]

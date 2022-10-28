@@ -451,7 +451,11 @@ export default {
                   type: 'average',
                   name: '平均分'
                 }
-              ]
+              ],
+              label: {
+                show: true,
+                formatter: '{b}:{c}'
+              }
             }
           }
         ]
