@@ -3,6 +3,7 @@
     <el-button
       type="success"
       size="small"
+      plain
       @click="dialogVisiable = !dialogVisiable"
     >
       模板

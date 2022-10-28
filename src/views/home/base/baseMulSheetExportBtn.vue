@@ -1,6 +1,6 @@
 <template>
   <div class="baseMulSheetExportBtn">
-    <el-button type="primary" @click="visiableDialog = true">
+    <el-button type="primary" plain @click="visiableDialog = true">
       合表导出
     </el-button>
     <el-dialog title="分表导出" :visible.sync="visiableDialog" width="80%">

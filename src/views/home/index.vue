@@ -10,17 +10,18 @@
           :on-change="fileChange"
           style="display: inline-block"
         >
-          <el-button type="primary" class="btn">上传</el-button>
+          <el-button type="primary" plain class="btn">上传</el-button>
         </el-upload>
         <el-button
           type="primary"
           class="btn"
+          plain
           @click="compaseDialog.show = true"
         >
           进退比较
         </el-button>
         <base-mul-sheet-export-btn class="btn"></base-mul-sheet-export-btn>
-        <el-button type="primary" class="btn" @click="onDelete">
+        <el-button type="primary" plain class="btn" @click="onDelete">
           一键删除
         </el-button>
       </div>
@@ -71,6 +72,7 @@
                 <el-button
                   v-for="item in subjectMap"
                   :key="item.type"
+                  plain
                   type="primary"
                   size="small"
                   class="btn"
@@ -274,7 +276,7 @@ export default {
 <style lang="scss" scoped>
 $border-color: #409eff;
 .Excel {
-  background-color: #dfecf7;
+  background-color: #061b2c;
   .btns {
     display: flex;
     padding: 10px;
@@ -297,6 +299,7 @@ $border-color: #409eff;
       font-size: 14px;
       flex-shrink: 0;
       border-top: 1px solid $border-color;
+      overflow: auto;
       .name-item {
         padding: 15px 5px 10px 5px;
         border-bottom: 1px solid $border-color;
@@ -304,10 +307,11 @@ $border-color: #409eff;
         display: flex;
         align-items: center;
         position: relative;
+        color: #fff;
         .className {
           position: absolute;
           z-index: 2;
-          background: #c4c04f;
+          background: #d33525;
           top: 0px;
           right: 0px;
           font-size: 13px;
@@ -324,7 +328,6 @@ $border-color: #409eff;
       }
       .name-item-active {
         background-color: $border-color;
-        color: #fff;
       }
     }
     .right {

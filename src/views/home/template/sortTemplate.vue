@@ -134,7 +134,12 @@ export default {
       echartsScoreRegion: null,
       echartsRangRegion: null,
       echartsPass: null,
-      echartsexcellent: null
+      echartsexcellent: null,
+      echartTitleStyle: {
+        color: '#5470c6',
+        fontSize: '14px',
+        lineHeight: 30
+      }
     }
   },
   mounted() {
@@ -157,6 +162,10 @@ export default {
         document.getElementById('scoreName')
       )
       this.echartsScoreName.setOption({
+        title: {
+          text: '成绩排序表',
+          textStyle: this.echartTitleStyle
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -171,7 +180,10 @@ export default {
         },
         yAxis: {
           name: '分数',
-          type: 'value'
+          type: 'value',
+          nameTextStyle: {
+            padding: [0, 50, 5, 0]
+          }
         },
         series: [
           {
@@ -208,6 +220,10 @@ export default {
         document.getElementById('scoreRegion')
       )
       this.echartsScoreRegion.setOption({
+        title: {
+          text: '成绩分析表',
+          textStyle: this.echartTitleStyle
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -224,6 +240,7 @@ export default {
           axisLabel: { interval: 0, rotate: 20 }
         },
         yAxis: {
+          name: '人数',
           type: 'value'
         },
         series: [
@@ -245,6 +262,10 @@ export default {
         document.getElementById('rangRegion')
       )
       this.echartsRangRegion.setOption({
+        title: {
+          text: '名次分析表',
+          textStyle: this.echartTitleStyle
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -261,6 +282,7 @@ export default {
           axisLabel: { interval: 0, rotate: 0 }
         },
         yAxis: {
+          name: '人数',
           type: 'value'
         },
         series: [
@@ -280,6 +302,10 @@ export default {
     echartsPassInit() {
       this.echartsPass = this.$echarts.init(document.getElementById('pass'))
       this.echartsPass.setOption({
+        title: {
+          text: '及格率',
+          textStyle: this.echartTitleStyle
+        },
         tooltip: {
           trigger: 'item'
         },
@@ -323,6 +349,10 @@ export default {
         document.getElementById('excellent')
       )
       this.echartsexcellent.setOption({
+        title: {
+          text: '优秀率',
+          textStyle: this.echartTitleStyle
+        },
         tooltip: {
           trigger: 'item'
         },

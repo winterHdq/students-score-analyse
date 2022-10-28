@@ -30,4 +30,18 @@
     }
   }
 }
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width: 7px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  background: rgba(144, 147, 153, 0.2);
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(191, 193, 197, 0.5);
+}
 </style>

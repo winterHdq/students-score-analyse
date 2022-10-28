@@ -406,8 +406,7 @@ export default {
           textStyle: {
             color: '#777',
             fontSize: '16px',
-            lineHeight: 30,
-            textBorderColor: '#5e75c3'
+            lineHeight: 30
           }
         },
         tooltip: {
