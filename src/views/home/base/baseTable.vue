@@ -85,5 +85,6 @@ export default {
 
 <style lang="scss" scoped>
 .base-table {
+  width: 100%;
 }
 </style>

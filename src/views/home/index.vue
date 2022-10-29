@@ -31,37 +31,7 @@
     </div>
     <div class="content">
       <div class="left">
-        <p
-          v-for="(item, index) in tables"
-          :key="item.index"
-          class="name-item"
-          :class="{ 'name-item-active': item.id == curTable.id }"
-          @click="changeTable(item)"
-        >
-          <span
-            v-if="item.className"
-            class="className"
-            :style="{ background: classNameObj[item.className].bgColor }"
-          >
-            {{ item.className }}
-          </span>
-          <span class="name">{{ item.name }}</span>
-          <i
-            class="el-icon-download btn"
-            @click="exportExcel(item, $event)"
-          ></i>
-          <i
-            class="el-icon-delete-solid btn"
-            style="padding-left: 5px"
-            @click="delectTable(item, index, $event)"
-          ></i>
-          <i
-            class="el-icon-top btn"
-            style="padding-left: 3px"
-            @click="upMove(index, $event)"
-          ></i>
-          <i class="el-icon-bottom btn" @click="downMove(index, $event)"></i>
-        </p>
+        <menu-list></menu-list>
       </div>
       <div class="right">
         <div v-if="curTable.column">
@@ -74,41 +44,10 @@
             :scoreTable="curTable.extend.scoreTable"
             :table-height="tableHeight"
           ></sort-template>
-          <template v-else>
-            <div style="padding: 10px" class="btns">
-              <base-class-setting
-                ref="setting"
-                v-model="curTable.className"
-              ></base-class-setting>
-              <template v-if="curTable.sortObj">
-                <el-button
-                  v-for="item in subjectMap"
-                  :key="item.type"
-                  plain
-                  type="primary"
-                  size="small"
-                  class="btn"
-                  @click="openSortDialog(item.name)"
-                >
-                  {{ item.name }}分析
-                </el-button>
-              </template>
-            </div>
-            <base-table
-              ref="baseTable"
-              :table-height="tableHeight"
-              :table="curTable"
-            ></base-table>
-          </template>
+          <score-template v-else :tableHeight="tableHeight"></score-template>
         </div>
       </div>
     </div>
-    <sort-dialog
-      v-if="sortCompareDialog.show"
-      :subjectName="sortCompareDialog.name"
-      :curTable="curTable"
-      @onClose="sortCompareDialog.show = false"
-    ></sort-dialog>
     <compase-dialog
       v-if="compaseDialog.show"
       :tables="tables"
@@ -120,35 +59,28 @@
 <script>
 import $ from 'jquery'
 import * as XLSX from 'xlsx/xlsx.mjs'
-import SortDialog from './sortDialog'
 import CompaseDialog from './compareDialog'
-import BaseTable from './base/baseTable'
 import BaseTemplateBtn from './base/baseTemplateBtn'
 import SortTemplate from './template/sortTemplate'
-import BaseClassSetting from './base/baseClassSetting'
+import ScoreTemplate from './template/scoreTemplate.vue'
 import BaseMulSheetExportBtn from './base/baseMulSheetExportBtn'
+import MenuList from './menuList'
 import baseMixin from './base/baseMixin'
-import { classMap } from '@/constant/subject'
 import { mapState } from 'vuex'
 export default {
   name: 'ExcelView',
   components: {
-    SortDialog,
     CompaseDialog,
-    BaseTable,
     BaseTemplateBtn,
-    BaseClassSetting,
     SortTemplate,
-    BaseMulSheetExportBtn
+    ScoreTemplate,
+    BaseMulSheetExportBtn,
+    MenuList
   },
   mixins: [baseMixin],
   data() {
     return {
       tableHeight: 500,
-      sortCompareDialog: {
-        show: false,
-        name: ''
-      },
       compaseDialog: {
         show: false
       }
@@ -161,13 +93,6 @@ export default {
     }),
     curTable() {
       return this.$store.getters.curTable || {}
-    },
-    classNameObj() {
-      let obj = {}
-      classMap.forEach(item => {
-        obj[item.value] = item
-      })
-      return obj
     }
   },
   created() {
@@ -177,21 +102,7 @@ export default {
     this.tableHeight = $('.content')[0].offsetHeight - 55
     this.$store.commit('getCurTableId')
   },
-  watch: {
-    curTable() {
-      this.$nextTick(() => {
-        this.$refs.table && this.$refs.table.doLayout()
-      })
-    }
-  },
   methods: {
-    styleRed(item, key) {
-      let include = this.subjectMap.map(item => item.name)
-      if (include.includes(key)) {
-        return { color: 'red' }
-      }
-      return {}
-    },
     fileChange(file) {
       if (!/\.(xls|xlsx)$/.test(file.name))
         return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
@@ -253,50 +164,18 @@ export default {
       })
       return sortObj
     },
-    handleImport(e) {
-      const files = e.target.files
-      if (!files.length) return
-      const fileName = files[0].name.toLowerCase()
-      if (!/\.(xls|xlsx)$/.test(fileName))
-        return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
-      const fileReader = new FileReader()
-      fileReader.onloadend = function () {}
-    },
-    changeTable(item) {
-      this.$store.commit('setCurTableId', item.id)
-    },
-    exportExcel(data, e) {
-      e.stopPropagation()
-      this.baseExportExcel(data)
-    },
-    delectTable(item, index, e) {
-      e.stopPropagation()
-      this.$store.commit('deleteTable', index)
-      if (item.id == this.curTableId) {
-        this.$store.commit('setCurTableId', null)
-      }
-    },
-    upMove(index, e) {
-      e.stopPropagation()
-      this.$store.commit('upMoveTables', index)
-    },
-    downMove(index, e) {
-      e.stopPropagation()
-      this.$store.commit('downMoveTables', index)
-    },
+    // handleImport(e) {
+    //   const files = e.target.files
+    //   if (!files.length) return
+    //   const fileName = files[0].name.toLowerCase()
+    //   if (!/\.(xls|xlsx)$/.test(fileName))
+    //     return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')
+    //   const fileReader = new FileReader()
+    //   fileReader.onloadend = function () {}
+    // },
     onDelete() {
       this.$store.commit('setCurTableId', null)
       this.$store.commit('setTables', [])
-    },
-    async openSortDialog(name) {
-      try {
-        await this.$refs.setting.validate()
-        this.sortCompareDialog.name = name
-        this.sortCompareDialog.show = true
-      } catch (err) {
-        console.log(err)
-        this.$message.error('请先设置班级')
-      }
     }
   }
 }
@@ -327,38 +206,18 @@ $border-color: #409eff;
       font-size: 14px;
       flex-shrink: 0;
       border-top: 1px solid $border-color;
-      overflow: auto;
-      .name-item {
-        padding: 15px 5px 10px 5px;
-        border-bottom: 1px solid $border-color;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        position: relative;
-        color: #fff;
-        .className {
-          position: absolute;
-          z-index: 2;
-          background: #d33525;
-          top: 0px;
-          right: 0px;
-          font-size: 13px;
-          padding: 0 5px;
-          font-weight: bold;
-        }
-        .name {
-          flex: 1;
-        }
-        .btn {
-          margin: 0 auto;
-          cursor: pointer;
-          &:hover {
-            color: #b7c6c7;
-          }
-        }
+      /* 设置滚动条的样式 */
+      ::-webkit-scrollbar {
+        width: 10px;
       }
-      .name-item-active {
-        background-color: $border-color;
+      /* 滚动槽 */
+      ::-webkit-scrollbar-track {
+        background: rgba(144, 147, 153, 0.2);
+      }
+      /* 滚动条滑块 */
+      ::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background: rgba(191, 193, 197, 0.5);
       }
     }
     .right {

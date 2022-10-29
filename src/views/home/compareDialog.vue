@@ -219,7 +219,7 @@ export default {
       )
       if (res) {
         this.$message.error(
-          `比较表格里无【${res}】列，无法进行比较，请重新选择`
+          `上次成绩里无【${res}】列，无法进行比较，请重新选择`
         )
         return false
       }
