@@ -38,7 +38,13 @@
           :class="{ 'name-item-active': item.id == curTable.id }"
           @click="changeTable(item)"
         >
-          <span class="className">{{ item.className }}</span>
+          <span
+            v-if="item.className"
+            class="className"
+            :style="{ background: classNameObj[item.className].bgColor }"
+          >
+            {{ item.className }}
+          </span>
           <span class="name">{{ item.name }}</span>
           <i
             class="el-icon-download btn"
@@ -49,6 +55,12 @@
             style="padding-left: 5px"
             @click="delectTable(item, index, $event)"
           ></i>
+          <i
+            class="el-icon-top btn"
+            style="padding-left: 3px"
+            @click="upMove(index, $event)"
+          ></i>
+          <i class="el-icon-bottom btn" @click="downMove(index, $event)"></i>
         </p>
       </div>
       <div class="right">
@@ -116,6 +128,7 @@ import SortTemplate from './template/sortTemplate'
 import BaseClassSetting from './base/baseClassSetting'
 import BaseMulSheetExportBtn from './base/baseMulSheetExportBtn'
 import baseMixin from './base/baseMixin'
+import { classMap } from '@/constant/subject'
 import { mapState } from 'vuex'
 export default {
   name: 'ExcelView',
@@ -148,6 +161,13 @@ export default {
     }),
     curTable() {
       return this.$store.getters.curTable || {}
+    },
+    classNameObj() {
+      let obj = {}
+      classMap.forEach(item => {
+        obj[item.value] = item
+      })
+      return obj
     }
   },
   created() {
@@ -256,6 +276,14 @@ export default {
         this.$store.commit('setCurTableId', null)
       }
     },
+    upMove(index, e) {
+      e.stopPropagation()
+      this.$store.commit('upMoveTables', index)
+    },
+    downMove(index, e) {
+      e.stopPropagation()
+      this.$store.commit('downMoveTables', index)
+    },
     onDelete() {
       this.$store.commit('setCurTableId', null)
       this.$store.commit('setTables', [])
@@ -294,7 +322,7 @@ $border-color: #409eff;
     display: flex;
     height: calc(100vh - 55px);
     .left {
-      width: 200px;
+      width: 250px;
       border-right: 1px solid $border-color;
       font-size: 14px;
       flex-shrink: 0;
@@ -324,6 +352,9 @@ $border-color: #409eff;
         .btn {
           margin: 0 auto;
           cursor: pointer;
+          &:hover {
+            color: #b7c6c7;
+          }
         }
       }
       .name-item-active {

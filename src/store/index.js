@@ -48,6 +48,20 @@ export default new Vuex.Store({
       state.tables.splice(index, 1)
       localStorage.setItem('tables', JSON.stringify(state.tables))
     },
+    upMoveTables(state, index) {
+      if (index == 0) return
+      let moveItem = state.tables[index]
+      Vue.set(state.tables, index, state.tables[index - 1])
+      Vue.set(state.tables, index - 1, moveItem)
+      localStorage.setItem('tables', JSON.stringify(state.tables))
+    },
+    downMoveTables(state, index) {
+      if (index == state.tables.length - 1) return
+      let moveItem = state.tables[index]
+      Vue.set(state.tables, index, state.tables[index + 1])
+      Vue.set(state.tables, index + 1, moveItem)
+      localStorage.setItem('tables', JSON.stringify(state.tables))
+    },
     setCurTableId(state, curTableId) {
       state.curTableId = curTableId
       localStorage.setItem('curTableId', curTableId)

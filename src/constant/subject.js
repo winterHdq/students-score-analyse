@@ -66,62 +66,77 @@ export const subjectMap = [
 export const classMap = [
   {
     label: '1班',
-    value: '1班'
+    value: '1班',
+    bgColor: '#d32525'
   },
   {
     label: '2班',
-    value: '2班'
+    value: '2班',
+    bgColor: '#0085ff'
   },
   {
     label: '3班',
-    value: '3班'
+    value: '3班',
+    bgColor: '#9361dd'
   },
   {
     label: '4班',
-    value: '4班'
+    value: '4班',
+    bgColor: '#d8810b'
   },
   {
     label: '5班',
-    value: '5班'
+    value: '5班',
+    bgColor: '#5ed80b'
   },
   {
     label: '6班',
-    value: '6班'
+    value: '6班',
+    bgColor: '#2acfcf'
   },
   {
     label: '7班',
-    value: '7班'
+    value: '7班',
+    bgColor: '#49d4a5'
   },
   {
     label: '8班',
-    value: '8班'
+    value: '8班',
+    bgColor: '#957e62'
   },
   {
     label: '9班',
-    value: '9班'
+    value: '9班',
+    bgColor: '#3939fa'
   },
   {
     label: '10班',
-    value: '10班'
+    value: '10班',
+    bgColor: '#cc66ad'
   },
   {
     label: '11班',
-    value: '11班'
+    value: '11班',
+    bgColor: '#78a8dd'
   },
   {
     label: '12班',
-    value: '12班'
+    value: '12班',
+    bgColor: '#b1ba13'
   },
   {
     label: '13班',
-    value: '13班'
+    value: '13班',
+    bgColor: '#ff00eb'
   },
   {
     label: '14班',
-    value: '14班'
+    value: '14班',
+    bgColor: '#9fb7cc'
   },
   {
     label: '年段',
-    value: '年段'
+    value: '年段',
+    bgColor: '#8b0000'
   }
 ]

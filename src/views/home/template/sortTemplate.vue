@@ -20,7 +20,12 @@
         </el-radio-group>
       </div>
     </div>
-    <el-table :data="scoreTable" border :height="tableHeight" v-if="radio == 1">
+    <el-table
+      :data="scoreTable"
+      border
+      :height="tableHeight"
+      v-show="radio == 1"
+    >
       <el-table-column
         :label="subjects"
         prop="label"
@@ -32,20 +37,20 @@
         <span v-if="isShowName && row.isName">：{{ row.data | toList }}</span>
       </el-table-column>
     </el-table>
-    <div v-else>
+    <div v-if="radio == 2">
       <div
-        style="width: auto; height: 300px"
+        style="width: auto; height: 270px"
         id="scoreName"
         class="echartitem"
       ></div>
       <div style="display: flex">
         <div
-          style="width: 50%; height: 300px"
+          style="width: 50%; height: 250px"
           id="scoreRegion"
           class="echartitem"
         ></div>
         <div
-          style="width: 50%; height: 300px"
+          style="width: 50%; height: 250px"
           id="rangRegion"
           class="echartitem"
         ></div>
