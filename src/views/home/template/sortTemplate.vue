@@ -124,6 +124,14 @@ export default {
       handler() {
         this.typeChangeHandle()
       }
+    },
+    isShowMenu() {
+      this.echartsResize()
+    }
+  },
+  computed: {
+    isShowMenu() {
+      return this.$store.state.isShowMenu
     }
   },
   data() {
@@ -439,6 +447,19 @@ export default {
       this.echartsRangRegion && this.echartsRangRegion.dispose()
       this.echartsPass && this.echartsPass.dispose()
       this.echartsexcellent && this.echartsexcellent.dispose()
+    },
+    echartsResize() {
+      setTimeout(() => {
+        ;[
+          'echartsScoreName',
+          'echartsScoreRegion',
+          'echartsRangRegion',
+          'echartsPass',
+          'echartsexcellent'
+        ].forEach(key => {
+          this[key] && this[key].resize()
+        })
+      }, 500)
     },
     // 导出
     exportExcel() {

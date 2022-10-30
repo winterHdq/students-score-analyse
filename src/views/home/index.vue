@@ -201,7 +201,6 @@ $border-color: #409eff;
     display: flex;
     height: calc(100vh - 55px);
     .left {
-      width: 250px;
       border-right: 1px solid $border-color;
       font-size: 14px;
       flex-shrink: 0;

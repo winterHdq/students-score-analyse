@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     tables: [],
     curTableId: null,
-    subjectMap
+    subjectMap,
+    isShowMenu: true
   },
   getters: {
     curTable(state) {
@@ -68,6 +69,14 @@ export default new Vuex.Store({
     },
     getCurTableId(state) {
       state.curTableId = localStorage.getItem('curTableId')
+    },
+    getIsShowMenu(state) {
+      state.isShowMenu =
+        localStorage.getItem('isShowMenu') == 'false' ? false : true
+    },
+    setIsShowMenu(state, isShowMenu) {
+      state.isShowMenu = isShowMenu
+      localStorage.setItem('isShowMenu', isShowMenu)
     }
   },
   actions: {},
