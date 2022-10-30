@@ -12,6 +12,7 @@
           v-model="formData.className"
           placeholder="请选择"
           filterable
+          style="width: 100px"
           @change="changeHandle"
         >
           <el-option

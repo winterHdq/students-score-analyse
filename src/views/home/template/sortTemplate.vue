@@ -296,9 +296,6 @@ export default {
             type: 'shadow'
           }
         },
-        grid: {
-          true: false
-        },
         xAxis: {
           name: '名次',
           type: 'category',
