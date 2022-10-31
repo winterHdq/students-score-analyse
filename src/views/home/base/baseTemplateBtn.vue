@@ -52,6 +52,7 @@ export default {
       },
       ['班级', '姓名']
     )
+    this.table.column.push(...['总分', '段名', '折总', '折算名'])
     for (let i = 0; i < 3; i++) {
       const item = {}
       this.table.column.forEach(key => (item[key] = ''))

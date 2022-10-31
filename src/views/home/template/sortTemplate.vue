@@ -40,7 +40,7 @@
     <div v-if="radio == 2">
       <div
         style="width: auto; height: 270px"
-        id="scoreName"
+        id="sortScoreName"
         class="echartitem"
       ></div>
       <div style="display: flex">
@@ -172,7 +172,7 @@ export default {
     // 分数折线表
     echartsScoreNameInit() {
       this.echartsScoreName = this.$echarts.init(
-        document.getElementById('scoreName')
+        document.getElementById('sortScoreName')
       )
       const _this = this
       const options = {
