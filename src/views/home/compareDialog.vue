@@ -276,7 +276,11 @@ export default {
         id: Date.now(),
         column: compareTh,
         className: `${this.initTable.className}`,
-        isCompare: true
+        isCompare: true,
+        extend: {
+          compareColumn: this.formData.compareTh,
+          preTable: this.preTable
+        }
       }
       this.compareTable = compare
       this.compareTableDialog = true

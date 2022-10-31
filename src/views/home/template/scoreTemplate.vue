@@ -28,14 +28,35 @@
       </div>
     </div>
     <div v-if="radio == 2">
+      <el-checkbox-group
+        v-model="nameCheck"
+        @change="nameCheckChange"
+        class="nameCheck"
+      >
+        <el-checkbox
+          v-for="name in nameList"
+          :key="name"
+          :label="name"
+          :value="name"
+          style="width: 70px"
+        ></el-checkbox>
+      </el-checkbox-group>
+      <div style="display: flex">
+        <div
+          style="width: 50%; height: 270px"
+          id="scoreName"
+          class="echartitem"
+        ></div>
+        <div
+          style="width: 50%; height: 270px"
+          id="rankName"
+          class="echartitem"
+        ></div>
+      </div>
       <div
-        :style="{ width: 'auto', height: '350px' }"
-        id="scoreName"
-        class="echartitem"
-      ></div>
-      <div
-        :style="{ width: 'auto', height: '250px' }"
-        id="rankName"
+        v-if="isCompare"
+        style="width: auto; height: 250px"
+        id="compare"
         class="echartitem"
       ></div>
     </div>
@@ -79,28 +100,70 @@ export default {
         show: false,
         name: ''
       },
+      nameList: [],
+      nameListObj: {},
+      preNameListObj: {},
       radio: 2,
+      nameCheck: [],
       echartsScoreName: null,
-      echartsRankName: null
+      echartsRankName: null,
+      echartsCompare: null,
+      xAxisData: [],
+      xAxisRankData: []
     }
   },
   computed: {
     ...mapState({
       subjectMap: state => state.subjectMap
     }),
-    ...mapGetters(['curTable', 'subjectList', 'subjectRankList'])
+    ...mapGetters(['curTable', 'subjectList', 'subjectRankList']),
+    isCompare() {
+      return this.curTable.isCompare
+    }
   },
   watch: {
     'curTable.id': {
       handler() {
+        this.dataInitHandle()
         this.typeChangeHandle()
-      }
+      },
+      immediate: true
     }
   },
-  created() {
-    this.typeChangeHandle()
-  },
   methods: {
+    dataInitHandle() {
+      this.nameCheck = [this.curTable.data[0]['姓名']]
+      let nameListObj = {}
+      let nameList = [],
+        xAxisData = [],
+        xAxisRankData = []
+      this.curTable.data.forEach(item => {
+        let name = item['姓名']
+        nameListObj[name] = item
+        nameList.push(name)
+      })
+      this.nameList = nameList
+      this.nameListObj = nameListObj
+      // 去除不存在的科目
+      this.curTable.column.forEach(key => {
+        this.subjectList.includes(key) && xAxisData.push(key)
+      })
+      this.curTable.column.forEach(key => {
+        this.subjectRankList.includes(key) && xAxisRankData.push(key)
+      })
+      xAxisRankData.push('段名')
+      this.xAxisData = xAxisData
+      this.xAxisRankData = xAxisRankData
+      if (this.isCompare) {
+        this.compareInitHandle()
+      }
+    },
+    // 比较初始化
+    compareInitHandle() {
+      ;(this.curTable?.extend?.preTable.data || []).forEach(item => {
+        this.preNameListObj[item['姓名']] = item
+      })
+    },
     async openSortDialog(name) {
       try {
         await this.$refs.setting.validate()
@@ -115,43 +178,73 @@ export default {
       this.radio == 1 ? this.destroyedEchart() : this.echartInit()
     },
     destroyedEchart() {
-      ;['echartsScoreName', 'echartsRankName'].forEach(key => {
-        this[key] && this[key].dispose()
-      })
+      ;['echartsScoreName', 'echartsRankName', 'echartsCompare'].forEach(
+        key => {
+          this[key] && this[key].dispose()
+        }
+      )
     },
     echartInit() {
       this.$nextTick(() => {
         this.echartsScoreInit()
         this.echartsRankInit()
+        this.echartsCompareInit()
       })
     },
-    echartsScoreInit() {
-      let _this = this
-      const xAxisData = []
-      // 去除不存在的科目
-      this.curTable.column.forEach(key => {
-        this.subjectList.includes(key) && xAxisData.push(key)
+    nameCheckChange(val) {
+      this.nameCheck = val.splice(1, 1)
+      const series = this.getSeries()
+      this.echartsScoreName.setOption({
+        series: series.score
       })
-      let series = []
-      let selected = {}
-      this.curTable.data.forEach(item => {
-        selected[item['姓名']] = false
-        let _item = {
-          name: item['姓名'],
+      this.echartsRankName.setOption({
+        series: series.rank
+      })
+      if (this.isCompare) {
+        const { series } = this.getCompaseConfig()
+        this.echartsCompare.setOption({
+          series: series
+        })
+      }
+    },
+    getSeries() {
+      let series = {
+        score: [],
+        rank: []
+      }
+      this.nameCheck.forEach(name => {
+        let item = {
+          name: this.curTable.name,
           type: 'line',
           label: {
             show: true
           },
           data: []
         }
-        xAxisData.forEach(key => {
-          _item.data.push(item[key])
+        let rankItem = {
+          name: this.curTable.name,
+          type: 'line',
+          label: {
+            show: true
+          },
+          data: []
+        }
+        let nameObj = this.nameListObj[name]
+        this.xAxisData.forEach(key => {
+          item.data.push(nameObj[key])
         })
-        series.push(_item)
+        this.xAxisRankData.forEach(key => {
+          rankItem.data.push(nameObj[key])
+        })
+        series.score.push(item)
+        series.rank.push(rankItem)
       })
+      return series
+    },
+    echartsScoreInit() {
+      let { score: series } = this.getSeries()
       this.echartsScoreName = this.$echarts.init(
-        document.getElementById('scoreName'),
-        'dark'
+        document.getElementById('scoreName')
       )
       const options = {
         title: {
@@ -162,15 +255,15 @@ export default {
           }
         },
         grid: {
-          top: 150,
+          top: 75,
           bottom: 35
         },
         legend: {
           show: true,
           // type: 'scroll',
-          left: '70px',
+          left: 'center'
           // selectedMode: 'single',
-          selected: selected
+          // selected: selected
         },
         tooltip: {
           trigger: 'axis',
@@ -181,7 +274,7 @@ export default {
         xAxis: {
           name: '科目',
           type: 'category',
-          data: xAxisData
+          data: this.xAxisData
         },
         yAxis: {
           name: '分数',
@@ -193,39 +286,11 @@ export default {
         series: series
       }
       this.echartsScoreName.setOption(options)
-      this.echartsScoreName.on('legendselectchanged', val => {
-        const scoreOptions = _this.echartsRankName.getOption()
-        scoreOptions.legend[0].selected = val.selected
-        _this.echartsRankName.setOption(scoreOptions)
-      })
     },
     echartsRankInit() {
-      const xAxisData = []
-      // 去除不存在的科目
-      this.curTable.column.forEach(key => {
-        this.subjectRankList.includes(key) && xAxisData.push(key)
-      })
-      xAxisData.push('段名')
-      let series = []
-      let selected = {}
-      this.curTable.data.forEach(item => {
-        selected[item['姓名']] = false
-        let _item = {
-          name: item['姓名'],
-          type: 'line',
-          label: {
-            show: true
-          },
-          data: []
-        }
-        xAxisData.forEach(key => {
-          _item.data.push(item[key])
-        })
-        series.push(_item)
-      })
+      let { rank: series } = this.getSeries()
       this.echartsRankName = this.$echarts.init(
-        document.getElementById('rankName'),
-        'dark'
+        document.getElementById('rankName')
       )
       const options = {
         title: {
@@ -236,13 +301,12 @@ export default {
           }
         },
         grid: {
+          top: 75,
           bottom: 35
         },
         legend: {
-          show: false,
-          left: '70px',
-          // selectedMode: 'single',
-          selected: selected
+          show: true,
+          left: 'center'
         },
         tooltip: {
           trigger: 'axis',
@@ -253,7 +317,7 @@ export default {
         xAxis: {
           name: '科目',
           type: 'category',
-          data: xAxisData
+          data: this.xAxisRankData
         },
         yAxis: {
           name: '名次',
@@ -265,6 +329,82 @@ export default {
         series: series
       }
       this.echartsRankName.setOption(options)
+    },
+    getCompaseConfig() {
+      let preTable = this.curTable.extend.preTable
+      let series = [
+        {
+          name: this.curTable.name,
+          type: 'line',
+          label: {
+            show: true
+          },
+          data: []
+        },
+        {
+          name: preTable.name,
+          type: 'line',
+          label: {
+            show: true
+          },
+          data: []
+        }
+      ]
+      let xAxis = this.curTable.extend.compareColumn
+      const name = this.nameCheck[0]
+      let curItem = this.nameListObj[name]
+      let preItem = this.preNameListObj[name]
+      xAxis.forEach(key => {
+        series[0].data.push(curItem[key])
+        series[1].data.push(preItem[key])
+      })
+      return {
+        series,
+        xAxis
+      }
+    },
+    echartsCompareInit() {
+      if (!this.isCompare) return
+      let { xAxis, series } = this.getCompaseConfig()
+      this.echartsCompare = this.$echarts.init(
+        document.getElementById('compare')
+      )
+      const options = {
+        title: {
+          text: '比较表',
+          textStyle: {
+            fontSize: '14px',
+            lineHeight: 30
+          }
+        },
+        grid: {
+          top: 75,
+          bottom: 35
+        },
+        legend: {
+          show: true,
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          }
+        },
+        xAxis: {
+          name: '比较',
+          type: 'category',
+          data: xAxis
+        },
+        yAxis: {
+          type: 'value',
+          nameTextStyle: {
+            padding: [0, 50, 5, 0]
+          }
+        },
+        series: series
+      }
+      this.echartsCompare.setOption(options)
     }
   }
 }
@@ -283,12 +423,15 @@ export default {
       margin: 0 auto;
     }
   }
+  .nameCheck {
+    padding: 10px 20px;
+  }
   .echartitem {
     border: 1px solid #e5e7eb;
     box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
     margin: 5px;
     border-radius: 5px;
-    // background: #fff;
+    background: #fff;
   }
 }
 </style>
