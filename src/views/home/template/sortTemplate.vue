@@ -426,7 +426,6 @@ export default {
           z: 2,
           left: 'center',
           formatter(name) {
-            console.log(name)
             const val =
               name == '优秀数'
                 ? options.series[0].data[0].value
