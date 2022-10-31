@@ -208,6 +208,11 @@ export default {
             sheet.column.push(this.subjectObj[k].rankKey)
           this.thList.includes(`${this.subjectObj[k].rankKey}进退`) &&
             sheet.column.push(`${this.subjectObj[k].rankKey}进退`)
+          ;[('总分', '段名', '折总', '折算名')].forEach(key => {
+            if (this.thList.includes(key)) {
+              sheet.column.push(key)
+            }
+          })
           this.onAddSheet(sheet)
         }
       })

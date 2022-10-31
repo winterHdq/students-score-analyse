@@ -32,6 +32,7 @@
         v-model="nameCheck"
         @change="nameCheckChange"
         class="nameCheck"
+        :min="1"
       >
         <el-checkbox
           v-for="name in nameList"
@@ -103,7 +104,7 @@ export default {
       nameList: [],
       nameListObj: {},
       preNameListObj: {},
-      radio: 2,
+      radio: 1,
       nameCheck: [],
       echartsScoreName: null,
       echartsRankName: null,
@@ -114,7 +115,8 @@ export default {
   },
   computed: {
     ...mapState({
-      subjectMap: state => state.subjectMap
+      subjectMap: state => state.subjectMap,
+      isShowMenu: state => state.isShowMenu
     }),
     ...mapGetters(['curTable', 'subjectList', 'subjectRankList']),
     isCompare() {
@@ -128,7 +130,13 @@ export default {
         this.typeChangeHandle()
       },
       immediate: true
+    },
+    isShowMenu() {
+      this.echartsResize()
     }
+  },
+  destroyed() {
+    this.destroyedEchart()
   },
   methods: {
     dataInitHandle() {
@@ -183,6 +191,15 @@ export default {
           this[key] && this[key].dispose()
         }
       )
+    },
+    echartsResize() {
+      setTimeout(() => {
+        ;['echartsScoreName', 'echartsRankName', 'echartsCompare'].forEach(
+          key => {
+            this[key] && this[key].resize()
+          }
+        )
+      }, 500)
     },
     echartInit() {
       this.$nextTick(() => {
@@ -355,8 +372,8 @@ export default {
       let curItem = this.nameListObj[name]
       let preItem = this.preNameListObj[name]
       xAxis.forEach(key => {
-        series[0].data.push(curItem[key])
-        series[1].data.push(preItem[key])
+        curItem && series[0].data.push(curItem[key])
+        preItem && series[1].data.push(preItem[key])
       })
       return {
         series,
@@ -432,6 +449,18 @@ export default {
     margin: 5px;
     border-radius: 5px;
     background: #fff;
+  }
+  ::v-deep {
+    .el-checkbox__label {
+      color: #fff;
+    }
+    .el-checkbox__input.is-disabled + span.el-checkbox__label {
+      color: #409eff;
+    }
+    .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+      background-color: #409eff;
+      border-color: #409eff;
+    }
   }
 }
 </style>
