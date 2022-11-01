@@ -235,6 +235,7 @@ export default {
         {
           ...this.table,
           data: table,
+          column: this.formData.column,
           name: this.formData.name
         },
         true
