@@ -184,6 +184,7 @@ export default {
 $border-color: #409eff;
 .Excel {
   background-color: #061b2c;
+  width: 100%;
   .btns {
     display: flex;
     padding: 10px;
