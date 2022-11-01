@@ -14,6 +14,7 @@
       title="导出"
       :visible.sync="dialogVisible"
       :append-to-body="true"
+      :close-on-click-modal="false"
     >
       <el-form :model="formData" ref="form" :rules="rules" inline>
         <el-form-item label="导出名称" prop="name">
@@ -53,6 +54,7 @@
       :visible.sync="dialogVisibleMul"
       :append-to-body="true"
       :destroy-on-close="true"
+      :close-on-click-modal="false"
       width="80%"
     >
       <el-button @click="onExportMul" type="primary">导出</el-button>
@@ -208,7 +210,7 @@ export default {
             sheet.column.push(this.subjectObj[k].rankKey)
           this.thList.includes(`${this.subjectObj[k].rankKey}进退`) &&
             sheet.column.push(`${this.subjectObj[k].rankKey}进退`)
-          ;[('总分', '段名', '折总', '折算名')].forEach(key => {
+          ;['总分', '段名', '折总', '折算名'].forEach(key => {
             if (this.thList.includes(key)) {
               sheet.column.push(key)
             }
@@ -237,6 +239,8 @@ export default {
         },
         true
       )
+      this.$message.warning('正在导出')
+      this.dialogVisible = false
     },
     async onExportMul() {
       try {
@@ -258,6 +262,8 @@ export default {
           sheets: this.formDataMul.tables
         }
         this.baseExportMulSheetExcel(table)
+        this.$message.warning('正在导出')
+        this.dialogVisibleMul = false
       } catch (err) {
         console.log(err)
       }

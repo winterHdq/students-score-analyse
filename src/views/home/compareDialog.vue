@@ -3,6 +3,7 @@
     class="compare-dialog"
     :visible.sync="dialogVisible"
     title="比较设置"
+    :close-on-click-modal="false"
     @close="onClose"
   >
     <el-form
@@ -103,6 +104,7 @@
       width="90%"
       :visible.sync="compareTableDialog"
       :append-to-body="true"
+      :close-on-click-modal="false"
       v-if="compareTableDialog"
     >
       <base-export-btn

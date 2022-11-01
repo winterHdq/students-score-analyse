@@ -8,6 +8,7 @@
     top="5vh"
     @close="onClose"
     v-loading="loading"
+    :close-on-click-modal="false"
     element-loading-text="正在拼命计算中，请小主耐心等待"
   >
     <sort-template

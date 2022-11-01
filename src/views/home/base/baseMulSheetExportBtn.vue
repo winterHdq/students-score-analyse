@@ -3,7 +3,12 @@
     <el-button type="primary" plain @click="visiableDialog = true">
       合表导出
     </el-button>
-    <el-dialog title="分表导出" :visible.sync="visiableDialog" width="80%">
+    <el-dialog
+      title="分表导出"
+      :visible.sync="visiableDialog"
+      :close-on-click-modal="false"
+      width="80%"
+    >
       <el-form :model="formData" ref="form" :rules="rules" inline>
         <el-form-item label="表名" prop="name">
           <el-input v-model="formData.name" placeholder="请输入"></el-input>

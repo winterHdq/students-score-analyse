@@ -8,7 +8,12 @@
     >
       模板
     </el-button>
-    <el-dialog title="模板" :visible.sync="dialogVisiable" width="80%">
+    <el-dialog
+      title="模板"
+      :visible.sync="dialogVisiable"
+      width="80%"
+      :close-on-click-modal="false"
+    >
       <el-button type="primary" @click="onExport">导出</el-button>
       <table class="table" border>
         <tr>
