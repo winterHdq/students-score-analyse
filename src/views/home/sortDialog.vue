@@ -79,13 +79,13 @@ export default {
         {
           label: '不及格数',
           value: 0,
-          key: 'pass',
+          key: 'noPass',
           isName: true
         },
         {
           label: '及格数',
           value: 0,
-          key: 'noPass',
+          key: 'pass',
           isName: true
         },
         {
