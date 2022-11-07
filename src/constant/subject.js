@@ -92,7 +92,7 @@ export const classMap = [
   {
     label: '6班',
     value: '6班',
-    bgColor: '#2acfcf'
+    bgColor: '#cf3576'
   },
   {
     label: '7班',
