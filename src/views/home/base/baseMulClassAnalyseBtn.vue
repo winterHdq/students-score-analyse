@@ -7,7 +7,7 @@
       title="年段分析"
       :visible.sync="visiableDialog"
       :close-on-click-modal="false"
-      :destroy-on-close="true"
+      @close="onClose"
     >
       <el-form :model="formData" ref="form" :rules="rules" inline>
         <el-form-item label="表名" prop="name">
@@ -114,6 +114,9 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    onClose() {
+      this.formData.classes = []
     }
   }
 }

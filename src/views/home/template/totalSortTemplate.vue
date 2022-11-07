@@ -152,21 +152,32 @@ export default {
           isName: true
         }
       ],
-      dataObj: null
+      dataObj: null,
+      isTable: true
     }
   },
   created() {
     this.subjectName = this.subjectList[0]
     this.getTables()
-    this.getRowName()
   },
   methods: {
     getTables() {
-      this.classTables = this.classes.map(id =>
-        this.tables.find(v => v.id == id)
-      )
+      let classTables = []
+      this.classes.forEach(id => {
+        let res = this.tables.find(v => v.id == id)
+        if (!res) {
+          this.isTable = false
+          this.$message.error(`未找到表${id}，可能已被删除`)
+        } else {
+          classTables.push(res)
+        }
+      })
+      if (!this.isTable) return false
+      this.classTables = classTables
+      this.getRowName()
     },
     getRowName() {
+      if (!this.isTable) return false
       this.subConfig = this.subjectObj[this.subjectName]
       this.is150 = this.subConfig.fullScore == 150
       let scoreRegionList = this.getScoreRegionList()
