@@ -22,6 +22,13 @@
           <el-radio-button :label="1">表格</el-radio-button>
           <el-radio-button :label="2">图表</el-radio-button>
         </el-radio-group>
+        <br />
+        <div class="btn">
+          <base-score-analyse-btn
+            btnName="修改"
+            :table="curTable"
+          ></base-score-analyse-btn>
+        </div>
       </div>
     </div>
     <base-table
@@ -50,10 +57,12 @@
 <script>
 import BaseTable from '../base/baseTable'
 import baseMixin from '../base/baseMixin'
+import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 export default {
   name: 'StudentScoreTemplate',
   components: {
-    BaseTable
+    BaseTable,
+    BaseScoreAnalyseBtn
   },
   mixins: [baseMixin],
   props: {
@@ -90,6 +99,9 @@ export default {
     },
     isShowMenu() {
       return this.$store.state.isShowMenu
+    },
+    curTable() {
+      return this.$store.getters.curTable || {}
     }
   },
   data() {
@@ -306,6 +318,11 @@ export default {
     padding: 10px;
     .name {
       flex: 1;
+    }
+    .right {
+      .btn {
+        margin-top: 10px;
+      }
     }
   }
   .echartitem {

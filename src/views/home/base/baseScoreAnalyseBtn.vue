@@ -1,7 +1,7 @@
 <template>
   <div class="baseScoreAnalyseBtn">
     <el-button type="primary" plain @click="visiableDialog = true">
-      成绩分析
+      {{ btnName }}
     </el-button>
     <el-dialog
       title="成绩分析"
@@ -75,6 +75,18 @@ export default {
   components: {
     StudentScoreTemplate
   },
+  props: {
+    btnName: {
+      type: String,
+      default: '成绩分析'
+    },
+    table: {
+      type: Object,
+      default() {
+        return null
+      }
+    }
+  },
   computed: {
     tables() {
       return this.$store.state.tables
@@ -100,6 +112,22 @@ export default {
       }
     }
   },
+  created() {
+    if (this.table) {
+      this.formData.name = this.table.name
+      let selectTables = []
+      this.table.extend.selectTablesId.forEach(id => {
+        let res = this.tables.find(v => v.id == id)
+        if (!res) {
+          this.isTable = false
+          this.$message.error(`未找到表${id}，可能已被删除`)
+        } else {
+          selectTables.push(res)
+        }
+      })
+      this.formData.tables = selectTables
+    }
+  },
   methods: {
     async onSave() {
       try {
@@ -116,9 +144,8 @@ export default {
           this.$message.error('班级不唯一，请调整')
           return false
         }
-        // this.tableDialog = true
         const table = {
-          name: `${this.formData.tables[0].className}成绩分析`,
+          name: this.formData.name,
           id: Date.now(),
           column: [],
           className: this.formData.tables[0].className,
@@ -128,8 +155,21 @@ export default {
             selectTablesId: this.selectTables
           }
         }
-        this.$store.commit('addTable', table)
-        this.$store.commit('setCurTableId', table.id)
+        if (this.table?.id) {
+          let _index = null
+          this.tables.find((item, index) => {
+            if (item.id == this.table.id) {
+              _index = index
+              return true
+            }
+          })
+          this.tables[_index] = table
+          this.$store.commit('setTables', this.tables)
+          this.$store.commit('setCurTableId', table.id)
+        } else {
+          this.$store.commit('addTable', table)
+          this.$store.commit('setCurTableId', table.id)
+        }
         this.visiableDialog = false
       } catch (err) {
         console.log(err)
