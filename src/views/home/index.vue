@@ -21,6 +21,7 @@
           进退比较
         </el-button>
         <base-mul-class-analyse-btn class="btn"></base-mul-class-analyse-btn>
+        <base-score-analyse-btn class="btn"></base-score-analyse-btn>
         <base-mul-sheet-export-btn class="btn"></base-mul-sheet-export-btn>
         <el-button type="primary" plain class="btn" @click="onDelete">
           一键删除
@@ -45,8 +46,13 @@
             :scoreTable="curTable.extend.scoreTable"
             :table-height="tableHeight"
           ></sort-template>
+          <student-score-template
+            v-else-if="curTable.template == 'studentScoreTemplate'"
+            :selectTablesId="curTable.extend.selectTablesId"
+            :table-height="tableHeight - 41"
+          ></student-score-template>
           <total-sort-template
-            v-if="curTable.template == 'totalSortTemplate'"
+            v-else-if="curTable.template == 'totalSortTemplate'"
             :classes="curTable.extend.classes"
             :table-height="tableHeight"
           ></total-sort-template>
@@ -68,10 +74,12 @@ import * as XLSX from 'xlsx/xlsx.mjs'
 import CompaseDialog from './compareDialog'
 import BaseTemplateBtn from './base/baseTemplateBtn'
 import SortTemplate from './template/sortTemplate'
-import ScoreTemplate from './template/scoreTemplate.vue'
+import ScoreTemplate from './template/scoreTemplate'
 import TotalSortTemplate from './template/totalSortTemplate'
+import StudentScoreTemplate from './template/studentScoreTemplate'
 import BaseMulSheetExportBtn from './base/baseMulSheetExportBtn'
-import baseMulClassAnalyseBtn from './base/baseMulClassAnalyseBtn.vue'
+import BaseMulClassAnalyseBtn from './base/baseMulClassAnalyseBtn'
+import BaseScoreAnalyseBtn from './base/baseScoreAnalyseBtn'
 import MenuList from './menuList'
 import baseMixin from './base/baseMixin'
 import { mapState } from 'vuex'
@@ -82,8 +90,10 @@ export default {
     BaseTemplateBtn,
     SortTemplate,
     ScoreTemplate,
+    StudentScoreTemplate,
     BaseMulSheetExportBtn,
-    baseMulClassAnalyseBtn,
+    BaseMulClassAnalyseBtn,
+    BaseScoreAnalyseBtn,
     MenuList,
     TotalSortTemplate
   },

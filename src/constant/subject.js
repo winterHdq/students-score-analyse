@@ -1,6 +1,7 @@
 export const subjectMap = [
   {
     name: '语文',
+    key: 'chinese',
     type: 1,
     fullScore: 150,
     scoreKey: '语文',
@@ -8,6 +9,7 @@ export const subjectMap = [
   },
   {
     name: '数学',
+    key: 'mathematics',
     type: 2,
     fullScore: 150,
     scoreKey: '数学',
@@ -15,6 +17,7 @@ export const subjectMap = [
   },
   {
     name: '英语',
+    key: 'english',
     type: 3,
     fullScore: 150,
     scoreKey: '英语',
@@ -22,6 +25,7 @@ export const subjectMap = [
   },
   {
     name: '物理',
+    key: 'physical',
     type: 4,
     fullScore: 100,
     scoreKey: '物理',
@@ -29,6 +33,7 @@ export const subjectMap = [
   },
   {
     name: '化学',
+    key: 'chemical',
     type: 5,
     fullScore: 100,
     scoreKey: '化学',
@@ -36,6 +41,7 @@ export const subjectMap = [
   },
   {
     name: '政治',
+    key: 'political',
     type: 6,
     fullScore: 100,
     scoreKey: '政治',
@@ -43,6 +49,7 @@ export const subjectMap = [
   },
   {
     name: '历史',
+    key: 'history',
     type: 7,
     fullScore: 100,
     scoreKey: '历史',
@@ -50,6 +57,7 @@ export const subjectMap = [
   },
   {
     name: '生物',
+    key: 'biological',
     type: 8,
     fullScore: 100,
     scoreKey: '生物',
@@ -57,6 +65,7 @@ export const subjectMap = [
   },
   {
     name: '地理',
+    key: 'geographic',
     type: 9,
     fullScore: 100,
     scoreKey: '地理',

@@ -1,0 +1,317 @@
+<template>
+  <div class="studentScoreTemplate">
+    <div class="btns">
+      <div class="name">
+        <el-checkbox-group
+          v-model="nameCheck"
+          @change="nameCheckChange"
+          class="nameCheck"
+          :min="1"
+        >
+          <el-checkbox
+            v-for="item in defaultTable.data"
+            :key="item['姓名']"
+            :label="item['姓名']"
+            :value="item['姓名']"
+            style="width: 70px"
+          ></el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <div class="right">
+        <el-radio-group v-model="radio" @change="typeChangeHandle">
+          <el-radio-button :label="1">表格</el-radio-button>
+          <el-radio-button :label="2">图表</el-radio-button>
+        </el-radio-group>
+      </div>
+    </div>
+    <base-table
+      ref="baseTable"
+      :table-height="tableHeight"
+      :table="curTable"
+      v-if="radio == 1"
+    ></base-table>
+    <div v-if="radio == 2">
+      <div
+        style="width: auto; height: 250px"
+        id="totalRank"
+        class="echartitem"
+      ></div>
+      <div
+        v-for="item in subjectMap"
+        :key="item.key"
+        style="width: auto; height: 250px"
+        :id="item.key"
+        class="echartitem"
+      ></div>
+    </div>
+  </div>
+</template>
+
+<script>
+import BaseTable from '../base/baseTable'
+import baseMixin from '../base/baseMixin'
+export default {
+  name: 'StudentScoreTemplate',
+  components: {
+    BaseTable
+  },
+  mixins: [baseMixin],
+  props: {
+    selectTablesId: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    tableHeight: {
+      type: Number,
+      default: 450
+    }
+  },
+  watch: {
+    // 'curTable.id': {
+    //   handler() {
+    //     this.typeChangeHandle()
+    //   }
+    // },
+    isShowMenu() {
+      this.echartsResize()
+    }
+  },
+  computed: {
+    tables() {
+      return this.$store.state.tables
+    },
+    subjectMap() {
+      return this.$store.state.subjectMap
+    },
+    isShowMenu() {
+      return this.$store.state.isShowMenu
+    }
+  },
+  data() {
+    return {
+      radio: 2,
+      nameCheck: [],
+      nameList: [],
+      selectTables: [],
+      isTable: true,
+      defaultTable: [],
+      column: [],
+      curTable: {},
+      xAxisData: [],
+      echarts: {
+        totalRank: null
+      }
+    }
+  },
+  created() {
+    this.subjectMap.forEach(item => {
+      this.$set(this.echarts, item.key, null)
+    })
+    this.getTables()
+  },
+  destroyed() {
+    this.destroyedEchart()
+  },
+  methods: {
+    getTables() {
+      let selectTables = []
+      this.selectTablesId.forEach(id => {
+        let res = this.tables.find(v => v.id == id)
+        if (!res) {
+          this.isTable = false
+          this.$message.error(`未找到表${id}，可能已被删除`)
+        } else {
+          selectTables.push(res)
+        }
+      })
+      if (!this.isTable) return false
+      this.selectTables = selectTables
+      this.getInit(selectTables)
+    },
+    getInit(selectTables) {
+      this.defaultTable = selectTables[0]
+      this.nameCheck = [this.defaultTable.data[0]['姓名']]
+      this.getColumn()
+      this.getTable()
+    },
+    getColumn() {
+      this.column = this.subjectMap.reduce((pre, cur) => {
+        pre.push(cur.scoreKey)
+        pre.push(cur.rankKey)
+        return pre
+      }, [])
+      this.column.push(...['总分', '段名', '折总', '折算名'])
+    },
+    getTable(selectTables = this.selectTables) {
+      let list = [],
+        xAxisData = []
+      const className = this.defaultTable.className
+      selectTables.forEach(table => {
+        xAxisData.push(table.name)
+        let nameItem = table.data.find(
+          item => item['姓名'] == this.nameCheck[0]
+        )
+        let _item = {}
+        _item[className] = table.name
+        this.column.forEach(k => {
+          _item[k] = nameItem[k] || null
+        })
+        list.push(_item)
+      })
+      this.curTable = {
+        name: `${this.nameCheck[0]}成绩分析`,
+        id: Date.now(),
+        data: list,
+        column: Object.keys(list[0]),
+        className: className
+      }
+      this.xAxisData = xAxisData
+      this.typeChangeHandle()
+    },
+    nameCheckChange(val) {
+      this.nameCheck = val.splice(1, 1)
+      this.getTable()
+    },
+    typeChangeHandle() {
+      this.radio == 1 ? this.destroyedEchart() : this.echartInit()
+    },
+    destroyedEchart() {
+      for (let k in this.echarts) {
+        this.echarts[k].dispose()
+      }
+    },
+    echartInit() {
+      this.$nextTick(() => {
+        this.echartsTotalRanlInit()
+        this.subjectMap.forEach(item => {
+          this.echartsInitHandle(item)
+        })
+      })
+    },
+    getSeries(k) {
+      const data = this.curTable.data.map(item => item[k])
+      return {
+        type: 'line',
+        label: {
+          show: true
+        },
+        data: data
+      }
+    },
+    echartsTotalRanlInit() {
+      let series = this.getSeries('段名')
+      this.echarts.totalRank = this.$echarts.init(
+        document.getElementById('totalRank')
+      )
+      const options = {
+        title: {
+          text: '段名分析',
+          textStyle: {
+            fontSize: '14px',
+            lineHeight: 30
+          }
+        },
+        grid: {
+          top: 75,
+          bottom: 35
+        },
+        legend: {
+          show: true,
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          }
+        },
+        xAxis: {
+          name: '表名',
+          type: 'category',
+          data: this.xAxisData
+        },
+        yAxis: {
+          name: '名次',
+          type: 'value'
+        },
+        series: series
+      }
+      this.echarts.totalRank.setOption(options)
+    },
+    echartsInitHandle(obj) {
+      let series = this.getSeries(obj.rankKey)
+      this.echarts[`${obj.key}`] = this.$echarts.init(
+        document.getElementById(obj.key)
+      )
+      const options = {
+        title: {
+          text: `${obj.rankKey}分析`,
+          textStyle: {
+            fontSize: '14px',
+            lineHeight: 30
+          }
+        },
+        grid: {
+          top: 75,
+          bottom: 35
+        },
+        legend: {
+          show: true,
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          }
+        },
+        xAxis: {
+          name: '表名',
+          type: 'category',
+          data: this.xAxisData
+        },
+        yAxis: {
+          name: '名次',
+          type: 'value'
+        },
+        series: series
+      }
+      this.echarts[`${obj.key}`].setOption(options)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.studentScoreTemplate {
+  position: relative;
+  .btns {
+    display: flex;
+    padding: 10px;
+    .name {
+      flex: 1;
+    }
+  }
+  .echartitem {
+    border: 1px solid #e5e7eb;
+    box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
+    margin: 5px;
+    border-radius: 5px;
+    background: #fff;
+  }
+  ::v-deep {
+    .el-checkbox__label {
+      color: #fff;
+    }
+    .el-checkbox__input.is-disabled + span.el-checkbox__label {
+      color: #409eff;
+    }
+    .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+      background-color: #409eff;
+      border-color: #409eff;
+    }
+  }
+}
+</style>
