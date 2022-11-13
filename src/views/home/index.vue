@@ -29,6 +29,7 @@
       </div>
       <div class="right">
         <base-template-btn></base-template-btn>
+        <base-setting-btn></base-setting-btn>
       </div>
     </div>
     <div class="content">
@@ -49,7 +50,7 @@
           <student-score-template
             v-else-if="curTable.template == 'studentScoreTemplate'"
             :selectTablesId="curTable.extend.selectTablesId"
-            :table-height="tableHeight - 41"
+            :table-height="tableHeight - 65"
           ></student-score-template>
           <total-sort-template
             v-else-if="curTable.template == 'totalSortTemplate'"
@@ -80,6 +81,7 @@ import StudentScoreTemplate from './template/studentScoreTemplate'
 import BaseMulSheetExportBtn from './base/baseMulSheetExportBtn'
 import BaseMulClassAnalyseBtn from './base/baseMulClassAnalyseBtn'
 import BaseScoreAnalyseBtn from './base/baseScoreAnalyseBtn'
+import BaseSettingBtn from './base/baseSettingBtn'
 import MenuList from './menuList'
 import baseMixin from './base/baseMixin'
 import { mapState } from 'vuex'
@@ -94,6 +96,7 @@ export default {
     BaseMulSheetExportBtn,
     BaseMulClassAnalyseBtn,
     BaseScoreAnalyseBtn,
+    BaseSettingBtn,
     MenuList,
     TotalSortTemplate
   },
@@ -109,7 +112,8 @@ export default {
   computed: {
     ...mapState({
       subjectMap: state => state.subjectMap,
-      tables: state => state.tables
+      tables: state => state.tables,
+      defaultClassName: state => state.defaultClassName
     }),
     curTable() {
       return this.$store.getters.curTable || {}
@@ -117,6 +121,7 @@ export default {
   },
   created() {
     this.$store.commit('getTables')
+    this.$store.commit('getDefaultClassName')
   },
   mounted() {
     this.tableHeight = $('.content')[0].offsetHeight - 55
@@ -158,7 +163,7 @@ export default {
             data: tableData,
             id: Date.now(),
             column: Object.keys(tableData[0]),
-            className: '',
+            className: this.defaultClassName,
             isCompare: false,
             sortObj: this.sortCompare(tableData)
           }

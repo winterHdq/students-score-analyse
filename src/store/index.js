@@ -9,7 +9,8 @@ export default new Vuex.Store({
     tables: [],
     curTableId: null,
     subjectMap,
-    isShowMenu: true
+    isShowMenu: true,
+    defaultClassName: ''
   },
   getters: {
     curTable(state) {
@@ -77,6 +78,13 @@ export default new Vuex.Store({
     setIsShowMenu(state, isShowMenu) {
       state.isShowMenu = isShowMenu
       localStorage.setItem('isShowMenu', isShowMenu)
+    },
+    getDefaultClassName(state) {
+      state.defaultClassName = localStorage.getItem('defaultClassName') || ''
+    },
+    setDefaultClassName(state, value) {
+      state.defaultClassName = value
+      localStorage.setItem('defaultClassName', value)
     }
   },
   actions: {},

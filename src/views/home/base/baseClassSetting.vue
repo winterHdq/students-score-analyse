@@ -7,7 +7,7 @@
       label-position="left"
       :rules="rules"
     >
-      <el-form-item label="班级:" prop="className">
+      <el-form-item :label="label" prop="className">
         <el-select
           v-model="formData.className"
           placeholder="请选择"
@@ -34,6 +34,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    label: {
+      type: String,
+      default: '班级'
     }
   },
   computed: {

@@ -27,7 +27,7 @@
     <base-table
       ref="baseTable"
       :table-height="tableHeight"
-      :table="curTable"
+      :table="table"
       v-if="radio == 1"
     ></base-table>
     <div v-if="radio == 2">
@@ -69,11 +69,11 @@ export default {
     }
   },
   watch: {
-    // 'curTable.id': {
-    //   handler() {
-    //     this.typeChangeHandle()
-    //   }
-    // },
+    curTableId: {
+      handler() {
+        this.getTables()
+      }
+    },
     isShowMenu() {
       this.echartsResize()
     }
@@ -81,6 +81,9 @@ export default {
   computed: {
     tables() {
       return this.$store.state.tables
+    },
+    curTableId() {
+      return this.$store.state.curTableId
     },
     subjectMap() {
       return this.$store.state.subjectMap
@@ -98,7 +101,7 @@ export default {
       isTable: true,
       defaultTable: [],
       column: [],
-      curTable: {},
+      table: {},
       xAxisData: [],
       echarts: {
         totalRank: null
@@ -160,7 +163,7 @@ export default {
         })
         list.push(_item)
       })
-      this.curTable = {
+      this.table = {
         name: `${this.nameCheck[0]}成绩分析`,
         id: Date.now(),
         data: list,
@@ -191,7 +194,7 @@ export default {
       })
     },
     getSeries(k) {
-      const data = this.curTable.data.map(item => item[k])
+      const data = this.table.data.map(item => item[k])
       return {
         type: 'line',
         label: {
@@ -230,11 +233,13 @@ export default {
         xAxis: {
           name: '表名',
           type: 'category',
-          data: this.xAxisData
+          data: this.xAxisData,
+          position: 'top'
         },
         yAxis: {
           name: '名次',
-          type: 'value'
+          type: 'value',
+          inverse: true //反转坐标轴
         },
         series: series
       }
@@ -270,15 +275,24 @@ export default {
         xAxis: {
           name: '表名',
           type: 'category',
+          position: 'top',
           data: this.xAxisData
         },
         yAxis: {
           name: '名次',
-          type: 'value'
+          type: 'value',
+          inverse: true //反转坐标轴
         },
         series: series
       }
       this.echarts[`${obj.key}`].setOption(options)
+    },
+    echartsResize() {
+      setTimeout(() => {
+        for (let k in this.echarts) {
+          this.echarts[k].resize()
+        }
+      }, 500)
     }
   }
 }

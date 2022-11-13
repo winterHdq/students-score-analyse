@@ -334,11 +334,13 @@ export default {
         xAxis: {
           name: '科目',
           type: 'category',
+          position: 'top',
           data: this.xAxisRankData
         },
         yAxis: {
           name: '名次',
           type: 'value',
+          inverse: true, //反转坐标轴
           nameTextStyle: {
             padding: [0, 50, 5, 0]
           }
@@ -411,10 +413,12 @@ export default {
         xAxis: {
           name: '比较',
           type: 'category',
+          position: 'top',
           data: xAxis
         },
         yAxis: {
           type: 'value',
+          inverse: true, //反转坐标轴
           nameTextStyle: {
             padding: [0, 50, 5, 0]
           }
