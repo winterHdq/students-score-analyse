@@ -236,7 +236,12 @@ export default {
             let newItem = {}
             for (let k in item) {
               newItem[k] = item[k]
-              if (this.formData.compareTh.includes(k) && !isNaN(item[k])) {
+              if (
+                item[k] &&
+                tab2[i][k] &&
+                this.formData.compareTh.includes(k) &&
+                !isNaN(item[k])
+              ) {
                 newItem[`${k}进退`] = subtract(item[k], tab2[i][k])
                 // 名次是越小越好
                 if (k.indexOf('名') > 0) {
