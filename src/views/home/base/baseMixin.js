@@ -23,12 +23,14 @@ const baseMixin = {
     },
     // 多表导出
     baseExportMulSheetExcel(table) {
+      let res = true
       const book = XLSX2.utils.book_new()
       table.sheets.forEach(item => {
         const sheet = this.sheetHandle(item)
+        !sheet && (res = false)
         XLSX2.utils.book_append_sheet(book, sheet, item.name)
       })
-      XLSX2.writeFile(book, `${table.name}.xlsx`)
+      res && XLSX2.writeFile(book, `${table.name}.xlsx`)
     },
     // 工作表处理
     sheetHandle(table) {
@@ -65,6 +67,7 @@ const baseMixin = {
         return sheet
       } catch (e) {
         this.$message.error('啊欧，数据出错，导出失败')
+        return false
       }
     },
     textColorHandle(key, item, isCompare, compaseArr) {

@@ -26,6 +26,7 @@
           </span>
           <span class="name">{{ item.name }}</span>
           <i
+            v-if="item.data"
             class="el-icon-download btn"
             @click="exportExcel(item, $event)"
           ></i>

@@ -207,7 +207,6 @@ export default {
     onDelete() {
       this.$store.commit('setCurTableId', null)
       this.$store.commit('setTables', [])
-      localStorage.clear()
     }
   }
 }

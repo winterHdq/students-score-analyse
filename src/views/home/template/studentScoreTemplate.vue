@@ -149,7 +149,7 @@ export default {
         let res = this.tables.find(v => v.id == id)
         if (!res) {
           this.isTable = false
-          this.$message.error(`未找到表${id}，可能已被删除`)
+          this.$message.error(`【${id}】原始表未找到，可能已被删除`)
         } else {
           selectTables.push(res)
         }
