@@ -69,9 +69,10 @@ export default {
       this.$refs.table && this.$refs.table.doLayout()
     },
     numHandle(val, label) {
-      if (label.indexOf('分') > 0 && !isNaN(val)) {
-        return val.toFixed(1)
-      }
+      console.log(label)
+      // if (label.indexOf('分') > 0 && !isNaN(val)) {
+      //   return val.toFixed(1)
+      // }
       return val
     },
     scoreStyle(row, key) {
