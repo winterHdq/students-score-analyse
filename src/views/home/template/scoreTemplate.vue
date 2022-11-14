@@ -7,25 +7,14 @@
           v-model="curTable.className"
         ></base-class-setting>
         <template v-if="curTable.sortObj">
-          <el-button
+          <!-- <el-button
             type="success"
             plain
             @click="onSubjectCompare"
             v-if="!curTable.isSingleCompare"
           >
             单科比较
-          </el-button>
-          <el-button
-            v-for="item in subjectMap"
-            :key="item.type"
-            plain
-            type="primary"
-            size="small"
-            class="btn"
-            @click="openSortDialog(item.name)"
-          >
-            {{ item.name }}分析
-          </el-button>
+          </el-button> -->
         </template>
       </div>
       <div class="right">
@@ -39,6 +28,19 @@
           :isMultiple="true"
         ></base-export-btn>
       </div>
+    </div>
+    <div style="padding: 5px" v-if="radio == 1 && curTable.sortObj">
+      <el-button
+        v-for="item in subjectMap"
+        :key="item.type"
+        plain
+        type="primary"
+        size="small"
+        class="btn"
+        @click="openSortDialog(item.name)"
+      >
+        {{ item.name }}分析
+      </el-button>
     </div>
     <div v-if="radio == 2">
       <el-checkbox-group
@@ -77,7 +79,7 @@
     <base-table
       v-else
       ref="baseTable"
-      :table-height="tableHeight"
+      :table-height="tableHeight - 40"
       :table="curTable"
     ></base-table>
     <sort-dialog
@@ -125,7 +127,8 @@ export default {
       echartsRankName: null,
       echartsCompare: null,
       xAxisData: [],
-      xAxisRankData: []
+      xAxisRankData: [],
+      contentHeight: 300
     }
   },
   computed: {
@@ -150,6 +153,10 @@ export default {
     isShowMenu() {
       this.echartsResize()
     }
+  },
+  mounted() {
+    this.contentHeight =
+      this.tableHeight - this.$el.childNodes[0].offsetHeight + 50
   },
   destroyed() {
     this.destroyedEchart()
@@ -481,8 +488,10 @@ export default {
 .scoreTemplate {
   .btns {
     display: flex;
+    align-items: center;
     padding: 10px;
     .left {
+      flex-wrap: wrap;
       display: flex;
       flex: 1;
     }

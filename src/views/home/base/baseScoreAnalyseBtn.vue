@@ -188,6 +188,7 @@ export default {
           this.$store.commit('setCurTableId', table.id)
         }
         this.visiableDialog = false
+        this.onClose()
       } catch (err) {
         console.log(err)
       }
@@ -210,7 +211,8 @@ export default {
       )
     },
     onClose() {
-      this.formData.tables = []
+      this.formData.selectTablesId = []
+      this.selectTables = []
     }
   }
 }
