@@ -121,7 +121,6 @@ export default {
       nameCheck: [],
       nameList: [],
       selectTables: [],
-      isTable: true,
       defaultTable: [],
       column: [],
       contentHeight: 500,
@@ -144,17 +143,19 @@ export default {
   },
   methods: {
     getTables() {
+      let result = true
       let selectTables = []
-      this.selectTablesId.forEach(id => {
+      this.selectTablesId.find(id => {
         let res = this.tables.find(v => v.id == id)
         if (!res) {
-          this.isTable = false
+          result = false
           this.$message.error(`【${id}】原始表未找到，可能已被删除`)
+          return true
         } else {
           selectTables.push(res)
         }
       })
-      if (!this.isTable) return false
+      if (!result) return false
       this.selectTables = selectTables
       this.getInit(selectTables)
     },
@@ -207,7 +208,7 @@ export default {
     },
     destroyedEchart() {
       for (let k in this.echarts) {
-        this.echarts[k].dispose()
+        this.echarts[k] && this.echarts[k].dispose()
       }
     },
     echartInit() {
