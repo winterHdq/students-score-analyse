@@ -31,25 +31,27 @@
         </div>
       </div>
     </div>
-    <base-table
-      ref="baseTable"
-      :table-height="tableHeight"
-      :table="table"
-      v-if="radio == 1"
-    ></base-table>
-    <div v-if="radio == 2">
-      <div
-        style="width: auto; height: 250px"
-        id="totalRank"
-        class="echartitem"
-      ></div>
-      <div
-        v-for="item in subjectMap"
-        :key="item.key"
-        style="width: auto; height: 250px"
-        :id="item.key"
-        class="echartitem"
-      ></div>
+    <div class="content" :style="{ height: `${contentHeight}px` }">
+      <base-table
+        ref="baseTable"
+        :table-height="contentHeight"
+        :table="table"
+        v-if="radio == 1"
+      ></base-table>
+      <div v-if="radio == 2">
+        <div
+          style="width: auto; height: 250px"
+          id="totalRank"
+          class="echartitem"
+        ></div>
+        <div
+          v-for="item in subjectMap"
+          :key="item.key"
+          style="width: auto; height: 250px"
+          :id="item.key"
+          class="echartitem"
+        ></div>
+      </div>
     </div>
   </div>
 </template>
@@ -104,6 +106,10 @@ export default {
       return this.$store.getters.curTable || {}
     }
   },
+  mounted() {
+    this.contentHeight =
+      this.tableHeight - this.$el.childNodes[0].offsetHeight + 55
+  },
   data() {
     return {
       radio: 2,
@@ -113,6 +119,7 @@ export default {
       isTable: true,
       defaultTable: [],
       column: [],
+      contentHeight: 500,
       table: {},
       xAxisData: [],
       echarts: {
@@ -324,6 +331,9 @@ export default {
         margin-top: 10px;
       }
     }
+  }
+  .content {
+    overflow: auto;
   }
   .echartitem {
     border: 1px solid #e5e7eb;

@@ -7,7 +7,7 @@
       class="btn"
       v-if="isMultiple"
     >
-      分表导出
+      分科导出
     </el-button>
     <el-dialog
       top="20vh"
@@ -50,7 +50,7 @@
     </el-dialog>
     <el-dialog
       top="20vh"
-      title="分表导出"
+      title="分科导出"
       :visible.sync="dialogVisibleMul"
       :append-to-body="true"
       :destroy-on-close="true"
@@ -196,7 +196,7 @@ export default {
     onDelectSheet(index) {
       this.formDataMul.tables.splice(index, 1)
     },
-    // 分表导出
+    // 分科导出
     exportMultipleSheetsExcelHandle() {
       this.dialogVisibleMul = true
       this.formDataMul.tables = []

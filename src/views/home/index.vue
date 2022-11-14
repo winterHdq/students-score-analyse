@@ -50,7 +50,7 @@
           <student-score-template
             v-else-if="curTable.template == 'studentScoreTemplate'"
             :selectTablesId="curTable.extend.selectTablesId"
-            :table-height="tableHeight - 65"
+            :table-height="tableHeight"
           ></student-score-template>
           <total-sort-template
             v-else-if="curTable.template == 'totalSortTemplate'"

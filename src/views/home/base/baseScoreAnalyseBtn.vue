@@ -22,7 +22,6 @@
             placeholder="请选择"
             value-key="id"
             clearable
-            :multiple-limit="14"
             style="width: 300px"
           >
             <el-option
@@ -103,7 +102,7 @@ export default {
       tableDialog: false,
       visiableDialog: false,
       formData: {
-        name: '年段分析',
+        name: '成绩分析',
         tables: []
       },
       rules: {
