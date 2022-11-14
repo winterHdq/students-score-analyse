@@ -51,11 +51,11 @@
           :id="item.key"
           class="echartitem"
         />
-        <div
+        <!-- <div
           style="width: auto; height: 250px"
           id="summary"
           class="echartitem"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -126,9 +126,10 @@ export default {
       contentHeight: 500,
       table: {},
       xAxisData: [],
+      zsmSeries: {},
       echarts: {
-        totalRank: null,
-        summary: null
+        totalRank: null
+        // summary: null
       }
     }
   },
@@ -197,7 +198,12 @@ export default {
         className: className
       }
       this.xAxisData = xAxisData
+      this.getZsmData()
       this.typeChangeHandle()
+    },
+    // 获取折算名数据
+    getZsmData() {
+      this.zsmSeries = this.getSeries('折算名')
     },
     nameCheckChange(val) {
       this.nameCheck = val.splice(1, 1)
@@ -213,7 +219,7 @@ export default {
     },
     echartInit() {
       this.$nextTick(() => {
-        this.echartsSummaryInit()
+        // this.echartsSummaryInit()
         this.echartsInitHandle({
           name: '段名',
           key: 'totalRank',
@@ -281,7 +287,8 @@ export default {
       this.echarts.summary.setOption(options)
     },
     echartsInitHandle(obj) {
-      let series = this.getSeries(obj.rankKey)
+      let series = [this.getSeries(obj.rankKey)]
+      series.push(this.zsmSeries)
       this.echarts[`${obj.key}`] = this.$echarts.init(
         document.getElementById(obj.key)
       )
@@ -299,7 +306,10 @@ export default {
         },
         legend: {
           show: true,
-          left: 'center'
+          left: 'center',
+          selected: {
+            折算名: false
+          }
         },
         tooltip: {
           trigger: 'axis',

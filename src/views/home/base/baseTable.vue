@@ -24,7 +24,9 @@
         align="center"
         #default="{ row }"
       >
-        <span :style="scoreStyle(row, item)">{{ row[item] }}</span>
+        <span :style="scoreStyle(row, item)">
+          {{ numHandle(row[item], item) }}
+        </span>
       </el-table-column>
     </el-table>
   </div>
@@ -65,6 +67,12 @@ export default {
   methods: {
     doLayout() {
       this.$refs.table && this.$refs.table.doLayout()
+    },
+    numHandle(val, label) {
+      if (label.indexOf('分') > 0 && !isNaN(val)) {
+        return val.toFixed(1)
+      }
+      return val
     },
     scoreStyle(row, key) {
       let { subjectObj, subjectRankList } = this

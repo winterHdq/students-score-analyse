@@ -120,12 +120,12 @@ export default {
     }
   },
   created() {
-    const openTime = localStorage.getItem('openTime')
-    if (!openTime || Date.now() - parseInt(openTime) > 3600 * 24 * 30) {
-      this.$message.error('超过一月未使用，数据已清空，请重新上传')
-      this.$store.commit('setTables', [])
-    }
-    localStorage.setItem('openTime', Date.now())
+    // const openTime = localStorage.getItem('openTime')
+    // if (!openTime || Date.now() - parseInt(openTime) > 3600 * 24 * 30) {
+    //   this.$message.error('超过一月未使用，数据已清空，请重新上传')
+    //   this.$store.commit('setTables', [])
+    // }
+    // localStorage.setItem('openTime', Date.now())
     this.$store.commit('getTables')
     this.$store.commit('getDefaultClassName')
   },

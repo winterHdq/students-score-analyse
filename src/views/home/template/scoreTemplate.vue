@@ -8,6 +8,14 @@
         ></base-class-setting>
         <template v-if="curTable.sortObj">
           <el-button
+            type="success"
+            plain
+            @click="onSubjectCompare"
+            v-if="!curTable.isSingleCompare"
+          >
+            单科比较
+          </el-button>
+          <el-button
             v-for="item in subjectMap"
             :key="item.type"
             plain
@@ -25,6 +33,11 @@
           <el-radio-button :label="1">表格</el-radio-button>
           <el-radio-button :label="2">图表</el-radio-button>
         </el-radio-group>
+        <base-export-btn
+          :table="curTable"
+          :isExportBtn="false"
+          :isMultiple="true"
+        ></base-export-btn>
       </div>
     </div>
     <div v-if="radio == 2">
@@ -81,13 +94,15 @@ import BaseClassSetting from '../base/baseClassSetting'
 import BaseTable from '../base/baseTable'
 import SortDialog from '../sortDialog'
 import { mapState, mapGetters } from 'vuex'
+import BaseExportBtn from '../base/baseExportBtn'
 // import baseMixin from '../base/baseMixin'
 export default {
   name: 'ScoreTemplate',
   components: {
     BaseClassSetting,
     BaseTable,
-    SortDialog
+    SortDialog,
+    BaseExportBtn
   },
   props: {
     tableHeight: {
@@ -115,6 +130,7 @@ export default {
   },
   computed: {
     ...mapState({
+      tables: state => state.tables,
       subjectMap: state => state.subjectMap,
       isShowMenu: state => state.isShowMenu
     }),
@@ -426,6 +442,36 @@ export default {
         series: series
       }
       this.echartsCompare.setOption(options)
+    },
+    onSubjectCompare() {
+      let tableData = []
+      this.curTable.data.forEach(item => {
+        let _item = {}
+        let zsmData = item['折算名']
+        for (let k in item) {
+          _item[k] = item[k]
+          if (zsmData && this.subjectRankList.includes(k)) {
+            _item[`${k}差值`] = zsmData - item[k]
+          }
+        }
+        tableData.push(_item)
+      })
+      let _index = null
+      this.tables.find((item, index) => {
+        if (item.id == this.curTable.id) {
+          _index = index
+          return true
+        }
+      })
+      this.tables[_index] = {
+        ...this.tables[_index],
+        isSingleCompare: true,
+        data: tableData,
+        column: Object.keys(tableData[0]),
+        id: Date.now()
+      }
+      this.$store.commit('setTables', this.tables)
+      this.$store.commit('setCurTableId', this.tables[_index].id)
     }
   }
 }

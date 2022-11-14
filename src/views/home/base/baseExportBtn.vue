@@ -1,6 +1,8 @@
 <template>
   <div class="baseExportBtn">
-    <el-button type="primary" @click="exportExcelHandle">导出</el-button>
+    <el-button type="primary" @click="exportExcelHandle" v-if="isExportBtn">
+      导出
+    </el-button>
     <el-button
       type="success"
       @click="exportMultipleSheetsExcelHandle"
@@ -132,6 +134,10 @@ export default {
         return {}
       }
     },
+    isExportBtn: {
+      type: Boolean,
+      default: true
+    },
     isMultiple: {
       type: Boolean,
       default: false
@@ -203,14 +209,16 @@ export default {
       this.thList.forEach(k => {
         if (this.subjectList.includes(k)) {
           let sheet = {
-            name: `${k}进退分析`,
+            name: `${k}${this.table.isCompare ? '进退分析' : ''}`,
             column: ['姓名', '班级', k]
           }
           this.thList.includes(this.subjectObj[k].rankKey) &&
             sheet.column.push(this.subjectObj[k].rankKey)
           this.thList.includes(`${this.subjectObj[k].rankKey}进退`) &&
             sheet.column.push(`${this.subjectObj[k].rankKey}进退`)
-          ;['总分', '段名', '折总', '折算名'].forEach(key => {
+          this.thList.includes(`${this.subjectObj[k].rankKey}差值`) &&
+            sheet.column.push(`${this.subjectObj[k].rankKey}差值`)
+          ;['折总', '折算名'].forEach(key => {
             if (this.thList.includes(key)) {
               sheet.column.push(key)
             }
