@@ -50,7 +50,12 @@
           style="width: auto; height: 250px"
           :id="item.key"
           class="echartitem"
-        ></div>
+        />
+        <div
+          style="width: auto; height: 250px"
+          id="summary"
+          class="echartitem"
+        />
       </div>
     </div>
   </div>
@@ -123,7 +128,8 @@ export default {
       table: {},
       xAxisData: [],
       echarts: {
-        totalRank: null
+        totalRank: null,
+        summary: null
       }
     }
   },
@@ -206,7 +212,12 @@ export default {
     },
     echartInit() {
       this.$nextTick(() => {
-        this.echartsTotalRanlInit()
+        this.echartsSummaryInit()
+        this.echartsInitHandle({
+          name: '段名',
+          key: 'totalRank',
+          rankKey: '段名'
+        })
         this.subjectMap.forEach(item => {
           this.echartsInitHandle(item)
         })
@@ -215,6 +226,7 @@ export default {
     getSeries(k) {
       const data = this.table.data.map(item => item[k])
       return {
+        name: k,
         type: 'line',
         label: {
           show: true
@@ -222,14 +234,17 @@ export default {
         data: data
       }
     },
-    echartsTotalRanlInit() {
-      let series = this.getSeries('段名')
-      this.echarts.totalRank = this.$echarts.init(
-        document.getElementById('totalRank')
+    echartsSummaryInit() {
+      let series = [this.getSeries('段名')]
+      this.subjectMap.forEach(item => {
+        series.push(this.getSeries(item.rankKey))
+      })
+      this.echarts.summary = this.$echarts.init(
+        document.getElementById('summary')
       )
       const options = {
         title: {
-          text: '段名分析',
+          text: '汇总分析',
           textStyle: {
             fontSize: '14px',
             lineHeight: 30
@@ -262,7 +277,7 @@ export default {
         },
         series: series
       }
-      this.echarts.totalRank.setOption(options)
+      this.echarts.summary.setOption(options)
     },
     echartsInitHandle(obj) {
       let series = this.getSeries(obj.rankKey)
