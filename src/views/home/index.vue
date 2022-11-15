@@ -40,11 +40,7 @@
         <div v-if="curTable.column">
           <sort-template
             v-if="curTable.template == 'sortTemplate'"
-            :subjects="curTable.extend.subjects"
-            :curTable="curTable"
-            :sortObj="curTable.extend.sortObj"
-            :extendData="curTable.extend.extendData"
-            :scoreTable="curTable.extend.scoreTable"
+            :tableId="curTable.extend.tableId"
             :table-height="tableHeight"
           ></sort-template>
           <student-score-template

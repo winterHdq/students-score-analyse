@@ -7,14 +7,23 @@
           v-model="curTable.className"
         ></base-class-setting>
         <template v-if="curTable.sortObj">
-          <!-- <el-button
+          <el-button
             type="success"
             plain
             @click="onSubjectCompare"
             v-if="!curTable.isSingleCompare"
           >
             单科比较
-          </el-button> -->
+          </el-button>
+          <el-button
+            plain
+            type="primary"
+            size="small"
+            class="btn"
+            @click="openSortDialog"
+          >
+            科目分析
+          </el-button>
         </template>
       </div>
       <div class="right">
@@ -84,7 +93,6 @@
     ></base-table>
     <sort-dialog
       v-if="sortCompareDialog.show"
-      :subjectName="sortCompareDialog.name"
       :curTable="curTable"
       @onClose="sortCompareDialog.show = false"
     ></sort-dialog>
@@ -454,7 +462,7 @@ export default {
       let tableData = []
       this.curTable.data.forEach(item => {
         let _item = {}
-        let zsmData = item['折算名']
+        let zsmData = item['折算名'] || item['段名']
         for (let k in item) {
           _item[k] = item[k]
           if (zsmData && this.subjectRankList.includes(k)) {
