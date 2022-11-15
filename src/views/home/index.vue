@@ -126,7 +126,7 @@ export default {
     this.$store.commit('getDefaultClassName')
   },
   mounted() {
-    this.tableHeight = $('.content')[0].offsetHeight - 55
+    this.tableHeight = $('.content')[0].offsetHeight - 56
     this.$store.commit('getCurTableId')
   },
   methods: {
@@ -253,6 +253,12 @@ $border-color: #409eff;
       width: 100%;
       height: 100%;
       overflow: auto;
+    }
+  }
+  @media print {
+    .btns,
+    .left {
+      display: none;
     }
   }
 }

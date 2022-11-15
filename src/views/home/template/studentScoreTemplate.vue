@@ -28,6 +28,9 @@
             btnName="修改"
             :table="curTable"
           ></base-score-analyse-btn>
+          <base-echart-download-btn
+            :name="nameCheck"
+          ></base-echart-download-btn>
         </div>
       </div>
     </div>
@@ -39,18 +42,27 @@
         v-if="radio == 1"
       ></base-table>
       <div v-if="radio == 2">
-        <div
-          style="width: auto; height: 250px"
-          id="totalRank"
-          class="echartitem"
-        ></div>
-        <div
-          v-for="item in subjectMap"
-          :key="item.key"
-          style="width: auto; height: 250px"
-          :id="item.key"
-          class="echartitem"
-        />
+        <div class="echarts" id="echarts">
+          <div
+            style="width: 100%; height: 250px"
+            id="reducedRank"
+            class="echartitem"
+          ></div>
+          <div
+            style="width: 49%; height: 250px"
+            id="totalRank"
+            class="echartitem"
+          ></div>
+          <template v-for="item in subjectMap">
+            <div
+              v-show="isShowEhart[item.key]"
+              :key="item.key"
+              style="width: 49%; height: 250px"
+              :id="item.key"
+              class="echartitem"
+            />
+          </template>
+        </div>
         <!-- <div
           style="width: auto; height: 250px"
           id="summary"
@@ -65,11 +77,13 @@
 import BaseTable from '../base/baseTable'
 import baseMixin from '../base/baseMixin'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
+import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
 export default {
   name: 'StudentScoreTemplate',
   components: {
     BaseTable,
-    BaseScoreAnalyseBtn
+    BaseScoreAnalyseBtn,
+    BaseEchartDownloadBtn
   },
   mixins: [baseMixin],
   props: {
@@ -128,14 +142,17 @@ export default {
       xAxisData: [],
       zsmSeries: {},
       echarts: {
+        reducedRank: null,
         totalRank: null
         // summary: null
-      }
+      },
+      isShowEhart: {}
     }
   },
   created() {
     this.subjectMap.forEach(item => {
       this.$set(this.echarts, item.key, null)
+      this.$set(this.isShowEhart, item.key, true)
     })
     this.getTables()
   },
@@ -220,6 +237,7 @@ export default {
     echartInit() {
       this.$nextTick(() => {
         // this.echartsSummaryInit()
+        this.echartsReducedRankInit()
         this.echartsInitHandle({
           name: '段名',
           key: 'totalRank',
@@ -240,6 +258,47 @@ export default {
         },
         data: data
       }
+    },
+    echartsReducedRankInit() {
+      this.echarts.reducedRank = this.$echarts.init(
+        document.getElementById('reducedRank')
+      )
+      const options = {
+        title: {
+          text: '折算名分析',
+          textStyle: {
+            fontSize: '14px',
+            lineHeight: 30
+          }
+        },
+        grid: {
+          top: 75,
+          bottom: 35
+        },
+        legend: {
+          show: true,
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          }
+        },
+        xAxis: {
+          name: '表名',
+          type: 'category',
+          data: this.xAxisData,
+          position: 'top'
+        },
+        yAxis: {
+          name: '名次',
+          type: 'value',
+          inverse: true //反转坐标轴
+        },
+        series: this.zsmSeries
+      }
+      this.echarts.reducedRank.setOption(options)
     },
     echartsSummaryInit() {
       let series = [this.getSeries('段名')]
@@ -367,6 +426,15 @@ export default {
     margin: 5px;
     border-radius: 5px;
     background: #fff;
+  }
+  .echarts {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  @media print {
+    .btns {
+      display: none;
+    }
   }
   ::v-deep {
     .el-checkbox__label {

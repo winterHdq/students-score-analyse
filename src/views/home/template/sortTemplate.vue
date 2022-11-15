@@ -10,7 +10,7 @@
     </el-tabs>
     <div class="btns">
       <el-button type="primary" class="btn" @click="onExport">导出</el-button>
-      <el-button type="danger" @click="onAddTable" v-if="isDialog">
+      <el-button type="danger" class="btn" @click="onAddTable" v-if="isDialog">
         添加到列表
       </el-button>
       <el-radio-group v-model="radio" @change="typeChangeHandle">
@@ -18,8 +18,13 @@
         <el-radio-button :label="2">图表</el-radio-button>
       </el-radio-group>
     </div>
-    <div v-show="radio == 1">
-      <el-table :data="sortList" border :height="tableHeight" v-if="sortObj">
+    <div v-if="sortObj">
+      <el-table
+        :data="sortList"
+        border
+        :height="tableHeight"
+        v-show="radio == 1"
+      >
         <el-table-column
           :label="subjectName"
           prop="label"
@@ -33,39 +38,39 @@
           </span>
         </el-table-column>
       </el-table>
-      <div v-else>未找到{{ subjectName }}数据</div>
-    </div>
-    <div v-if="radio == 2">
-      <div
-        style="width: auto; height: 270px"
-        id="sortScoreName"
-        class="echartitem"
-      ></div>
-      <div style="display: flex">
+      <div v-if="radio == 2">
         <div
-          style="width: 50%; height: 250px"
-          id="scoreRegion"
+          style="width: auto; height: 270px"
+          id="sortScoreName"
           class="echartitem"
         ></div>
-        <div
-          style="width: 50%; height: 250px"
-          id="rangRegion"
-          class="echartitem"
-        ></div>
+        <div style="display: flex">
+          <div
+            style="width: 50%; height: 250px"
+            id="scoreRegion"
+            class="echartitem"
+          ></div>
+          <div
+            style="width: 50%; height: 250px"
+            id="rangRegion"
+            class="echartitem"
+          ></div>
+        </div>
+        <div style="display: flex">
+          <div
+            style="width: 50%; height: 200px"
+            id="pass"
+            class="echartitem"
+          ></div>
+          <div
+            style="width: 50%; height: 200px"
+            id="excellent"
+            class="echartitem"
+          ></div>
+        </div>
       </div>
-      <div style="display: flex">
-        <div
-          style="width: 50%; height: 200px"
-          id="pass"
-          class="echartitem"
-        ></div>
-        <div
-          style="width: 50%; height: 200px"
-          id="excellent"
-          class="echartitem"
-        ></div>
-      </div>
     </div>
+    <div v-else class="tip">未找到【{{ subjectName }}】数据</div>
   </div>
 </template>
 
@@ -100,6 +105,11 @@ export default {
       isShowMenu: state => state.isShowMenu
     }),
     ...mapGetters(['subjectList', 'subjectObj'])
+  },
+  watch: {
+    isShowMenu() {
+      this.echartsResize()
+    }
   },
   data() {
     return {
@@ -492,7 +502,7 @@ export default {
       const table = {
         id: Date.now(),
         column: [],
-        name: `${this.subjectName}-${this.isTotal ? '年段' : '科目'}分析表`,
+        name: `${this.baseTable.name}-${this.isTotal ? '年段' : '科目'}分析表`,
         className: this.isTotal ? '年段' : this.baseTable.className,
         isCompare: false,
         template: 'sortTemplate',
@@ -506,7 +516,6 @@ export default {
     },
     tableHandle() {
       const data = []
-      const classNameList = this.classTables.map(item => item.className)
       this.$el
         .getElementsByTagName('table')[1]
         .childNodes[1].childNodes.forEach(item => {
@@ -515,16 +524,15 @@ export default {
           let textContent = item.childNodes[0].textContent
           if (textContent == this.subjectName) return
           _item[this.subjectName] = textContent
-          classNameList.forEach((c, index) => {
-            _item[c] = item.childNodes[index + 1].textContent.trim()
-          })
+          _item[this.baseTable.className] =
+            item.childNodes[1].textContent.trim()
           data.push(_item)
         })
       const table = {
         id: Date.now(),
         column: Object.keys(data[0]),
         data: data,
-        name: `${this.subjectName}-科目分析表`,
+        name: `${this.baseTable.name}-${this.subjectName}-科目分析表`,
         className: this.isTotal ? '年段' : this.baseTable.className,
         isCompare: false,
         template: 'sortTemplate'
@@ -817,15 +825,9 @@ export default {
     },
     echartsResize() {
       setTimeout(() => {
-        ;[
-          'echartsScoreName',
-          'echartsScoreRegion',
-          'echartsRangRegion',
-          'echartsPass',
-          'echartsexcellent'
-        ].forEach(key => {
-          this[key] && this[key].resize()
-        })
+        for (let k in this.echarts) {
+          this.echarts[k] && this.echarts[k].resize()
+        }
       }, 500)
     }
   }
@@ -840,8 +842,14 @@ export default {
     top: 0;
     right: 5px;
     .btn {
-      margin-right: 10px;
+      margin-right: 5px;
     }
+  }
+  .tip {
+    text-align: center;
+    line-height: 60px;
+    color: red;
+    font-size: 16px;
   }
   .echartitem {
     border: 1px solid #e5e7eb;
@@ -852,7 +860,7 @@ export default {
   }
   ::v-deep {
     .el-tabs__header {
-      margin: 6px 10px -1px;
+      margin: 13px 10px -1px;
     }
     .el-tabs__item {
       color: #409eff;

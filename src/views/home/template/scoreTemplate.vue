@@ -7,14 +7,14 @@
           v-model="curTable.className"
         ></base-class-setting>
         <template v-if="curTable.sortObj">
-          <el-button
+          <!-- <el-button
             type="success"
             plain
             @click="onSubjectCompare"
             v-if="!curTable.isSingleCompare"
           >
-            单科比较
-          </el-button>
+            名次比较
+          </el-button> -->
           <el-button
             plain
             type="primary"
@@ -38,7 +38,7 @@
         ></base-export-btn>
       </div>
     </div>
-    <div style="padding: 5px" v-if="radio == 1 && curTable.sortObj">
+    <!-- <div style="padding: 5px" v-if="radio == 1 && curTable.sortObj">
       <el-button
         v-for="item in subjectMap"
         :key="item.type"
@@ -50,7 +50,7 @@
       >
         {{ item.name }}分析
       </el-button>
-    </div>
+    </div> -->
     <div v-if="radio == 2">
       <el-checkbox-group
         v-model="nameCheck"
@@ -88,7 +88,7 @@
     <base-table
       v-else
       ref="baseTable"
-      :table-height="tableHeight - 40"
+      :table-height="tableHeight"
       :table="curTable"
     ></base-table>
     <sort-dialog
