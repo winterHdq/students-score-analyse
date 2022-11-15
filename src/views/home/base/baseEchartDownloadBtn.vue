@@ -82,7 +82,7 @@ export default {
       window.print()
     },
     onDownload() {
-      this.$parent.isShowEhart.chinese = false
+      // this.$parent.isShowEhart.chinese = false
       this.$nextTick(() => {
         // 图表转换成canvas
         html2canvas(document.getElementById('echarts')).then(canvas => {
