@@ -49,7 +49,7 @@
             class="echartitem"
           ></div>
           <div
-            style="width: 49%; height: 250px"
+            style="width: 48%; height: 250px"
             id="totalRank"
             class="echartitem"
           ></div>
@@ -57,7 +57,7 @@
             <div
               v-show="isShowEhart[item.key]"
               :key="item.key"
-              style="width: 49%; height: 250px"
+              style="width: 48%; height: 250px"
               :id="item.key"
               class="echartitem"
             />
@@ -430,6 +430,7 @@ export default {
   .echarts {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
   }
   @media print {
     .btns {
