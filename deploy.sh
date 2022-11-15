@@ -14,7 +14,7 @@ cd dist
 
 # git init
 git add -A
-git commit -m 'deploy'
+git commit -m 'build: deploy'
 git push
 
 # 部署到 https://<USERNAME>.github.io
