@@ -10,7 +10,11 @@
       设置
     </el-button>
     <!-- <el-button type="danger" @click="onPrint">打印</el-button> -->
-    <el-dialog title="下载设置" :visible.sync="downloadVisiable">
+    <el-dialog
+      title="下载设置"
+      :visible.sync="downloadVisiable"
+      @open="openHandle"
+    >
       <el-form :model="formData">
         <el-form-item label="打印列名">
           <el-checkbox
@@ -117,23 +121,24 @@ export default {
   },
   created() {
     this.options.push(...this.subjectMap)
-    this.$store.commit('getDownloadSetting')
-    if (this.downloadSetting) {
-      this.formData.checkedColumn = [
-        this.name,
-        ...this.downloadSetting.checkedColumn
-      ]
-      this.formData.checkedSubject = this.downloadSetting.checkedSubject
-    } else {
-      this.table.column.forEach(k => {
-        if (!this.subjectList.includes(k)) {
-          this.formData.checkedColumn.push(k)
-        }
-      })
-      this.handleCheckAllChange(true)
-    }
   },
   methods: {
+    openHandle() {
+      if (this.downloadSetting) {
+        this.formData.checkedColumn = [
+          this.name,
+          ...this.downloadSetting.checkedColumn
+        ]
+        this.formData.checkedSubject = this.downloadSetting.checkedSubject
+      } else {
+        this.table.column.forEach(k => {
+          if (!this.subjectList.includes(k)) {
+            this.formData.checkedColumn.push(k)
+          }
+        })
+        this.handleCheckAllChange(true)
+      }
+    },
     handleCheckAllChange(val) {
       this.formData.checkedSubject = val
         ? this.options.map(item => item.key)
