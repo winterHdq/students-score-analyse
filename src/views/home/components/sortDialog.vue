@@ -17,8 +17,8 @@
   </el-dialog>
 </template>
 <script>
-import baseMixin from './base/baseMixin'
-import SortTemplate from './template/sortTemplate'
+import baseMixin from '../base/baseMixin'
+import SortTemplate from '../template/sortTemplate'
 export default {
   name: 'SortDialog',
   components: { SortTemplate },

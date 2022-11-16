@@ -75,7 +75,7 @@
 
 <script>
 import { classMap } from '@/constant/subject'
-import baseMixin from './base/baseMixin'
+import baseMixin from '../base/baseMixin'
 export default {
   name: 'MenuList',
   mixins: [baseMixin],

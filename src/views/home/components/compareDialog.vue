@@ -119,9 +119,9 @@
   </el-dialog>
 </template>
 <script>
-import BaseTable from './base/baseTable'
-import BaseExportBtn from './base/baseExportBtn'
-import baseMixin from './base/baseMixin'
+import BaseTable from '../base/baseTable'
+import BaseExportBtn from '../base/baseExportBtn'
+import baseMixin from '../base/baseMixin'
 import { isRepeat, subtract } from '@/common/utils'
 export default {
   name: 'CompareDialog',

@@ -37,7 +37,7 @@ const baseMixin = {
       try {
         const sheet = XLSX2.utils.json_to_sheet(table.data)
         const headerLen = table.column.length
-        const compaseArr = table.column.filter(item => item.indexOf('进退') > 0)
+        const compaseArr = table.column.filter(item => /进退|差值/.test(item))
         Object.keys(sheet).forEach((key, index) => {
           if (key.indexOf('!') < 0) {
             sheet[key].s = {
@@ -59,7 +59,7 @@ const baseMixin = {
             this.textColorHandle(
               table.column[index % headerLen],
               sheet[key],
-              table.isCompare,
+              compaseArr.length,
               compaseArr
             )
           }

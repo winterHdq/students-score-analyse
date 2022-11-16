@@ -68,7 +68,7 @@
 <script>
 import $ from 'jquery'
 import * as XLSX from 'xlsx/xlsx.mjs'
-import CompaseDialog from './compareDialog'
+import CompaseDialog from './components/compareDialog'
 import BaseTemplateBtn from './base/baseTemplateBtn'
 import SortTemplate from './template/sortTemplate'
 import ScoreTemplate from './template/scoreTemplate'
@@ -78,7 +78,7 @@ import BaseMulSheetExportBtn from './base/baseMulSheetExportBtn'
 import BaseMulClassAnalyseBtn from './base/baseMulClassAnalyseBtn'
 import BaseScoreAnalyseBtn from './base/baseScoreAnalyseBtn'
 import BaseSettingBtn from './base/baseSettingBtn'
-import MenuList from './menuList'
+import MenuList from './components/menuList'
 import baseMixin from './base/baseMixin'
 import { mapState } from 'vuex'
 export default {

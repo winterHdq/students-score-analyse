@@ -7,14 +7,13 @@
           v-model="curTable.className"
         ></base-class-setting>
         <template v-if="curTable.sortObj">
-          <!-- <el-button
+          <el-button
             type="success"
             plain
-            @click="onSubjectCompare"
-            v-if="!curTable.isSingleCompare"
+            @click="rankCompareDialog.show = true"
           >
             名次比较
-          </el-button> -->
+          </el-button>
           <el-button
             plain
             type="primary"
@@ -38,20 +37,7 @@
         ></base-export-btn>
       </div>
     </div>
-    <!-- <div style="padding: 5px" v-if="radio == 1 && curTable.sortObj">
-      <el-button
-        v-for="item in subjectMap"
-        :key="item.type"
-        plain
-        type="primary"
-        size="small"
-        class="btn"
-        @click="openSortDialog(item.name)"
-      >
-        {{ item.name }}分析
-      </el-button>
-    </div> -->
-    <div v-if="radio == 2">
+    <div v-if="radio == 2" class="echarts">
       <el-checkbox-group
         v-model="nameCheck"
         @change="nameCheckChange"
@@ -96,15 +82,21 @@
       :curTable="curTable"
       @onClose="sortCompareDialog.show = false"
     ></sort-dialog>
+    <rank-compare-dialog
+      v-if="rankCompareDialog.show"
+      :tableId="curTable.id"
+      @onClose="rankCompareDialog.show = false"
+    ></rank-compare-dialog>
   </div>
 </template>
 
 <script>
 import BaseClassSetting from '../base/baseClassSetting'
 import BaseTable from '../base/baseTable'
-import SortDialog from '../sortDialog'
+import SortDialog from '../components/sortDialog'
 import { mapState, mapGetters } from 'vuex'
 import BaseExportBtn from '../base/baseExportBtn'
+import RankCompareDialog from '../components/rankCompareDialog'
 // import baseMixin from '../base/baseMixin'
 export default {
   name: 'ScoreTemplate',
@@ -112,7 +104,8 @@ export default {
     BaseClassSetting,
     BaseTable,
     SortDialog,
-    BaseExportBtn
+    BaseExportBtn,
+    RankCompareDialog
   },
   props: {
     tableHeight: {
@@ -123,8 +116,10 @@ export default {
   data() {
     return {
       sortCompareDialog: {
-        show: false,
-        name: ''
+        show: false
+      },
+      rankCompareDialog: {
+        show: false
       },
       nameList: [],
       nameListObj: {},
@@ -203,10 +198,9 @@ export default {
         this.preNameListObj[item['姓名']] = item
       })
     },
-    async openSortDialog(name) {
+    async openSortDialog() {
       try {
         await this.$refs.setting.validate()
-        this.sortCompareDialog.name = name
         this.sortCompareDialog.show = true
       } catch (err) {
         console.log(err)
@@ -284,6 +278,31 @@ export default {
         this.xAxisRankData.forEach(key => {
           rankItem.data.push(nameObj[key])
         })
+        if (nameObj['折算名']) {
+          rankItem.markLine = {
+            data: [
+              {
+                name: '折算名',
+                yAxis: nameObj['折算名']
+              }
+            ]
+          }
+        } else if (nameObj['段名']) {
+          rankItem.markLine = {
+            data: [
+              {
+                name: '段名',
+                yAxis: nameObj['段名']
+              }
+            ]
+          }
+        }
+        if (rankItem.markLine) {
+          rankItem.markLine.label = {
+            show: true,
+            formatter: '{b}:{c}'
+          }
+        }
         series.score.push(item)
         series.rank.push(rankItem)
       })
@@ -442,12 +461,13 @@ export default {
           }
         },
         xAxis: {
-          name: '比较',
+          name: '科目',
           type: 'category',
           position: 'top',
           data: xAxis
         },
         yAxis: {
+          name: '名次',
           type: 'value',
           inverse: true, //反转坐标轴
           nameTextStyle: {
@@ -457,36 +477,6 @@ export default {
         series: series
       }
       this.echartsCompare.setOption(options)
-    },
-    onSubjectCompare() {
-      let tableData = []
-      this.curTable.data.forEach(item => {
-        let _item = {}
-        let zsmData = item['折算名'] || item['段名']
-        for (let k in item) {
-          _item[k] = item[k]
-          if (zsmData && this.subjectRankList.includes(k)) {
-            _item[`${k}差值`] = zsmData - item[k]
-          }
-        }
-        tableData.push(_item)
-      })
-      let _index = null
-      this.tables.find((item, index) => {
-        if (item.id == this.curTable.id) {
-          _index = index
-          return true
-        }
-      })
-      this.tables[_index] = {
-        ...this.tables[_index],
-        isSingleCompare: true,
-        data: tableData,
-        column: Object.keys(tableData[0]),
-        id: Date.now()
-      }
-      this.$store.commit('setTables', this.tables)
-      this.$store.commit('setCurTableId', this.tables[_index].id)
     }
   }
 }
@@ -510,23 +500,25 @@ export default {
   .nameCheck {
     padding: 10px 20px;
   }
-  .echartitem {
-    border: 1px solid #e5e7eb;
-    box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
-    margin: 5px;
-    border-radius: 5px;
-    background: #fff;
-  }
-  ::v-deep {
-    .el-checkbox__label {
-      color: #fff;
+  .echarts {
+    .echartitem {
+      border: 1px solid #e5e7eb;
+      box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
+      margin: 5px;
+      border-radius: 5px;
+      background: #fff;
     }
-    .el-checkbox__input.is-disabled + span.el-checkbox__label {
-      color: #409eff;
-    }
-    .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
-      background-color: #409eff;
-      border-color: #409eff;
+    ::v-deep {
+      .el-checkbox__label {
+        color: #fff;
+      }
+      .el-checkbox__input.is-disabled + span.el-checkbox__label {
+        color: #409eff;
+      }
+      .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+        background-color: #409eff;
+        border-color: #409eff;
+      }
     }
   }
 }

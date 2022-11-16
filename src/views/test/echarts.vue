@@ -450,6 +450,10 @@ export default {
                 {
                   type: 'average',
                   name: '平均分'
+                },
+                {
+                  name: '折算名',
+                  yAxis: 130
                 }
               ],
               label: {
