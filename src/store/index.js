@@ -10,7 +10,8 @@ export default new Vuex.Store({
     curTableId: null,
     subjectMap,
     isShowMenu: true,
-    defaultClassName: ''
+    defaultClassName: '',
+    downloadSetting: {}
   },
   getters: {
     curTable(state) {
@@ -96,6 +97,16 @@ export default new Vuex.Store({
     setDefaultClassName(state, value) {
       state.defaultClassName = value
       localStorage.setItem('defaultClassName', value)
+    },
+    getDownloadSetting(state) {
+      const downloadSetting = localStorage.getItem('downloadSetting')
+      state.downloadSetting = downloadSetting
+        ? JSON.parse(downloadSetting)
+        : null
+    },
+    setDownloadSetting(state, value) {
+      state.downloadSetting = value
+      localStorage.setItem('downloadSetting', JSON.stringify(value))
     }
   },
   actions: {},

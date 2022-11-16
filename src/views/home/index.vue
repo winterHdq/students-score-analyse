@@ -124,6 +124,7 @@ export default {
     // localStorage.setItem('openTime', Date.now())
     this.$store.commit('getTables')
     this.$store.commit('getDefaultClassName')
+    this.$store.commit('getDownloadSetting')
   },
   mounted() {
     this.tableHeight = $('.content')[0].offsetHeight - 56

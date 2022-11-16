@@ -58,7 +58,7 @@ export default {
       return this.$store.getters.subjectObj
     },
     subjectRankList() {
-      return this.table.column.filter(item => /进退|差值/.test(item))
+      return this.table.column.filter(item => /进退|差/.test(item))
     }
   },
   data() {
@@ -77,7 +77,7 @@ export default {
     },
     scoreStyle(row, key) {
       let { subjectObj, subjectRankList } = this
-      if (this.table.isCompare || this.table.isRankCompare) {
+      if (this.table.isCompare) {
         if (subjectRankList.includes(key) && row[key] < 0) {
           return { color: 'red' }
         }

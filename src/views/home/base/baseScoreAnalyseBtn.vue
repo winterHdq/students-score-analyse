@@ -166,7 +166,7 @@ export default {
           id: Date.now(),
           column: [],
           className: defClassName,
-          isCompare: false,
+          isCompare: true,
           template: 'studentScoreTemplate',
           extend: {
             selectTablesId: this.formData.selectTablesId

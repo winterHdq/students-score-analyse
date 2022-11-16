@@ -37,7 +37,7 @@ const baseMixin = {
       try {
         const sheet = XLSX2.utils.json_to_sheet(table.data)
         const headerLen = table.column.length
-        const compaseArr = table.column.filter(item => /进退|差值/.test(item))
+        const compaseArr = table.column.filter(item => /进退|差/.test(item))
         Object.keys(sheet).forEach((key, index) => {
           if (key.indexOf('!') < 0) {
             sheet[key].s = {

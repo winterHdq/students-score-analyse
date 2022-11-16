@@ -24,14 +24,16 @@
         </el-radio-group>
         <br />
         <div class="btn">
+          <base-echart-download-btn
+            :name="nameCheck[0]"
+            :table="table"
+          ></base-echart-download-btn>
+          <br />
           <base-score-analyse-btn
             btnName="修改"
             :table="curTable"
+            class="btn"
           ></base-score-analyse-btn>
-          <base-echart-download-btn
-            :name="nameCheck"
-            @onDownload="onDownload"
-          ></base-echart-download-btn>
         </div>
       </div>
     </div>
@@ -79,7 +81,6 @@
 
 <script>
 import BaseTable from '../base/baseTable'
-import baseMixin from '../base/baseMixin'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
 import { delectnNoFindTable, subtract } from '@/common/utils'
@@ -91,7 +92,6 @@ export default {
     BaseScoreAnalyseBtn,
     BaseEchartDownloadBtn
   },
-  mixins: [baseMixin],
   props: {
     selectTablesId: {
       type: Array,
@@ -196,10 +196,12 @@ export default {
       this.column = this.subjectMap.reduce((pre, cur) => {
         pre.push(cur.scoreKey)
         pre.push(cur.rankKey)
-        pre.push(`${cur.rankKey}差值`)
+        pre.push(`${cur.rankKey.substr(0, 1)}差`)
         return pre
       }, [])
-      this.column.push(...['总分', '段名', '折总', '折算名', '优势', '劣势'])
+      this.column.push(
+        ...['总分', '段名', '段差', '折总', '折算名', '优势', '劣势']
+      )
     },
     getTable(selectTables = this.selectTables) {
       let list = [],
@@ -218,13 +220,16 @@ export default {
           let dval = nameItem[sub.rankKey]
             ? subtract(totalRank, nameItem[sub.rankKey])
             : null
-          dValueObj[`${sub.rankKey}差值`] = dval
+          dValueObj[`${sub.rankKey.substr(0, 1)}差`] = dval
           if (dval > 50) {
             dValueObj['优势'].push(sub.scoreKey)
           } else if (dval < -50) {
             dValueObj['劣势'].push(sub.scoreKey)
           }
         })
+        dValueObj['段差'] = nameItem['段名']
+          ? subtract(totalRank, nameItem['段名'])
+          : null
         dValueObj['优势'] = dValueObj['优势'].join('、')
         dValueObj['劣势'] = dValueObj['劣势'].join('、')
         this.column.forEach(k => {
@@ -237,6 +242,7 @@ export default {
         id: Date.now(),
         data: list,
         column: Object.keys(list[0]),
+        isCompare: true,
         className: this.defaultTable.className
       }
       this.xAxisData = xAxisData
@@ -422,9 +428,6 @@ export default {
           this.echarts[k].resize()
         }
       }, 500)
-    },
-    onDownload() {
-      this.baseExportExcel(this.table)
     }
   }
 }
@@ -453,7 +456,7 @@ export default {
     }
     .right {
       .btn {
-        margin-top: 10px;
+        margin-top: 5px;
       }
     }
   }

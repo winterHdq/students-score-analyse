@@ -108,6 +108,7 @@ export default {
           this.formData.compareTh.push(k)
         }
       })
+      this.thList.includes('段名') && this.formData.compareTh.push('段名')
       this.dialogVisible = true
     },
     handleCheckAllChange(res, key) {
@@ -137,7 +138,7 @@ export default {
             !isNaN(item[k])
           ) {
             let dValue = subtract(totalRank, item[k])
-            newItem[`${k}差值`] = dValue
+            newItem[`${k.substr(0, 1)}差`] = dValue
             if (dValue > 50) {
               advantage.push(k)
             } else if (dValue < -50) {

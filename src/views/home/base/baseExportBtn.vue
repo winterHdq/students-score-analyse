@@ -216,8 +216,8 @@ export default {
             sheet.column.push(this.subjectObj[k].rankKey)
           this.thList.includes(`${this.subjectObj[k].rankKey}进退`) &&
             sheet.column.push(`${this.subjectObj[k].rankKey}进退`)
-          this.thList.includes(`${this.subjectObj[k].rankKey}差值`) &&
-            sheet.column.push(`${this.subjectObj[k].rankKey}差值`)
+          this.thList.includes(`${this.subjectObj[k].rankKey}差`) &&
+            sheet.column.push(`${this.subjectObj[k].rankKey}差`)
           ;['折总', '折算名'].forEach(key => {
             if (this.thList.includes(key)) {
               sheet.column.push(key)
