@@ -30,6 +30,7 @@
           ></base-score-analyse-btn>
           <base-echart-download-btn
             :name="nameCheck"
+            @onDownload="onDownload"
           ></base-echart-download-btn>
         </div>
       </div>
@@ -44,11 +45,13 @@
       <div v-if="radio == 2">
         <div class="echarts" id="echarts">
           <div
+            v-show="isShowEhart.reducedRank"
             style="width: 100%; height: 250px"
             id="reducedRank"
             class="echartitem"
           ></div>
           <div
+            v-show="isShowEhart.totalRank"
             style="width: 48%; height: 250px"
             id="totalRank"
             class="echartitem"
@@ -79,6 +82,7 @@ import baseMixin from '../base/baseMixin'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
 import { delectnNoFindTable, subtract } from '@/common/utils'
+
 export default {
   name: 'StudentScoreTemplate',
   components: {
@@ -147,7 +151,10 @@ export default {
         totalRank: null
         // summary: null
       },
-      isShowEhart: {}
+      isShowEhart: {
+        reducedRank: true,
+        totalRank: true
+      }
     }
   },
   created() {
@@ -225,7 +232,7 @@ export default {
         list.push(_item)
       })
       this.table = {
-        name: `${this.nameCheck[0]}成绩分析`,
+        name: `${this.nameCheck[0]}-成绩分析`,
         id: Date.now(),
         data: list,
         column: Object.keys(list[0]),
@@ -414,6 +421,9 @@ export default {
           this.echarts[k].resize()
         }
       }, 500)
+    },
+    onDownload() {
+      this.baseExportExcel(this.table)
     }
   }
 }
@@ -436,6 +446,18 @@ export default {
   }
   .content {
     overflow: auto;
+    ::v-deep {
+      .el-checkbox__label {
+        color: #fff;
+      }
+      .el-checkbox__input.is-disabled + span.el-checkbox__label {
+        color: #409eff;
+      }
+      .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+        background-color: #409eff;
+        border-color: #409eff;
+      }
+    }
   }
   .echartitem {
     border: 1px solid #e5e7eb;
@@ -452,18 +474,6 @@ export default {
   @media print {
     .btns {
       display: none;
-    }
-  }
-  ::v-deep {
-    .el-checkbox__label {
-      color: #fff;
-    }
-    .el-checkbox__input.is-disabled + span.el-checkbox__label {
-      color: #409eff;
-    }
-    .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
-      background-color: #409eff;
-      border-color: #409eff;
     }
   }
 }

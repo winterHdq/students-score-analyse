@@ -1,32 +1,36 @@
 <template>
   <div class="baseEchartDownLoadBtn">
-    <el-button type="primary" @click="onDownload">下载</el-button>
+    <el-button type="primary" @click="downloadVisiable = true">下载</el-button>
     <!-- <el-button type="danger" @click="onPrint">打印</el-button> -->
     <el-dialog title="下载" :visible.sync="downloadVisiable">
-      <div class="dialog">
-        <el-checkbox
-          :indeterminate="isIndeterminate"
-          v-model="checkAll"
-          @change="handleCheckAllChange"
-        >
-          全选
-        </el-checkbox>
-        <div style="margin: 15px 0"></div>
-        <el-checkbox-group
-          v-model="formData.checkedSubject"
-          @change="handleCheckedCitiesChange"
-        >
+      <el-form :model="formData">
+        <el-form-item label="打印图表">
           <el-checkbox
-            v-for="item in options"
-            :label="item.rankKey"
-            :key="item.key"
-          ></el-checkbox>
-        </el-checkbox-group>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="downloadVisiable = false">取 消</el-button>
-          <el-button type="primary" @click="onDownload">确 定</el-button>
-        </span>
-      </div>
+            :indeterminate="isIndeterminate"
+            v-model="checkAll"
+            @change="handleCheckAllChange"
+          >
+            全选
+          </el-checkbox>
+          <div style="margin: 15px 0"></div>
+          <el-checkbox-group
+            v-model="formData.checkedSubject"
+            @change="handleCheckedCitiesChange"
+          >
+            <el-checkbox
+              v-for="item in options"
+              :label="item.key"
+              :key="item.key"
+            >
+              {{ item.rankKey }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="downloadVisiable = false">取 消</el-button>
+        <el-button type="primary" @click="onDownload">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -51,9 +55,14 @@ export default {
       checkAll: false,
       options: [
         {
+          name: '折算名',
+          rankKey: '折算名',
+          key: 'reducedRank'
+        },
+        {
           name: '段名',
           rankKey: '段名',
-          key: 'total'
+          key: 'totalRank'
         }
       ],
       isIndeterminate: true
@@ -69,7 +78,9 @@ export default {
   },
   methods: {
     handleCheckAllChange(val) {
-      this.checkedSubject = val ? this.options.map(item => item.label) : []
+      this.formData.checkedSubject = val
+        ? this.options.map(item => item.key)
+        : []
       this.isIndeterminate = false
     },
     handleCheckedCitiesChange(value) {
@@ -82,7 +93,16 @@ export default {
       window.print()
     },
     onDownload() {
-      // this.$parent.isShowEhart.chinese = false
+      this.$emit('onDownload')
+      let isShowEhart = {}
+      this.options.forEach(item => {
+        if (this.formData.checkedSubject.includes(item.key)) {
+          isShowEhart[item.key] = true
+        } else {
+          isShowEhart[item.key] = false
+        }
+      })
+      this.$parent.isShowEhart = isShowEhart
       this.$nextTick(() => {
         // 图表转换成canvas
         html2canvas(document.getElementById('echarts')).then(canvas => {
@@ -96,6 +116,13 @@ export default {
           document.body.appendChild(creatIMg)
           creatIMg.click()
           creatIMg.remove() // 下载之后把创建的元素删除
+          for (let k in isShowEhart) {
+            isShowEhart[k] = true
+          }
+          this.$parent.isShowEhart = isShowEhart
+          this.$nextTick(() => {
+            this.downloadVisiable = false
+          })
         })
       })
     }
@@ -106,9 +133,5 @@ export default {
 <style lang="scss" scoped>
 .baseEchartDownLoadBtn {
   display: inline-block;
-  .dialog {
-    background: #201d1d;
-    padding: 10px;
-  }
 }
 </style>
