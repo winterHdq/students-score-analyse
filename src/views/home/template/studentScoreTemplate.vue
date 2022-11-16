@@ -78,7 +78,7 @@ import BaseTable from '../base/baseTable'
 import baseMixin from '../base/baseMixin'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
-import { delectnNoFindTable } from '@/common/utils'
+import { delectnNoFindTable, subtract } from '@/common/utils'
 export default {
   name: 'StudentScoreTemplate',
   components: {
@@ -188,9 +188,10 @@ export default {
       this.column = this.subjectMap.reduce((pre, cur) => {
         pre.push(cur.scoreKey)
         pre.push(cur.rankKey)
+        pre.push(`${cur.rankKey}差值`)
         return pre
       }, [])
-      this.column.push(...['总分', '段名', '折总', '折算名'])
+      this.column.push(...['总分', '段名', '折总', '折算名', '优势', '劣势'])
     },
     getTable(selectTables = this.selectTables) {
       let list = [],
@@ -203,8 +204,23 @@ export default {
         )
         let _item = {}
         _item[className] = table.name
+        let totalRank = nameItem['折算名'] || nameItem['段名'] || null
+        let dValueObj = { 优势: [], 劣势: [] }
+        this.subjectMap.forEach(sub => {
+          let dval = nameItem[sub.rankKey]
+            ? subtract(totalRank, nameItem[sub.rankKey])
+            : null
+          dValueObj[`${sub.rankKey}差值`] = dval
+          if (dval > 50) {
+            dValueObj['优势'].push(sub.scoreKey)
+          } else if (dval < -50) {
+            dValueObj['劣势'].push(sub.scoreKey)
+          }
+        })
+        dValueObj['优势'] = dValueObj['优势'].join('、')
+        dValueObj['劣势'] = dValueObj['劣势'].join('、')
         this.column.forEach(k => {
-          _item[k] = nameItem[k] || null
+          _item[k] = nameItem[k] || dValueObj[k] || null
         })
         list.push(_item)
       })
