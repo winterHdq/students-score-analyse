@@ -7,13 +7,22 @@
           v-model="curTable.className"
         ></base-class-setting>
         <template v-if="curTable.sortObj">
-          <el-button
-            type="success"
-            plain
-            @click="rankCompareDialog.show = true"
-          >
-            名次比较
-          </el-button>
+          <el-tooltip class="item" effect="dark" placement="top-start">
+            <div slot="content">
+              科目差值：折算名/段名 - 科目名
+              <br />
+              优势科目：科目差值 > 50
+              <br />
+              劣势科目：科目差值 &lt; -50
+            </div>
+            <el-button
+              type="success"
+              plain
+              @click="rankCompareDialog.show = true"
+            >
+              优劣分析
+            </el-button>
+          </el-tooltip>
           <el-button
             plain
             type="primary"
@@ -65,7 +74,7 @@
         ></div>
       </div>
       <div
-        v-if="isCompare"
+        v-if="isPreCompare"
         style="width: auto; height: 250px"
         id="compare"
         class="echartitem"
@@ -84,7 +93,7 @@
     ></sort-dialog>
     <rank-compare-dialog
       v-if="rankCompareDialog.show"
-      :tableId="curTable.id"
+      :curTable="curTable"
       @onClose="rankCompareDialog.show = false"
     ></rank-compare-dialog>
   </div>
@@ -141,8 +150,9 @@ export default {
       isShowMenu: state => state.isShowMenu
     }),
     ...mapGetters(['curTable', 'subjectList', 'subjectRankList']),
-    isCompare() {
-      return this.curTable.isCompare
+    // 是否进退比较表
+    isPreCompare() {
+      return this.curTable.isCompare && this.curTable?.extend?.compareColumn
     }
   },
   watch: {
@@ -188,7 +198,7 @@ export default {
       xAxisRankData.push('段名')
       this.xAxisData = xAxisData
       this.xAxisRankData = xAxisRankData
-      if (this.isCompare) {
+      if (this.isPreCompare) {
         this.compareInitHandle()
       }
     },
@@ -242,7 +252,7 @@ export default {
       this.echartsRankName.setOption({
         series: series.rank
       })
-      if (this.isCompare) {
+      if (this.isPreCompare) {
         const { series } = this.getCompaseConfig()
         this.echartsCompare.setOption({
           series: series
@@ -433,7 +443,7 @@ export default {
       }
     },
     echartsCompareInit() {
-      if (!this.isCompare) return
+      if (!this.isPreCompare) return
       let { xAxis, series } = this.getCompaseConfig()
       this.echartsCompare = this.$echarts.init(
         document.getElementById('compare')

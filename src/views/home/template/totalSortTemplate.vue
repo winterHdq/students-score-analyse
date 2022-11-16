@@ -40,6 +40,7 @@
 
 <script>
 import baseMixin from '../base/baseMixin'
+import { delectnNoFindTable } from '@/common/utils'
 export default {
   name: 'TotalSortTemplate',
   mixins: [baseMixin],
@@ -167,12 +168,14 @@ export default {
         let res = this.tables.find(v => v.id == id)
         if (!res) {
           this.isTable = false
-          this.$message.error(`未找到表${id}，可能已被删除`)
         } else {
           classTables.push(res)
         }
       })
-      if (!this.isTable) return false
+      if (!this.isTable) {
+        delectnNoFindTable()
+        return false
+      }
       this.classTables = classTables
       this.getRowName()
     },

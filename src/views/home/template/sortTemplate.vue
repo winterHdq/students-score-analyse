@@ -77,6 +77,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import baseMixin from '../base/baseMixin'
+import { delectnNoFindTable } from '@/common/utils'
 export default {
   name: 'sortTemplate',
   mixins: [baseMixin],
@@ -104,7 +105,7 @@ export default {
       tables: state => state.tables,
       isShowMenu: state => state.isShowMenu
     }),
-    ...mapGetters(['subjectList', 'subjectObj'])
+    ...mapGetters(['subjectList', 'subjectObj', 'curIndex'])
   },
   watch: {
     isShowMenu() {
@@ -212,10 +213,11 @@ export default {
   },
   methods: {
     getTables() {
+      this.curIndex
       let res = this.tables.find(v => v.id == this.tableId)
       if (!res) {
         this.isTable = false
-        this.$message.error(`原始表格未找到，可能已被删除，无法分析，请删除`)
+        delectnNoFindTable()
         return false
       } else {
         this.baseTable = res

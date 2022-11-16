@@ -1,4 +1,6 @@
 import NP from 'number-precision'
+import store from '@/store'
+import { MessageBox } from 'element-ui'
 const isRepeat = (arr = []) => {
   const newArr = Array.from(new Set(arr))
   return arr.length !== newArr.length
@@ -42,4 +44,22 @@ const handlePrecision = val => {
 
 const toFixed = NP.round
 
-export { add, subtract, multiply, divide, toFixed, isRepeat }
+const delectnNoFindTable = () => {
+  MessageBox.alert('未找到原始表格，无法分析数据，请删除该表重新分析', '提示', {
+    confirmButtonText: '删除',
+    callback: () => {
+      store.commit('deleteTable', store.getters.curIndex)
+      store.commit('setCurTableId', null)
+    }
+  })
+}
+
+export {
+  add,
+  subtract,
+  multiply,
+  divide,
+  toFixed,
+  isRepeat,
+  delectnNoFindTable
+}

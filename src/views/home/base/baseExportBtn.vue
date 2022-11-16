@@ -267,7 +267,7 @@ export default {
           })
         })
         const table = {
-          name: '分科',
+          name: `${this.table.name}-分科`,
           sheets: this.formDataMul.tables
         }
         this.baseExportMulSheetExcel(table)

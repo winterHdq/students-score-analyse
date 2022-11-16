@@ -63,9 +63,11 @@ export default {
   components: { BaseTable, BaseExportBtn },
   mixins: [baseMixin],
   props: {
-    tableId: {
-      type: Number,
-      required: true
+    curTable: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() {
@@ -80,7 +82,6 @@ export default {
       rules: {
         compareTh: [{ required: true, message: '请选择' }]
       },
-      baseTable: {},
       dialogVisible: false,
       compareTableDialog: false,
       compareTable: {}
@@ -90,14 +91,11 @@ export default {
     tables() {
       return this.$store.state.tables
     },
-    curIndex() {
-      return this.$store.state.curIndex
-    },
     subjectRankList() {
       return this.$store.getters.subjectRankList
     },
     thList() {
-      return this.baseTable.column
+      return this.curTable.column
     }
   },
   created() {
@@ -105,19 +103,7 @@ export default {
   },
   methods: {
     getBaseTable() {
-      const table = this.tables.find(item => item.id == this.tableId)
-      if (!table) {
-        this.$alert('未找到原始表格，无法分析数据，请重新分析', '提示', {
-          confirmButtonText: '删除',
-          callback: () => {
-            this.$store.commit('deleteTable', this.curIndex)
-            this.$store.commit('setCurTableId', null)
-          }
-        })
-        return false
-      }
-      this.baseTable = table
-      this.baseTable.column.forEach(k => {
+      this.curTable.column.forEach(k => {
         if (this.subjectRankList.includes(k)) {
           this.formData.compareTh.push(k)
         }
@@ -135,11 +121,12 @@ export default {
         checkedCount > 0 && checkedCount < this.thList.length
     },
     async onSave() {
-      debugger
       await this.$refs.form.validate()
       let compareTable = []
-      this.baseTable.data.forEach(item => {
+      this.curTable.data.forEach(item => {
         let newItem = {}
+        let advantage = [],
+          inferiority = []
         let totalRank = item['折算名'] || item['段名'] || null
         for (let k in item) {
           newItem[k] = item[k]
@@ -149,22 +136,27 @@ export default {
             totalRank &&
             !isNaN(item[k])
           ) {
-            newItem[`${k}差值`] = subtract(totalRank, item[k])
+            let dValue = subtract(totalRank, item[k])
+            newItem[`${k}差值`] = dValue
+            if (dValue > 50) {
+              advantage.push(k)
+            } else if (dValue < -50) {
+              inferiority.push(k)
+            }
           }
         }
+        newItem['优势'] = advantage.join('、')
+        newItem['劣势'] = inferiority.join('、')
         compareTable.push(newItem)
       })
       const compareTh = Object.keys(compareTable[0])
       let compare = {
-        name: `${this.baseTable.name}-名次比较`,
+        name: `${this.curTable.name}-优劣分析`,
         data: compareTable,
         id: Date.now(),
         column: compareTh,
-        className: `${this.baseTable.className}`,
-        isCompare: true,
-        extend: {
-          tableId: this.tableId
-        }
+        className: `${this.curTable.className}`,
+        isCompare: true
       }
       this.compareTable = compare
       this.compareTableDialog = true

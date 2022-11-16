@@ -78,6 +78,7 @@ import BaseTable from '../base/baseTable'
 import baseMixin from '../base/baseMixin'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
+import { delectnNoFindTable } from '@/common/utils'
 export default {
   name: 'StudentScoreTemplate',
   components: {
@@ -167,7 +168,7 @@ export default {
         let res = this.tables.find(v => v.id == id)
         if (!res) {
           result = false
-          this.$message.error(`【${id}】原始表未找到，可能已被删除`)
+          delectnNoFindTable()
           return true
         } else {
           selectTables.push(res)

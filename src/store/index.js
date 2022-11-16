@@ -7,7 +7,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     tables: [],
-    curIndex: null,
     curTableId: null,
     subjectMap,
     isShowMenu: true,
@@ -15,13 +14,17 @@ export default new Vuex.Store({
   },
   getters: {
     curTable(state) {
-      let curTbale = state.tables.find((item, index) => {
+      return state.tables.find(item => item.id == state.curTableId)
+    },
+    curIndex(state) {
+      let _index = null
+      state.tables.find((item, index) => {
         if (item.id == state.curTableId) {
-          state.curIndex == index
+          _index = index
           return true
         }
       })
-      return curTbale
+      return _index
     },
     subjectObj(state) {
       let obj = {}
@@ -54,6 +57,7 @@ export default new Vuex.Store({
       localStorage.setItem('tables', JSON.stringify(state.tables))
     },
     deleteTable(state, index) {
+      if (index == null) return
       state.tables.splice(index, 1)
       localStorage.setItem('tables', JSON.stringify(state.tables))
     },
