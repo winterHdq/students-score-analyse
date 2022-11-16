@@ -44,6 +44,7 @@
       ></base-table>
       <div v-if="radio == 2">
         <div class="echarts" id="echarts">
+          <p class="nameTitle" v-if="isShowEhart.name">{{ nameCheck[0] }}</p>
           <div
             v-show="isShowEhart.reducedRank"
             style="width: 100%; height: 250px"
@@ -203,14 +204,14 @@ export default {
     getTable(selectTables = this.selectTables) {
       let list = [],
         xAxisData = []
-      const className = this.defaultTable.className
+      const name = this.nameCheck[0]
       selectTables.forEach(table => {
         xAxisData.push(table.name)
         let nameItem = table.data.find(
           item => item['姓名'] == this.nameCheck[0]
         )
         let _item = {}
-        _item[className] = table.name
+        _item[name] = table.name
         let totalRank = nameItem['折算名'] || nameItem['段名'] || null
         let dValueObj = { 优势: [], 劣势: [] }
         this.subjectMap.forEach(sub => {
@@ -227,7 +228,7 @@ export default {
         dValueObj['优势'] = dValueObj['优势'].join('、')
         dValueObj['劣势'] = dValueObj['劣势'].join('、')
         this.column.forEach(k => {
-          _item[k] = nameItem[k] || dValueObj[k] || null
+          _item[k] = nameItem[k] || dValueObj[k] || ''
         })
         list.push(_item)
       })
@@ -236,7 +237,7 @@ export default {
         id: Date.now(),
         data: list,
         column: Object.keys(list[0]),
-        className: className
+        className: this.defaultTable.className
       }
       this.xAxisData = xAxisData
       this.getZsmData()
@@ -437,6 +438,18 @@ export default {
     padding: 10px;
     .name {
       flex: 1;
+      ::v-deep {
+        .el-checkbox__label {
+          color: #fff;
+        }
+        .el-checkbox__input.is-disabled + span.el-checkbox__label {
+          color: #409eff;
+        }
+        .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+          background-color: #409eff;
+          border-color: #409eff;
+        }
+      }
     }
     .right {
       .btn {
@@ -446,18 +459,6 @@ export default {
   }
   .content {
     overflow: auto;
-    ::v-deep {
-      .el-checkbox__label {
-        color: #fff;
-      }
-      .el-checkbox__input.is-disabled + span.el-checkbox__label {
-        color: #409eff;
-      }
-      .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
-        background-color: #409eff;
-        border-color: #409eff;
-      }
-    }
   }
   .echartitem {
     border: 1px solid #e5e7eb;
@@ -470,6 +471,9 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    .nameTitle {
+      font-size: 16px;
+    }
   }
   @media print {
     .btns {

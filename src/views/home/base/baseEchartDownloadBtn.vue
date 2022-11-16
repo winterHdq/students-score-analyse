@@ -75,6 +75,7 @@ export default {
   },
   created() {
     this.options.push(...this.subjectMap)
+    this.handleCheckAllChange(true)
   },
   methods: {
     handleCheckAllChange(val) {
@@ -82,6 +83,7 @@ export default {
         ? this.options.map(item => item.key)
         : []
       this.isIndeterminate = false
+      this.checkAll = val
     },
     handleCheckedCitiesChange(value) {
       let checkedCount = value.length
@@ -102,6 +104,7 @@ export default {
           isShowEhart[item.key] = false
         }
       })
+      isShowEhart.name = true
       this.$parent.isShowEhart = isShowEhart
       this.$nextTick(() => {
         // 图表转换成canvas
@@ -111,7 +114,7 @@ export default {
             .replace('image/png', 'image/octet-stream')
           // 创建a标签，实现下载
           var creatIMg = document.createElement('a')
-          creatIMg.download = `成绩分析-${this.name}.png` // 设置下载的文件名，
+          creatIMg.download = `${this.name}-成绩分析.png` // 设置下载的文件名，
           creatIMg.href = img // 下载url
           document.body.appendChild(creatIMg)
           creatIMg.click()
@@ -119,6 +122,7 @@ export default {
           for (let k in isShowEhart) {
             isShowEhart[k] = true
           }
+          isShowEhart.name = false
           this.$parent.isShowEhart = isShowEhart
           this.$nextTick(() => {
             this.downloadVisiable = false
