@@ -209,9 +209,8 @@ export default {
       const name = this.nameCheck[0]
       selectTables.forEach(table => {
         xAxisData.push(table.name)
-        let nameItem = table.data.find(
-          item => item['姓名'] == this.nameCheck[0]
-        )
+        let nameItem =
+          table.data.find(item => item['姓名'] == this.nameCheck[0]) || {}
         let _item = {}
         _item[name] = table.name
         let totalRank = nameItem['折算名'] || nameItem['段名'] || null
