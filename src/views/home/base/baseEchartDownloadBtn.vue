@@ -10,11 +10,7 @@
       设置
     </el-button>
     <!-- <el-button type="danger" @click="onPrint">打印</el-button> -->
-    <el-dialog
-      title="下载设置"
-      :visible.sync="downloadVisiable"
-      @open="openHandle"
-    >
+    <el-dialog title="下载设置" :visible.sync="downloadVisiable">
       <el-form :model="formData">
         <el-form-item label="打印列名">
           <el-checkbox
@@ -29,12 +25,7 @@
             v-model="formData.checkedColumn"
             @change="handleCheckedColumnChange"
           >
-            <el-checkbox
-              v-for="(item, index) in table.column"
-              :label="item"
-              :key="item"
-              :disabled="index == 0"
-            >
+            <el-checkbox v-for="item in columnTh" :label="item" :key="item">
               {{ item }}
             </el-checkbox>
           </el-checkbox-group>
@@ -117,18 +108,19 @@ export default {
       subjectMap: state => state.subjectMap,
       downloadSetting: state => state.downloadSetting
     }),
-    ...mapGetters(['subjectList'])
+    ...mapGetters(['subjectList']),
+    columnTh() {
+      return this.table.column.filter((item, index) => index !== 0)
+    }
   },
   created() {
     this.options.push(...this.subjectMap)
+    this.openHandle()
   },
   methods: {
     openHandle() {
       if (this.downloadSetting) {
-        this.formData.checkedColumn = [
-          this.name,
-          ...this.downloadSetting.checkedColumn
-        ]
+        this.formData.checkedColumn = [...this.downloadSetting.checkedColumn]
         this.formData.checkedSubject = this.downloadSetting.checkedSubject
       } else {
         this.table.column.forEach(k => {
@@ -136,6 +128,7 @@ export default {
             this.formData.checkedColumn.push(k)
           }
         })
+        this.formData.checkedColumn.splice(0, 1)
         this.handleCheckAllChange(true)
       }
     },
@@ -146,7 +139,7 @@ export default {
       this.isIndeterminate = false
     },
     handleCheckAllColumnChange(val) {
-      this.formData.checkedColumn = val ? this.table.column : [this.name]
+      this.formData.checkedColumn = val ? this.columnTh : []
       this.isIndeterminateColumn = false
     },
     handleCheckedChange(value) {
@@ -157,35 +150,40 @@ export default {
     },
     handleCheckedColumnChange(value) {
       let checkedCount = value.length
-      this.checkAllColumn = checkedCount === this.table.column.length
+      this.checkAllColumn = checkedCount === this.columnTh.length
       this.isIndeterminateColumn =
-        checkedCount > 0 && checkedCount < this.table.column.length
+        checkedCount > 0 && checkedCount < this.columnTh.length
     },
     onPrint() {
       window.print()
     },
     onSave() {
-      let formData = JSON.parse(JSON.stringify(this.formData))
-      formData.checkedColumn.splice(0, 1)
-      this.$store.commit('setDownloadSetting', formData)
+      this.$store.commit('setDownloadSetting', this.formData)
       this.downloadVisiable = false
     },
     downloadTable() {
+      let downloadColumn = [this.name, ...this.formData.checkedColumn]
       let list = []
       this.table.data.forEach(item => {
         let _item = {}
         for (let k in item) {
-          if (this.formData.checkedColumn.includes(k)) {
+          if (downloadColumn.includes(k)) {
             _item[k] = item[k]
           }
         }
         list.push(_item)
       })
+      // const cols = this.formData.checkedColumn.map(() => {
+      //   return { wpx: 5 }
+      // })
       let downloadTable = {
         name: this.table.name,
         className: this.table.className,
         column: this.formData.checkedColumn,
         data: list,
+        // sheet: {
+        //   cols: cols
+        // },
         isCompare: true
       }
       this.baseExportExcel(downloadTable)

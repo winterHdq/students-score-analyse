@@ -1,4 +1,6 @@
-// sheetjs中文文档：https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Frockboom%2FSheetJS-docs-zh-CN
+// https://www.jianshu.com/p/43ce62773e19
+// https://github.com/SheetJS/sheetjs
+// sheetjs 中文文档：https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Frockboom%2FSheetJS-docs-zh-CN
 // import * as XLSX from 'xlsx/xlsx.mjs'
 // npm参考：https://www.npmjs.com/package/xlsx-js-style/v/1.2.0
 // 例子参考：https://blog.csdn.net/qq_36512842/article/details/116013588
@@ -36,6 +38,7 @@ const baseMixin = {
     sheetHandle(table) {
       try {
         const sheet = XLSX2.utils.json_to_sheet(table.data)
+        // sheet['!cols'] = [{ wch: 10 }, { wch: 5 }]
         const headerLen = table.column.length
         const compaseArr = table.column.filter(item => /进退|差/.test(item))
         Object.keys(sheet).forEach((key, index) => {
