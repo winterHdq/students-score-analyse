@@ -193,10 +193,10 @@ export default {
         className: this.table.className,
         column: this.formData.checkedColumn,
         data: list,
-        sheet: {
-          cols: cols,
-          rows: rows
-        },
+        // sheet: {
+        //   cols: cols,
+        //   rows: rows
+        // },
         isCompare: true
       }
       this.baseExportExcel(downloadTable)
