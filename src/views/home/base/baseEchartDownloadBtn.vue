@@ -173,17 +173,27 @@ export default {
         }
         list.push(_item)
       })
-      // const cols = this.formData.checkedColumn.map(() => {
-      //   return { wpx: 5 }
-      // })
+      const colObj = {
+        折算名: 6,
+        优势: 18,
+        劣势: 18
+      }
+      const cols = downloadColumn.map(k => {
+        if (colObj[k]) {
+          return { wch: colObj[k] }
+        } else {
+          return { wch: 4 }
+        }
+      })
+      cols[0].wch = 8
       let downloadTable = {
         name: this.table.name,
         className: this.table.className,
         column: this.formData.checkedColumn,
         data: list,
-        // sheet: {
-        //   cols: cols
-        // },
+        sheet: {
+          cols: cols
+        },
         isCompare: true
       }
       this.baseExportExcel(downloadTable)

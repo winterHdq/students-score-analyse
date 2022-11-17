@@ -38,7 +38,9 @@ const baseMixin = {
     sheetHandle(table) {
       try {
         const sheet = XLSX2.utils.json_to_sheet(table.data)
-        // sheet['!cols'] = [{ wch: 10 }, { wch: 5 }]
+        if (table?.sheet?.cols) {
+          sheet['!cols'] = table.sheet.cols
+        }
         const headerLen = table.column.length
         const compaseArr = table.column.filter(item => /进退|差/.test(item))
         Object.keys(sheet).forEach((key, index) => {
