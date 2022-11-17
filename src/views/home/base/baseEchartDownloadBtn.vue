@@ -164,7 +164,7 @@ export default {
     downloadTable() {
       let downloadColumn = [this.name, ...this.formData.checkedColumn]
       let list = [],
-        rows = []
+        rows = [{ hpx: 24 }]
       this.table.data.forEach(item => {
         rows.push({ hpx: 24 })
         let _item = {}
@@ -193,10 +193,9 @@ export default {
         className: this.table.className,
         column: this.formData.checkedColumn,
         data: list,
-        // sheet: {
-        //   cols: cols,
-        //   rows: rows
-        // },
+        sheet: {
+          cols: cols
+        },
         isCompare: true
       }
       this.baseExportExcel(downloadTable)
