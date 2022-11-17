@@ -163,8 +163,10 @@ export default {
     },
     downloadTable() {
       let downloadColumn = [this.name, ...this.formData.checkedColumn]
-      let list = []
+      let list = [],
+        rows = []
       this.table.data.forEach(item => {
+        rows.push({ hpx: 24 })
         let _item = {}
         for (let k in item) {
           if (downloadColumn.includes(k)) {
@@ -192,7 +194,8 @@ export default {
         column: this.formData.checkedColumn,
         data: list,
         sheet: {
-          cols: cols
+          cols: cols,
+          rows: rows
         },
         isCompare: true
       }

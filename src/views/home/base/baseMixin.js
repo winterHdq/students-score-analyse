@@ -4,6 +4,7 @@
 // import * as XLSX from 'xlsx/xlsx.mjs'
 // npm参考：https://www.npmjs.com/package/xlsx-js-style/v/1.2.0
 // 例子参考：https://blog.csdn.net/qq_36512842/article/details/116013588
+// 设置行高列宽等：https://juejin.cn/post/6844903961279856654
 import XLSX2 from 'xlsx-js-style'
 const baseMixin = {
   data() {
@@ -41,6 +42,9 @@ const baseMixin = {
         if (table?.sheet?.cols) {
           sheet['!cols'] = table.sheet.cols
         }
+        if (table?.sheet?.rows) {
+          sheet['!rows'] = table.sheet.rows
+        }
         const headerLen = table.column.length
         const compaseArr = table.column.filter(item => /进退|差/.test(item))
         Object.keys(sheet).forEach((key, index) => {
@@ -48,7 +52,8 @@ const baseMixin = {
             sheet[key].s = {
               alignment: {
                 vertical: 'center', // 垂直居中
-                horizontal: 'center' // 水平居中
+                horizontal: 'center', // 水平居中
+                wrapText: true //自动换行
               },
               border: {
                 top: { style: 'thin' },
