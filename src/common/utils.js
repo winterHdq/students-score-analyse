@@ -54,6 +54,12 @@ const delectnNoFindTable = () => {
   })
 }
 
+// 获取echart图标Y轴最小值
+const getYMin = arr => {
+  const _arr = arr.filter(item => item || item === 0)
+  return parseInt(Math.min(..._arr) / 100) * 100
+}
+
 export {
   add,
   subtract,
@@ -61,5 +67,6 @@ export {
   divide,
   toFixed,
   isRepeat,
-  delectnNoFindTable
+  delectnNoFindTable,
+  getYMin
 }

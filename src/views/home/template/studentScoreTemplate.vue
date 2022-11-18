@@ -83,7 +83,7 @@
 import BaseTable from '../base/baseTable'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
-import { delectnNoFindTable, subtract } from '@/common/utils'
+import { delectnNoFindTable, subtract, getYMin } from '@/common/utils'
 
 export default {
   name: 'StudentScoreTemplate',
@@ -293,6 +293,7 @@ export default {
       this.echarts.reducedRank = this.$echarts.init(
         document.getElementById('reducedRank')
       )
+      let Ymin = getYMin(this.zsmSeries.data)
       const options = {
         title: {
           text: '折算名分析',
@@ -323,6 +324,7 @@ export default {
         },
         yAxis: {
           name: '名次',
+          min: Ymin,
           type: 'value',
           inverse: true //反转坐标轴
         },
@@ -378,6 +380,7 @@ export default {
     echartsInitHandle(obj) {
       let series = [this.getSeries(obj.rankKey)]
       series.push(this.zsmSeries)
+      let yMin = getYMin([...series[0].data, ...series[1].data])
       this.echarts[`${obj.key}`] = this.$echarts.init(
         document.getElementById(obj.key)
       )
@@ -414,6 +417,7 @@ export default {
         },
         yAxis: {
           name: '名次',
+          min: yMin,
           type: 'value',
           inverse: true //反转坐标轴
         },

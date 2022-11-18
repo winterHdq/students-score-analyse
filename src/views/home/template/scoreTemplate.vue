@@ -106,6 +106,7 @@ import SortDialog from '../components/sortDialog'
 import { mapState, mapGetters } from 'vuex'
 import BaseExportBtn from '../base/baseExportBtn'
 import RankCompareDialog from '../components/rankCompareDialog'
+import { getYMin } from '@/common/utils'
 // import baseMixin from '../base/baseMixin'
 export default {
   name: 'ScoreTemplate',
@@ -249,13 +250,21 @@ export default {
       this.echartsScoreName.setOption({
         series: series.score
       })
+      const yMin = getYMin(series.rank[0].data)
       this.echartsRankName.setOption({
-        series: series.rank
+        series: series.rank,
+        yAxis: {
+          min: yMin
+        }
       })
       if (this.isPreCompare) {
         const { series } = this.getCompaseConfig()
+        const yMin = getYMin([...series[0].data, ...series[1].data])
         this.echartsCompare.setOption({
-          series: series
+          series: series,
+          yAxis: {
+            min: yMin
+          }
         })
       }
     },
@@ -366,6 +375,7 @@ export default {
     },
     echartsRankInit() {
       let { rank: series } = this.getSeries()
+      const yMin = getYMin(series[0].data)
       this.echartsRankName = this.$echarts.init(
         document.getElementById('rankName')
       )
@@ -398,6 +408,7 @@ export default {
           data: this.xAxisRankData
         },
         yAxis: {
+          min: yMin,
           name: '名次',
           type: 'value',
           inverse: true, //反转坐标轴
