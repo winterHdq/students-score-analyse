@@ -1,22 +1,23 @@
 <template>
   <div class="sortTemplate">
-    <el-tabs v-model="subjectName" type="card" @tab-click="handleClick">
-      <el-tab-pane
-        v-for="item in subjectList"
-        :key="item"
-        :label="item"
-        :name="item"
-      ></el-tab-pane>
-    </el-tabs>
     <div class="btns">
-      <el-button type="primary" class="btn" @click="onExport">导出</el-button>
-      <el-button type="danger" class="btn" @click="onAddTable" v-if="isDialog">
-        添加到列表
-      </el-button>
-      <el-radio-group v-model="radio" @change="typeChangeHandle">
-        <el-radio-button :label="1">表格</el-radio-button>
-        <el-radio-button :label="2">图表</el-radio-button>
-      </el-radio-group>
+      <div class="left">
+        <el-button type="primary" class="btn" @click="onExport">导出</el-button>
+        <el-button
+          type="danger"
+          class="btn"
+          @click="onAddTable"
+          v-if="isDialog"
+        >
+          添加到列表
+        </el-button>
+      </div>
+      <div class="right">
+        <el-radio-group v-model="radio" @change="typeChangeHandle">
+          <el-radio-button :label="1">表格</el-radio-button>
+          <el-radio-button :label="2">图表</el-radio-button>
+        </el-radio-group>
+      </div>
     </div>
     <div v-if="sortObj">
       <el-table
@@ -31,32 +32,39 @@
           width="100"
           align="center"
         ></el-table-column>
-        <el-table-column #default="{ row }" :label="baseTable.className">
-          {{ sortObj[row.key] }}
-          <span v-if="isShowName && row.listKey">
-            ：{{ sortObj[row.listKey] | toList }}
-          </span>
-        </el-table-column>
+        <template v-for="sub in subjectMap">
+          <el-table-column
+            #default="{ row }"
+            :label="sub.scoreKey"
+            :key="sub.key"
+            align="center"
+          >
+            {{ sortObj[sub.key] ? sortObj[sub.key][row.key] : '' }}
+            <span v-if="isShowName && row.listKey">
+              ：{{ sortObj[sub.key][row.listKey] | toList }}
+            </span>
+          </el-table-column>
+        </template>
       </el-table>
       <div v-if="radio == 2">
-        <div
+        <!-- <div
           style="width: auto; height: 270px"
           id="sortScoreName"
           class="echartitem"
-        ></div>
+        ></div> -->
         <div style="display: flex">
           <div
-            style="width: 50%; height: 250px"
+            style="width: 100%; height: 250px"
             id="scoreRegion"
             class="echartitem"
           ></div>
-          <div
+          <!-- <div
             style="width: 50%; height: 250px"
             id="rangRegion"
             class="echartitem"
-          ></div>
+          ></div> -->
         </div>
-        <div style="display: flex">
+        <!-- <div style="display: flex">
           <div
             style="width: 50%; height: 200px"
             id="pass"
@@ -67,10 +75,9 @@
             id="excellent"
             class="echartitem"
           ></div>
-        </div>
+        </div> -->
       </div>
     </div>
-    <div v-else class="tip">未找到【{{ subjectName }}】数据</div>
   </div>
 </template>
 
@@ -102,6 +109,7 @@ export default {
   },
   computed: {
     ...mapState({
+      subjectMap: state => state.subjectMap,
       tables: state => state.tables,
       isShowMenu: state => state.isShowMenu
     }),
@@ -115,8 +123,7 @@ export default {
   data() {
     return {
       radio: 1,
-      subConfig: {},
-      is150: false,
+      is150: true,
       subjectName: '',
       baseTable: [],
       sortList: {},
@@ -186,7 +193,6 @@ export default {
       isTable: true,
       isShowName: false,
       echarts: {
-        sortScoreName: null,
         scoreRegion: null,
         rangRegion: null,
         pass: null,
@@ -226,8 +232,6 @@ export default {
     },
     getRowName() {
       if (!this.isTable) return false
-      this.subConfig = this.subjectObj[this.subjectName]
-      this.is150 = this.subConfig.fullScore == 150
       this.scoreRegionList = this.getScoreRegionList()
       this.rangRegionList = this.getRangRegionList()
       this.sortList = [
@@ -287,16 +291,21 @@ export default {
       return rangList
     },
     init() {
-      this.sortObj = this.classDataHandle(this.baseTable)
+      let sortObj = {}
+      this.subjectMap.forEach(item => {
+        sortObj[item.key] = this.classDataHandle(item)
+      })
+      this.sortObj = sortObj
       this.typeChangeHandle()
     },
-    classDataHandle(table = this.baseTable) {
-      const list = table.sortObj[this.subConfig.scoreKey]
-      const rankList = table.sortObj[this.subConfig.rankKey]
+    classDataHandle(subConfig) {
+      const table = this.baseTable
+      const list = table.sortObj[subConfig.scoreKey]
+      const rankList = table.sortObj[subConfig.rankKey]
       if (!list || !rankList) return null
-      this.scoreList = list.sort((a, b) => {
-        return b.score - a.score
-      })
+      // this.scoreList = list.sort((a, b) => {
+      //   return b.score - a.score
+      // })
       let sortObj = {
         score0to9Num: 0,
         score10to19Num: 0,
@@ -341,11 +350,11 @@ export default {
         averageNum: 0 //均分人数
       }
       let totalScore = 0
-      let passScore = this.subConfig.fullScore * 0.6
-      let excellentScore = this.subConfig.fullScore * 0.85
+      let passScore = subConfig.fullScore * 0.6
+      let excellentScore = subConfig.fullScore * 0.85
       list.forEach(item => {
         const score = isNaN(item.score) ? 0 : parseFloat(item.score)
-        this.getScoreRange(item, sortObj)
+        this.getScoreRange(item, sortObj, subConfig.fullScore === 150)
         // 总分
         totalScore += score
         // 获得最高分
@@ -423,10 +432,10 @@ export default {
       return sortObj
     },
     // 获取分段人数
-    getScoreRange(item, obj) {
+    getScoreRange(item, obj, is150 = false) {
       let fromNum = parseInt(item.score / 10) * 10
-      if (!this.is150 && fromNum == 10) fromNum = 9
-      if (this.is150 && fromNum == 15) fromNum = 14
+      if (!is150 && fromNum == 10) fromNum = 9
+      if (is150 && fromNum == 15) fromNum = 14
       let toNum = fromNum + 9
       if (!obj[`score${fromNum}to${toNum}`])
         obj[`score${fromNum}to${toNum}`] = []
@@ -492,9 +501,6 @@ export default {
       })
       sortObj.all = obj
     },
-    handleClick() {
-      this.getRowName()
-    },
     onExport() {
       const table = this.tableHandle()
       this.baseExportExcel(table)
@@ -543,7 +549,7 @@ export default {
     },
     echartInit() {
       this.$nextTick(() => {
-        this.echartsScoreNameInit()
+        // this.echartsScoreNameInit()
         this.echartsScoreRegionInit()
         this.echartsRangRegionInit()
         this.echartsPassInit()
@@ -622,7 +628,27 @@ export default {
       this.echarts.sortScoreName.setOption(options)
     },
     // 分数段柱状图
+    getSeriesData(type, subject) {
+      return {
+        name: subject.scoreKey,
+        data: this.sortObj[subject.key]
+          ? this[type].map(item => this.sortObj[subject.key][item.key])
+          : [],
+        type: 'bar',
+        label: {
+          show: true
+        },
+        showBackground: true,
+        backgroundStyle: {
+          color: 'rgba(220, 220, 220, 0.8)'
+        }
+      }
+    },
     echartsScoreRegionInit() {
+      const series = []
+      this.subjectMap.forEach(item => {
+        series.push(this.getSeriesData('scoreRegionList', item))
+      })
       this.echarts.scoreRegion = this.$echarts.init(
         document.getElementById('scoreRegion')
       )
@@ -649,20 +675,7 @@ export default {
           name: '人数',
           type: 'value'
         },
-        series: [
-          {
-            name: '人数',
-            data: this.scoreRegionList.map(item => this.sortObj[item.key]),
-            type: 'bar',
-            label: {
-              show: true
-            },
-            showBackground: true,
-            backgroundStyle: {
-              color: 'rgba(220, 220, 220, 0.8)'
-            }
-          }
-        ]
+        series: series
       }
       this.echarts.scoreRegion.setOption(options)
     },
@@ -840,9 +853,14 @@ export default {
 .sortTemplate {
   position: relative;
   .btns {
-    position: absolute;
-    top: 0;
-    right: 5px;
+    display: flex;
+    padding: 10px;
+    .left {
+      flex: 1;
+    }
+    .right {
+      margin: 0 auto;
+    }
     .btn {
       margin-right: 5px;
     }
