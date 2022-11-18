@@ -52,19 +52,17 @@
           id="sortScoreName"
           class="echartitem"
         ></div> -->
+        <div
+          style="width: 100%; height: 250px"
+          id="scoreRegion"
+          class="echartitem"
+        ></div>
+        <div
+          style="width: 100%; height: 250px"
+          id="rangRegion"
+          class="echartitem"
+        ></div>
         <div style="display: flex">
-          <div
-            style="width: 100%; height: 250px"
-            id="scoreRegion"
-            class="echartitem"
-          ></div>
-          <!-- <div
-            style="width: 50%; height: 250px"
-            id="rangRegion"
-            class="echartitem"
-          ></div> -->
-        </div>
-        <!-- <div style="display: flex">
           <div
             style="width: 50%; height: 200px"
             id="pass"
@@ -75,7 +73,7 @@
             id="excellent"
             class="echartitem"
           ></div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -100,11 +98,6 @@ export default {
     isDialog: {
       type: Boolean,
       default: false
-    },
-    // 是否年段分析
-    isTotal: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
@@ -122,7 +115,7 @@ export default {
   },
   data() {
     return {
-      radio: 1,
+      radio: 2,
       is150: true,
       subjectName: '',
       baseTable: [],
@@ -443,64 +436,6 @@ export default {
       obj[`score${fromNum}to${toNum}Num`] =
         obj[`score${fromNum}to${toNum}`].length
     },
-    getTotalData(sortObj) {
-      let obj = {
-        score0to9Num: 0,
-        score10to19Num: 0,
-        score20to29Num: 0,
-        score30to39Num: 0,
-        score40to49Num: 0,
-        score50to59Num: 0,
-        score60to69Num: 0,
-        score70to79Num: 0,
-        score80to89Num: 0,
-        score90to99Num: 0,
-        score100to109Num: 0,
-        score110to119Num: 0,
-        score120to129Num: 0,
-        score130to139Num: 0,
-        score140to149Num: 0,
-        passNum: 0, //及格数
-        noPassNum: 0, // 不及格数
-        passRate: 0, // 及格率
-        excellentNum: 0, //优秀数
-        excellentRate: 0, //优秀率
-        peopleNum: 0, //与考人数
-        top10Num: 0,
-        top50Num: 0,
-        top100Num: 0,
-        top150Num: 0,
-        top200Num: 0,
-        top250Num: 0,
-        top300Num: 0,
-        top350Num: 0,
-        top400Num: 0,
-        otherTopNum: 0,
-        average: 0, //平均分
-        averageNum: 0 //均分人数
-      }
-      let classNum = 0,
-        maxScore = 0,
-        minScore = 0
-      for (let c in sortObj) {
-        classNum++
-        for (let k in obj) {
-          obj[k] += parseFloat(sortObj[c][k]) || 0
-        }
-        if (maxScore < sortObj[c].maxScore) {
-          maxScore = sortObj[c].maxScore
-        }
-        if (minScore > sortObj[c].minScore) {
-          minScore = sortObj[c].minScore
-        }
-      }
-      obj.maxScore = maxScore
-      obj.minScore = minScore
-      ;['passRate', 'excellentRate', 'average'].forEach(k => {
-        obj[k] = (obj[k] / classNum).toFixed(2)
-      })
-      sortObj.all = obj
-    },
     onExport() {
       const table = this.tableHandle()
       this.baseExportExcel(table)
@@ -510,8 +445,8 @@ export default {
       const table = {
         id: Date.now(),
         column: [],
-        name: `${this.baseTable.name}-${this.isTotal ? '年段' : '科目'}分析表`,
-        className: this.isTotal ? '年段' : this.baseTable.className,
+        name: `科目分析表`,
+        className: this.baseTable.className,
         isCompare: false,
         template: 'sortTemplate',
         extend: {
@@ -541,7 +476,7 @@ export default {
         column: Object.keys(data[0]),
         data: data,
         name: `${this.baseTable.name}-${this.subjectName}-科目分析表`,
-        className: this.isTotal ? '年段' : this.baseTable.className,
+        className: this.baseTable.className,
         isCompare: false,
         template: 'sortTemplate'
       }
@@ -637,18 +572,18 @@ export default {
         type: 'bar',
         label: {
           show: true
-        },
-        showBackground: true,
-        backgroundStyle: {
-          color: 'rgba(220, 220, 220, 0.8)'
         }
+        // showBackground: true
       }
     },
     echartsScoreRegionInit() {
-      const series = []
+      const series = [],
+        legendSelected = {}
       this.subjectMap.forEach(item => {
+        legendSelected[item.scoreKey] = false
         series.push(this.getSeriesData('scoreRegionList', item))
       })
+      ;['语文', '数学', '英语'].forEach(k => (legendSelected[k] = true))
       this.echarts.scoreRegion = this.$echarts.init(
         document.getElementById('scoreRegion')
       )
@@ -661,6 +596,11 @@ export default {
           axisPointer: {
             type: 'shadow'
           }
+        },
+        legend: {
+          show: true,
+          left: 'center',
+          selected: legendSelected
         },
         grid: {
           true: false
@@ -681,6 +621,16 @@ export default {
     },
     // 名次段柱状图
     echartsRangRegionInit() {
+      const series = []
+      const legendSelected = {}
+      this.subjectMap.forEach(item => {
+        legendSelected[item.scoreKey] = false
+        series.push(this.getSeriesData('rangRegionList', item))
+      })
+      ;['语文', '数学', '英语'].forEach(k => (legendSelected[k] = true))
+      this.echarts.scoreRegion = this.$echarts.init(
+        document.getElementById('scoreRegion')
+      )
       this.echarts.rangRegion = this.$echarts.init(
         document.getElementById('rangRegion')
       )
@@ -694,6 +644,11 @@ export default {
             type: 'shadow'
           }
         },
+        legend: {
+          show: true,
+          left: 'center',
+          selected: legendSelected
+        },
         xAxis: {
           name: '名次',
           type: 'category',
@@ -704,43 +659,43 @@ export default {
           name: '人数',
           type: 'value'
         },
-        series: [
-          {
-            name: '人数',
-            data: this.rangRegionList.map(item => this.sortObj[item.key]),
-            type: 'bar',
-            label: {
-              show: true
-            },
-            showBackground: true,
-            backgroundStyle: {
-              color: 'rgba(220, 220, 220, 0.8)'
-            }
-          }
-        ]
+        series: series
       }
       this.echarts.rangRegion.setOption(options)
     },
     // 及格率
     echartsPassInit() {
+      const data = []
+      this.subjectMap.forEach(item => {
+        if (this.sortObj[item.key]) {
+          data.push({
+            value: this.sortObj[item.key].passRate,
+            name: item.scoreKey
+          })
+        }
+      })
       this.echarts.pass = this.$echarts.init(document.getElementById('pass'))
       let options = {
         title: {
           text: '及格率'
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          formatter: '{b}：{c}%'
         },
         series: [
           {
             name: '人数',
             type: 'pie',
-            radius: ['40%', '70%'],
-            avoidLabelOverlap: false,
+            radius: ['20%', '70%'],
+            avoidLabelOverlap: true,
             label: {
               show: true,
-              position: 'inside',
+              position: 'outside',
               formatter: '{d}%'
+            },
+            labelLine: {
+              show: true
             },
             emphasis: {
               label: {
@@ -749,33 +704,29 @@ export default {
                 fontWeight: 'bold'
               }
             },
-            labelLine: {
-              show: false
-            },
-            data: [
-              { value: this.sortObj.passNum, name: '及格数' },
-              { value: this.sortObj.noPassNum, name: '不及格数' }
-            ]
+            data: data
           }
         ],
         legend: {
           show: true,
           zlevel: 0,
           z: 2,
-          left: 'center',
-          formatter(name) {
-            const val =
-              name == '及格数'
-                ? options.series[0].data[0].value
-                : options.series[0].data[1].value
-            return `${name}：${val}`
-          }
+          left: 'center'
         }
       }
       this.echarts.pass.setOption(options)
     },
     // 优秀率
     echartsexcellentInit() {
+      const data = []
+      this.subjectMap.forEach(item => {
+        if (this.sortObj[item.key]) {
+          data.push({
+            value: this.sortObj[item.key].excellentRate,
+            name: item.scoreKey
+          })
+        }
+      })
       this.echarts.excellent = this.$echarts.init(
         document.getElementById('excellent')
       )
@@ -784,18 +735,22 @@ export default {
           text: '优秀率'
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          formatter: '{b}：{c}%'
         },
         series: [
           {
             name: '人数',
             type: 'pie',
-            radius: ['40%', '70%'],
+            radius: ['20%', '70%'],
             avoidLabelOverlap: false,
             label: {
               show: true,
-              position: 'inside',
+              position: 'outside',
               formatter: '{d}%'
+            },
+            labelLine: {
+              show: true
             },
             emphasis: {
               label: {
@@ -804,30 +759,14 @@ export default {
                 fontWeight: 'bold'
               }
             },
-            labelLine: {
-              show: false
-            },
-            data: [
-              { value: this.sortObj.excellentNum, name: '优秀数' },
-              {
-                value: this.sortObj.peopleNum - this.sortObj.excellentNum,
-                name: '其他'
-              }
-            ]
+            data: data
           }
         ],
         legend: {
           show: true,
           zlevel: 0,
           z: 2,
-          left: 'center',
-          formatter(name) {
-            const val =
-              name == '优秀数'
-                ? options.series[0].data[0].value
-                : options.series[0].data[1].value
-            return `${name}：${val}`
-          }
+          left: 'center'
         }
       }
       this.echarts.excellent.setOption(options)
