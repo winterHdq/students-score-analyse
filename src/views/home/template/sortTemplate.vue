@@ -27,7 +27,7 @@
         v-show="radio == 1"
       >
         <el-table-column
-          :label="subjectName"
+          label="类别"
           prop="label"
           width="100"
           align="center"
@@ -115,9 +115,8 @@ export default {
   },
   data() {
     return {
-      radio: 2,
+      radio: 1,
       is150: true,
-      subjectName: '',
       baseTable: [],
       sortList: {},
       scoreRegionList: [],
@@ -204,7 +203,6 @@ export default {
     }
   },
   created() {
-    this.subjectName = this.subjectList[0]
     this.getTables()
   },
   destroyed() {
@@ -464,20 +462,22 @@ export default {
         .childNodes[1].childNodes.forEach(item => {
           if (item.tagName !== 'TR') return
           let _item = {}
-          let textContent = item.childNodes[0].textContent
-          if (textContent == this.subjectName) return
-          _item[this.subjectName] = textContent
-          _item[this.baseTable.className] =
-            item.childNodes[1].textContent.trim()
+          let textContent = item.childNodes[0].textContent.trim()
+          if (textContent == '类别') return
+          _item['类别'] = textContent
+          this.subjectList.forEach((n, index) => {
+            _item[n] = item.childNodes[index + 1].textContent.trim()
+          })
           data.push(_item)
         })
       const table = {
         id: Date.now(),
         column: Object.keys(data[0]),
         data: data,
-        name: `${this.baseTable.name}-${this.subjectName}-科目分析表`,
+        name: `${this.baseTable.name}-科目分析表`,
         className: this.baseTable.className,
         isCompare: false,
+        isScore: false,
         template: 'sortTemplate'
       }
       return table
@@ -687,12 +687,12 @@ export default {
           {
             name: '人数',
             type: 'pie',
-            radius: ['20%', '70%'],
+            radius: ['10%', '60%'],
             avoidLabelOverlap: true,
             label: {
               show: true,
               position: 'outside',
-              formatter: '{d}%'
+              formatter: '{b}：{c}%'
             },
             labelLine: {
               show: true
@@ -742,12 +742,12 @@ export default {
           {
             name: '人数',
             type: 'pie',
-            radius: ['20%', '70%'],
+            radius: ['10%', '60%'],
             avoidLabelOverlap: false,
             label: {
               show: true,
               position: 'outside',
-              formatter: '{d}%'
+              formatter: '{b}：{c}%'
             },
             labelLine: {
               show: true

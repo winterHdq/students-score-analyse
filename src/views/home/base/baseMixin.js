@@ -66,6 +66,7 @@ const baseMixin = {
                 sz: 10
               }
             }
+            if (table.isScore === false) return
             this.textColorHandle(
               table.column[index % headerLen],
               sheet[key],
