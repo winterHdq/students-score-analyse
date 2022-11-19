@@ -76,6 +76,10 @@ export default {
     table: {
       type: Object,
       required: true
+    },
+    radio: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -201,7 +205,10 @@ export default {
       this.baseExportExcel(downloadTable)
     },
     onDownload() {
-      this.downloadTable()
+      if (this.radio === 1) {
+        this.downloadTable()
+        return
+      }
       let isShowEhart = {}
       this.options.forEach(item => {
         if (this.formData.checkedSubject.includes(item.key)) {

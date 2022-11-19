@@ -27,6 +27,7 @@
           <base-echart-download-btn
             :name="nameCheck[0]"
             :table="table"
+            :radio="radio"
           ></base-echart-download-btn>
           <br />
           <base-score-analyse-btn
