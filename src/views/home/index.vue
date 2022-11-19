@@ -12,14 +12,14 @@
         >
           <el-button type="primary" plain class="btn">上传</el-button>
         </el-upload>
-        <el-button
+        <!-- <el-button
           type="primary"
           class="btn"
           plain
           @click="compaseDialog.show = true"
         >
           进退比较
-        </el-button>
+        </el-button> -->
         <base-mul-class-analyse-btn class="btn"></base-mul-class-analyse-btn>
         <base-score-analyse-btn class="btn"></base-score-analyse-btn>
         <base-mul-sheet-export-btn class="btn"></base-mul-sheet-export-btn>

@@ -7,6 +7,14 @@
           v-model="curTable.className"
         ></base-class-setting>
         <template v-if="curTable.sortObj">
+          <el-button
+            type="danger"
+            class="btn"
+            plain
+            @click="compaseDialog.show = true"
+          >
+            进退比较
+          </el-button>
           <el-tooltip class="item" effect="dark" placement="top-start">
             <div slot="content">
               科目差值：折算名/段名 - 科目名
@@ -96,6 +104,11 @@
       :curTable="curTable"
       @onClose="rankCompareDialog.show = false"
     ></rank-compare-dialog>
+    <compase-dialog
+      v-if="compaseDialog.show"
+      :curTableId="curTable.id"
+      @onClose="compaseDialog.show = false"
+    ></compase-dialog>
   </div>
 </template>
 
@@ -106,6 +119,7 @@ import SortDialog from '../components/sortDialog'
 import { mapState, mapGetters } from 'vuex'
 import BaseExportBtn from '../base/baseExportBtn'
 import RankCompareDialog from '../components/rankCompareDialog'
+import CompaseDialog from '../components/compareDialog'
 import { getYMin } from '@/common/utils'
 // import baseMixin from '../base/baseMixin'
 export default {
@@ -115,7 +129,8 @@ export default {
     BaseTable,
     SortDialog,
     BaseExportBtn,
-    RankCompareDialog
+    RankCompareDialog,
+    CompaseDialog
   },
   props: {
     tableHeight: {
@@ -129,6 +144,9 @@ export default {
         show: false
       },
       rankCompareDialog: {
+        show: false
+      },
+      compaseDialog: {
         show: false
       },
       nameList: [],
@@ -196,7 +214,6 @@ export default {
       this.curTable.column.forEach(key => {
         this.subjectRankList.includes(key) && xAxisRankData.push(key)
       })
-      xAxisRankData.push('段名')
       this.xAxisData = xAxisData
       this.xAxisRankData = xAxisRankData
       if (this.isPreCompare) {

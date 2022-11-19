@@ -17,10 +17,11 @@
         <el-select
           v-model="formData.initTableId"
           placeholder="请选择"
+          :disabled="curTableId"
           @change="initTableChange"
         >
           <el-option
-            v-for="item in tables"
+            v-for="item in scoreTables"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -34,7 +35,7 @@
           @change="compareTableChange"
         >
           <el-option
-            v-for="item in tables"
+            v-for="item in scoreTables"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -128,11 +129,16 @@ export default {
   components: { BaseTable, BaseExportBtn },
   mixins: [baseMixin],
   props: {
-    tables: {
-      type: Array,
-      default() {
-        return []
-      }
+    curTableId: {
+      type: Number
+    }
+  },
+  computed: {
+    tables() {
+      return this.$store.state.tables
+    },
+    scoreTables() {
+      return this.tables.filter(item => item.sortObj)
     }
   },
   data() {
@@ -167,6 +173,10 @@ export default {
   },
   created() {
     this.dialogVisible = true
+    if (this.curTableId) {
+      this.formData.initTableId = this.curTableId
+      this.initTableChange(this.curTableId)
+    }
   },
   methods: {
     handleCheckAllChange(res, key) {
@@ -183,7 +193,7 @@ export default {
       if (id == this.formData.compareTableId) {
         this.$message.error('比较的是同一张表格，请确认')
       }
-      this.initTable = this.tables.find(item => item.id == id)
+      this.initTable = this.scoreTables.find(item => item.id == id)
       this.thList = Object.keys(this.initTable.data[0])
       this.formData.compareTh = this.thList.filter(
         item => item !== '姓名' && item.indexOf('名') > 0
@@ -197,7 +207,7 @@ export default {
       if (id == this.formData.initTableId) {
         this.$message.error('比较的是同一张表格，请确认')
       }
-      this.preTable = this.tables.find(item => item.id == id)
+      this.preTable = this.scoreTables.find(item => item.id == id)
     },
     async onSave() {
       await this.$refs.form.validate()
