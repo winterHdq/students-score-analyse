@@ -53,12 +53,12 @@
           class="echartitem"
         ></div> -->
         <div
-          style="width: 100%; height: 250px"
+          style="width: auto; height: 250px"
           id="scoreRegion"
           class="echartitem"
         ></div>
         <div
-          style="width: 100%; height: 250px"
+          style="width: auto; height: 250px"
           id="rangRegion"
           class="echartitem"
         ></div>
