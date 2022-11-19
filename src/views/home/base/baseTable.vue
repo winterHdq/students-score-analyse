@@ -19,8 +19,8 @@
         :key="item"
         :label="item"
         :prop="item"
-        :fixed="item.indexOf('班级') >= 0 || item == '姓名'"
-        :sortable="item.indexOf('班级') == -1 && item !== '姓名'"
+        :fixed="fixedCol.indexOf(item) >= 0"
+        :sortable="fixedCol.indexOf(item) == -1"
         align="center"
         #default="{ row }"
       >
@@ -43,6 +43,12 @@ export default {
       type: Object,
       default() {
         return {}
+      }
+    },
+    fixedCol: {
+      type: Array,
+      default() {
+        return ['班级', '姓名']
       }
     }
   },

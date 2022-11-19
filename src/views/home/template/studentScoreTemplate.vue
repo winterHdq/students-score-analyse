@@ -43,6 +43,7 @@
         ref="baseTable"
         :table-height="contentHeight"
         :table="table"
+        :fixedCol="nameCheck"
         v-if="radio == 1"
       ></base-table>
       <div v-if="radio == 2">
