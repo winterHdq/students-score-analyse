@@ -109,6 +109,12 @@ export default {
     ...mapGetters(['subjectList', 'subjectObj', 'curIndex'])
   },
   watch: {
+    tableId: {
+      handler() {
+        this.getTables()
+      },
+      immediate: true
+    },
     isShowMenu() {
       this.echartsResize()
     }
@@ -201,9 +207,6 @@ export default {
         return val.name || ''
       }
     }
-  },
-  created() {
-    this.getTables()
   },
   destroyed() {
     this.destroyedEchart()
@@ -443,7 +446,7 @@ export default {
       const table = {
         id: Date.now(),
         column: [],
-        name: `科目分析表`,
+        name: `${this.baseTable.name}-科目分析表`,
         className: this.baseTable.className,
         isCompare: false,
         template: 'sortTemplate',
