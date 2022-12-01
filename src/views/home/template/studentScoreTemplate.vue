@@ -297,10 +297,23 @@ export default {
       }
     },
     echartsReducedRankInit() {
+      let Ymin = getYMin(this.zsmSeries.data)
+      const yAxis = {
+        name: '名次',
+        min: Ymin,
+        type: 'value',
+        inverse: true //反转坐标轴
+      }
+      if (this.echarts.reducedRank) {
+        this.echarts.reducedRank.setOption({
+          series: this.zsmSeries,
+          yAxis: yAxis
+        })
+        return
+      }
       this.echarts.reducedRank = this.$echarts.init(
         document.getElementById('reducedRank')
       )
-      let Ymin = getYMin(this.zsmSeries.data)
       const options = {
         title: {
           text: '折算名分析',
@@ -329,12 +342,7 @@ export default {
           data: this.xAxisData,
           position: 'top'
         },
-        yAxis: {
-          name: '名次',
-          min: Ymin,
-          type: 'value',
-          inverse: true //反转坐标轴
-        },
+        yAxis: yAxis,
         series: this.zsmSeries
       }
       this.echarts.reducedRank.setOption(options)
@@ -344,6 +352,12 @@ export default {
       this.subjectMap.forEach(item => {
         series.push(this.getSeries(item.rankKey))
       })
+      if (this.echarts.summary) {
+        this.echarts.summary.setOption({
+          series: series
+        })
+        return
+      }
       this.echarts.summary = this.$echarts.init(
         document.getElementById('summary')
       )
@@ -388,6 +402,15 @@ export default {
       let series = [this.getSeries(obj.rankKey)]
       series.push(this.zsmSeries)
       let yMin = getYMin([...series[0].data, ...series[1].data])
+      if (this.echarts[`${obj.key}`]) {
+        this.echarts[`${obj.key}`].setOption({
+          yAxis: {
+            min: yMin
+          },
+          series: series
+        })
+        return
+      }
       this.echarts[`${obj.key}`] = this.$echarts.init(
         document.getElementById(obj.key)
       )
