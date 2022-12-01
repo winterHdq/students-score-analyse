@@ -79,6 +79,11 @@
         /> -->
       </div>
     </div>
+    <div class="downloadClose" v-if="downloadLoading">
+      <el-button type="danger" @click="isCancelDownload = true">
+        取消下载
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -154,7 +159,8 @@ export default {
         reducedRank: true,
         totalRank: true
       },
-      downloadLoading: null
+      downloadLoading: null,
+      isCancelDownload: false
     }
   },
   created() {
@@ -264,7 +270,10 @@ export default {
     },
     destroyedEchart() {
       for (let k in this.echarts) {
-        this.echarts[k] && this.echarts[k].dispose()
+        if (this.echarts[k]) {
+          this.echarts[k].dispose()
+          this.echarts[k] = null
+        }
       }
     },
     echartInit() {
@@ -476,36 +485,40 @@ export default {
         this.$refs.downloadBtn.onBatchDownLoadTable(table)
       } else {
         try {
-          this.downloadLoading = {
+          this.downloadLoading = this.$loading({
             lock: true,
             text: '正在拼命下载中......',
             spinner: 'el-icon-loading',
             fullscreen: true,
             background: 'rgba(0, 0, 0, 0.7)'
+          })
+          this.isShowEhart.name = true
+          for (let k in this.echarts) {
+            if (!this.downloadSetting.checkedSubject.includes(k)) {
+              this.isShowEhart[k] = false
+            }
           }
-          // this.isShowEhart.name = true
-          // for (let k in this.echarts) {
-          //   if (!this.downloadSetting.checkedSubject.includes(k)) {
-          //     this.isShowEhart[k] = false
-          //   }
-          // }
 
-          // let dlTables = this.defaultTable.data.filter(
-          //   (item, index) => index < 5
-          // )
-          // for (let i = 0; i < dlTables.length; i++) {
-          //   const item = dlTables[i]
-          //   const name = item['姓名']
-          //   this.getTable(this.selectTables, name)
-          //   await this.downloadEchart(name)
-          // }
-          // for (let k in this.isShowEhart) {
-          //   this.isShowEhart[k] = true
-          // }
-          // this.isShowEhart.name = false
-          // this.getTable()
+          let dlTables = this.defaultTable.data
+          for (let i = 0; i < dlTables.length; i++) {
+            if (this.isCancelDownload) return
+            const item = dlTables[i]
+            const name = item['姓名']
+            this.getTable(this.selectTables, name)
+            await this.downloadEchart(name)
+          }
         } finally {
-          // this.downloadLoading.close()
+          for (let k in this.isShowEhart) {
+            this.isShowEhart[k] = true
+          }
+          this.isShowEhart.name = false
+          this.$nextTick(() => {
+            this.getTable()
+            this.isCancelDownload = false
+            this.downloadLoading.close()
+            this.downloadLoading = null
+            this.$refs.downloadBtn.disabledBtn = false
+          })
         }
       }
     },
@@ -580,6 +593,13 @@ export default {
       padding: 5px;
       font-size: 16px;
     }
+  }
+  .downloadClose {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50px);
+    z-index: 3000;
   }
   @media print {
     .btns {

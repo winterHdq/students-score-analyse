@@ -212,12 +212,12 @@ export default {
             name: `${k}${this.table.isCompare ? '进退分析' : ''}`,
             column: ['姓名', '班级', k]
           }
-          this.thList.includes(this.subjectObj[k].rankKey) &&
-            sheet.column.push(this.subjectObj[k].rankKey)
-          this.thList.includes(`${this.subjectObj[k].rankKey}进退`) &&
-            sheet.column.push(`${this.subjectObj[k].rankKey}进退`)
-          this.thList.includes(`${this.subjectObj[k].rankKey}差`) &&
-            sheet.column.push(`${this.subjectObj[k].rankKey}差`)
+          const rankKey = this.subjectObj[k].rankKey
+          this.thList.includes(rankKey) && sheet.column.push(rankKey)
+          this.thList.includes(`${rankKey}进退`) &&
+            sheet.column.push(`${rankKey}进退`)
+          this.thList.includes(`${rankKey.substr(0, 1)}差`) &&
+            sheet.column.push(`${rankKey.substr(0, 1)}差`)
           ;['折总', '折算名'].forEach(key => {
             if (this.thList.includes(key)) {
               sheet.column.push(key)
