@@ -1,13 +1,24 @@
 <template>
   <div class="baseEchartDownLoadBtn">
-    <el-button type="primary" @click="onDownload">下载</el-button>
+    <el-dropdown
+      split-button
+      type="primary"
+      @click="onDownload"
+      @command="handleCommand"
+    >
+      下载
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="batch">一键下载</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <!-- <el-button type="primary" @click="onDownload">下载</el-button> -->
     <el-button
       type="primary"
       plain
-      style="margin-left: -2px; border-radius: 0 3px 3px 0"
+      style="margin-left: -2px; border-radius: 0 3px 3px 0; padding: 0px 5px"
       @click="downloadVisiable = true"
     >
-      设置
+      <i class="el-icon-s-tools" style="font-size: 17px; flex-shrink: 1"></i>
     </el-button>
     <!-- <el-button type="danger" @click="onPrint">打印</el-button> -->
     <el-dialog title="下载设置" :visible.sync="downloadVisiable">
@@ -165,11 +176,11 @@ export default {
       this.$store.commit('setDownloadSetting', this.formData)
       this.downloadVisiable = false
     },
-    downloadTable() {
-      let downloadColumn = [this.name, ...this.formData.checkedColumn]
+    getDownloadData(curTable = this.table, name = this.name) {
+      let downloadColumn = [name, ...this.formData.checkedColumn]
       let list = [],
         rows = [{ hpx: 24 }]
-      this.table.data.forEach(item => {
+      curTable.data.forEach(item => {
         rows.push({ hpx: 24 })
         let _item = {}
         for (let k in item) {
@@ -192,16 +203,19 @@ export default {
         }
       })
       cols[0].wch = 8
-      let downloadTable = {
-        name: this.table.name,
-        className: this.table.className,
-        column: this.formData.checkedColumn,
+      return {
+        name: curTable.name,
+        className: curTable.className,
+        column: downloadColumn,
         data: list,
         sheet: {
           cols: cols
         },
         isCompare: true
       }
+    },
+    downloadTable() {
+      let downloadTable = this.getDownloadData()
       this.baseExportExcel(downloadTable)
     },
     onDownload() {
@@ -242,6 +256,22 @@ export default {
           })
         })
       })
+    },
+    async handleCommand(val) {
+      switch (val) {
+        case 'batch':
+          this.$emit('batchDownloadTable')
+          break
+      }
+    },
+    // 批量下载
+    onBatchDownLoad(table = {}) {
+      const sheets = []
+      table.sheets.forEach(item => {
+        sheets.push(this.getDownloadData(item, item.extends.name))
+      })
+      table.sheets = sheets
+      this.baseExportMulSheetExcel(table)
     }
   }
 }
@@ -250,5 +280,7 @@ export default {
 <style lang="scss" scoped>
 .baseEchartDownLoadBtn {
   display: inline-block;
+  display: flex;
+  margin-top: 5px;
 }
 </style>

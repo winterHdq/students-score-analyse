@@ -23,18 +23,19 @@
           <el-radio-button :label="2">图表</el-radio-button>
         </el-radio-group>
         <br />
-        <div class="btn">
-          <base-echart-download-btn
-            :name="nameCheck[0]"
-            :table="table"
-            :radio="radio"
-          ></base-echart-download-btn>
-          <br />
+        <div>
           <base-score-analyse-btn
             btnName="修改"
             :table="curTable"
             class="btn"
-          ></base-score-analyse-btn>
+          />
+          <base-echart-download-btn
+            ref="downloadBtn"
+            :name="nameCheck[0]"
+            :table="table"
+            :radio="radio"
+            @batchDownloadTable="batchDownloadTable"
+          />
         </div>
       </div>
     </div>
@@ -205,14 +206,12 @@ export default {
         ...['总分', '段名', '段差', '折总', '折算名', '优势', '劣势']
       )
     },
-    getTable(selectTables = this.selectTables) {
+    getTableData(selectTables = this.selectTables, name = this.nameCheck[0]) {
       let list = [],
         xAxisData = []
-      const name = this.nameCheck[0]
       selectTables.forEach(table => {
         xAxisData.push(table.name)
-        let nameItem =
-          table.data.find(item => item['姓名'] == this.nameCheck[0]) || {}
+        let nameItem = table.data.find(item => item['姓名'] == name) || {}
         let _item = {}
         _item[name] = table.name
         let totalRank = nameItem['折算名'] || nameItem['段名'] || null
@@ -238,15 +237,21 @@ export default {
         })
         list.push(_item)
       })
-      this.table = {
-        name: `${this.nameCheck[0]}-成绩分析`,
+      this.xAxisData = xAxisData
+      return {
+        name: `${name}-成绩分析`,
         id: Date.now(),
         data: list,
         column: Object.keys(list[0]),
         isCompare: true,
-        className: this.defaultTable.className
+        className: this.defaultTable.className,
+        extends: {
+          name
+        }
       }
-      this.xAxisData = xAxisData
+    },
+    getTable(selectTables = this.selectTables) {
+      this.table = this.getTableData(selectTables)
       this.getZsmData()
       this.typeChangeHandle()
     },
@@ -433,6 +438,21 @@ export default {
           this.echarts[k].resize()
         }
       }, 500)
+    },
+    // 一键下载表格
+    async batchDownloadTable() {
+      const table = {
+        name: `${this.defaultTable.className}-学生成绩分析表`,
+        id: Date.now(),
+        className: this.defaultTable.className,
+        sheets: []
+      }
+      this.defaultTable.data.forEach(item => {
+        const name = item['姓名']
+        if (!name) return
+        table.sheets.push(this.getTableData(this.selectTables, name))
+      })
+      this.$refs.downloadBtn.onBatchDownLoad(table)
     }
   }
 }
