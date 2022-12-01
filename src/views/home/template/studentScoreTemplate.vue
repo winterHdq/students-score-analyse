@@ -493,12 +493,12 @@ export default {
             background: 'rgba(0, 0, 0, 0.7)'
           })
           this.isShowEhart.name = true
+          const checkedSubject = this.$refs.downloadBtn.formData.checkedSubject
           for (let k in this.echarts) {
-            if (!this.downloadSetting.checkedSubject.includes(k)) {
+            if (!checkedSubject.includes(k)) {
               this.isShowEhart[k] = false
             }
           }
-
           let dlTables = this.defaultTable.data
           for (let i = 0; i < dlTables.length; i++) {
             if (this.isCancelDownload) return
