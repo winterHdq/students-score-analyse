@@ -83,6 +83,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
+import html2canvas from 'html2canvas'
 import BaseTable from '../base/baseTable'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
@@ -118,21 +120,14 @@ export default {
     }
   },
   computed: {
-    tables() {
-      return this.$store.state.tables
-    },
-    curTableId() {
-      return this.$store.state.curTableId
-    },
-    subjectMap() {
-      return this.$store.state.subjectMap
-    },
-    isShowMenu() {
-      return this.$store.state.isShowMenu
-    },
-    curTable() {
-      return this.$store.getters.curTable || {}
-    }
+    ...mapState({
+      tables: state => state.tables,
+      curTableId: state => state.curTableId,
+      subjectMap: state => state.subjectMap,
+      isShowMenu: state => state.isShowMenu,
+      downloadSetting: state => state.downloadSetting
+    }),
+    ...mapGetters(['curTable'])
   },
   mounted() {
     this.contentHeight =
@@ -158,7 +153,8 @@ export default {
       isShowEhart: {
         reducedRank: true,
         totalRank: true
-      }
+      },
+      downloadLoading: null
     }
   },
   created() {
@@ -250,8 +246,8 @@ export default {
         }
       }
     },
-    getTable(selectTables = this.selectTables) {
-      this.table = this.getTableData(selectTables)
+    getTable(selectTables = this.selectTables, name = this.nameCheck[0]) {
+      this.table = this.getTableData(selectTables, name)
       this.getZsmData()
       this.typeChangeHandle()
     },
@@ -274,14 +270,15 @@ export default {
     echartInit() {
       this.$nextTick(() => {
         // this.echartsSummaryInit()
-        this.echartsReducedRankInit()
-        this.echartsInitHandle({
-          name: '段名',
-          key: 'totalRank',
-          rankKey: '段名'
-        })
+        this.isShowEhart.reducedRank && this.echartsReducedRankInit()
+        this.isShowEhart.totalRank &&
+          this.echartsInitHandle({
+            name: '段名',
+            key: 'totalRank',
+            rankKey: '段名'
+          })
         this.subjectMap.forEach(item => {
-          this.echartsInitHandle(item)
+          this.isShowEhart[item.key] && this.echartsInitHandle(item)
         })
       })
     },
@@ -462,7 +459,7 @@ export default {
         }
       }, 500)
     },
-    // 一键下载表格
+    // 一键下载
     async batchDownload() {
       if (this.radio == 1) {
         const table = {
@@ -477,7 +474,60 @@ export default {
           table.sheets.push(this.getTableData(this.selectTables, name))
         })
         this.$refs.downloadBtn.onBatchDownLoadTable(table)
+      } else {
+        try {
+          this.downloadLoading = {
+            lock: true,
+            text: '正在拼命下载中......',
+            spinner: 'el-icon-loading',
+            fullscreen: true,
+            background: 'rgba(0, 0, 0, 0.7)'
+          }
+          // this.isShowEhart.name = true
+          // for (let k in this.echarts) {
+          //   if (!this.downloadSetting.checkedSubject.includes(k)) {
+          //     this.isShowEhart[k] = false
+          //   }
+          // }
+
+          // let dlTables = this.defaultTable.data.filter(
+          //   (item, index) => index < 5
+          // )
+          // for (let i = 0; i < dlTables.length; i++) {
+          //   const item = dlTables[i]
+          //   const name = item['姓名']
+          //   this.getTable(this.selectTables, name)
+          //   await this.downloadEchart(name)
+          // }
+          // for (let k in this.isShowEhart) {
+          //   this.isShowEhart[k] = true
+          // }
+          // this.isShowEhart.name = false
+          // this.getTable()
+        } finally {
+          // this.downloadLoading.close()
+        }
       }
+    },
+    downloadEchart(name) {
+      return new Promise(resolve => {
+        this.$nextTick(() => {
+          // 图表转换成canvas
+          html2canvas(document.getElementById('echarts')).then(canvas => {
+            var img = canvas
+              .toDataURL('image/png')
+              .replace('image/png', 'image/octet-stream')
+            // 创建a标签，实现下载
+            var creatIMg = document.createElement('a')
+            creatIMg.download = `${name}-成绩分析.png` // 设置下载的文件名，
+            creatIMg.href = img // 下载url
+            document.body.appendChild(creatIMg)
+            creatIMg.click()
+            creatIMg.remove() // 下载之后把创建的元素删除
+            resolve()
+          })
+        })
+      })
     }
   }
 }
@@ -525,6 +575,9 @@ export default {
     flex-wrap: wrap;
     justify-content: space-around;
     .nameTitle {
+      width: 100%;
+      text-align: center;
+      padding: 5px;
       font-size: 16px;
     }
   }
