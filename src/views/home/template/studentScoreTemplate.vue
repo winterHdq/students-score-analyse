@@ -34,7 +34,7 @@
             :name="nameCheck[0]"
             :table="table"
             :radio="radio"
-            @batchDownloadTable="batchDownloadTable"
+            @batchDownload="batchDownload"
           />
         </div>
       </div>
@@ -440,19 +440,21 @@ export default {
       }, 500)
     },
     // 一键下载表格
-    async batchDownloadTable() {
-      const table = {
-        name: `${this.defaultTable.className}-学生成绩分析表`,
-        id: Date.now(),
-        className: this.defaultTable.className,
-        sheets: []
+    async batchDownload() {
+      if (this.radio == 1) {
+        const table = {
+          name: `${this.defaultTable.className}-学生成绩分析表`,
+          id: Date.now(),
+          className: this.defaultTable.className,
+          sheets: []
+        }
+        this.defaultTable.data.forEach(item => {
+          const name = item['姓名']
+          if (!name) return
+          table.sheets.push(this.getTableData(this.selectTables, name))
+        })
+        this.$refs.downloadBtn.onBatchDownLoadTable(table)
       }
-      this.defaultTable.data.forEach(item => {
-        const name = item['姓名']
-        if (!name) return
-        table.sheets.push(this.getTableData(this.selectTables, name))
-      })
-      this.$refs.downloadBtn.onBatchDownLoad(table)
     }
   }
 }

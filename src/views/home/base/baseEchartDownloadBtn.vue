@@ -5,6 +5,7 @@
       type="primary"
       @click="onDownload"
       @command="handleCommand"
+      :disabled="disabledBtn"
     >
       下载
       <el-dropdown-menu slot="dropdown">
@@ -95,6 +96,7 @@ export default {
   },
   data() {
     return {
+      disabledBtn: false,
       downloadVisiable: false,
       formData: {
         checkedColumn: [],
@@ -217,8 +219,10 @@ export default {
     downloadTable() {
       let downloadTable = this.getDownloadData()
       this.baseExportExcel(downloadTable)
+      this.disabledBtn = false
     },
     onDownload() {
+      this.disabledBtn = true
       if (this.radio === 1) {
         this.downloadTable()
         return
@@ -251,27 +255,27 @@ export default {
           }
           isShowEhart.name = false
           this.$parent.isShowEhart = isShowEhart
-          this.$nextTick(() => {
-            this.downloadVisiable = false
-          })
+          this.disabledBtn = false
         })
       })
     },
     async handleCommand(val) {
+      this.disabledBtn = true
       switch (val) {
         case 'batch':
-          this.$emit('batchDownloadTable')
+          this.$emit('batchDownload')
           break
       }
     },
     // 批量下载
-    onBatchDownLoad(table = {}) {
+    onBatchDownLoadTable(table = {}) {
       const sheets = []
       table.sheets.forEach(item => {
         sheets.push(this.getDownloadData(item, item.extends.name))
       })
       table.sheets = sheets
       this.baseExportMulSheetExcel(table)
+      this.disabledBtn = false
     }
   }
 }
