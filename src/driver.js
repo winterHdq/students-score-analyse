@@ -3,7 +3,7 @@ import Driver from 'driver.js'
 import 'driver.js/dist/driver.min.css'
 
 Vue.prototype.$driver = new Driver({
-  opacity: 0,
+  opacity: 0.5,
   animate: true,
   padding: 5,
   allowClose: false, //禁止点击外部关闭
