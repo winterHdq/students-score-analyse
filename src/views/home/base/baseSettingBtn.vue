@@ -1,7 +1,7 @@
 <template>
   <div class="baseSettingBtn">
     <el-link @click="dialogVisiable = !dialogVisiable">
-      <i class="el-icon-setting btn"></i>
+      <i class="el-icon-setting btn" id="baseSettingBtn"></i>
     </el-link>
     <el-dialog
       title="设置"
@@ -57,10 +57,10 @@ export default {
 <style lang="scss" scoped>
 .baseSettingBtn {
   display: inline-block;
+  margin: auto 10px;
   .btn {
     font-size: 25px;
     color: #fff;
-    margin-left: 10px;
   }
   ::v-deep {
     .base-class-setting .el-form-item--mini .el-form-item__content,

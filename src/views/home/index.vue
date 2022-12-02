@@ -10,7 +10,9 @@
           :on-change="fileChange"
           style="display: inline-block"
         >
-          <el-button type="primary" plain class="btn">上传</el-button>
+          <el-button type="primary" id="uploadBtn" plain class="btn">
+            上传
+          </el-button>
         </el-upload>
         <!-- <el-button
           type="primary"
@@ -20,10 +22,25 @@
         >
           进退比较
         </el-button> -->
-        <base-mul-class-analyse-btn class="btn"></base-mul-class-analyse-btn>
-        <base-score-analyse-btn class="btn"></base-score-analyse-btn>
-        <base-mul-sheet-export-btn class="btn"></base-mul-sheet-export-btn>
-        <el-button type="primary" plain class="btn" @click="onDelete">
+        <base-mul-class-analyse-btn
+          class="btn"
+          id="mulClassAnalyseBtn"
+        ></base-mul-class-analyse-btn>
+        <base-score-analyse-btn
+          class="btn"
+          id="scoreAnalyseBtn"
+        ></base-score-analyse-btn>
+        <base-mul-sheet-export-btn
+          class="btn"
+          id="mulSheetExportBtn"
+        ></base-mul-sheet-export-btn>
+        <el-button
+          type="primary"
+          plain
+          class="btn"
+          @click="onDelete"
+          id="allDeleteBtn"
+        >
           一键删除
         </el-button>
       </div>
@@ -81,6 +98,7 @@ import BaseSettingBtn from './base/baseSettingBtn'
 import MenuList from './components/menuList'
 import baseMixin from './base/baseMixin'
 import { mapState } from 'vuex'
+import guide from './guide'
 export default {
   name: 'ExcelView',
   components: {
@@ -129,8 +147,15 @@ export default {
   mounted() {
     this.tableHeight = $('.content')[0].offsetHeight - 56
     this.$store.commit('getCurTableId')
+    !this.defaultClassName && this.startDriver()
   },
   methods: {
+    startDriver() {
+      setTimeout(() => {
+        this.$driver.defineSteps(guide)
+        this.$driver.start()
+      }, 50)
+    },
     fileChange(file) {
       if (!/\.(xls|xlsx)$/.test(file.name))
         return this.$message.error('上传格式不正确，请上传xls/xlsx文件格式')

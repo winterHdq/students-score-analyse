@@ -4,6 +4,7 @@
       <p class="text" v-if="isShowMenu">列表</p>
       <i
         class="btn"
+        id="menuHide"
         :class="isShowMenu ? 'el-icon-s-fold' : 'el-icon-s-unfold'"
         @click="$store.commit('setIsShowMenu', !isShowMenu)"
       ></i>

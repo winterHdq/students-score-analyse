@@ -406,7 +406,8 @@ export default {
         },
         grid: {
           top: 75,
-          bottom: 35
+          bottom: 35,
+          right: 70
         },
         legend: {
           show: true,
