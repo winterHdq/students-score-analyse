@@ -524,7 +524,7 @@ export default {
     },
     downloadEchart(name) {
       return new Promise(resolve => {
-        this.$nextTick(() => {
+        setTimeout(() => {
           // 图表转换成canvas
           html2canvas(document.getElementById('echarts')).then(canvas => {
             var img = canvas
@@ -539,7 +539,7 @@ export default {
             creatIMg.remove() // 下载之后把创建的元素删除
             resolve()
           })
-        })
+        }, 500)
       })
     }
   }
