@@ -81,12 +81,14 @@
           class="echartitem"
         ></div>
       </div>
-      <div
-        v-if="isPreCompare"
-        style="width: auto; height: 250px"
-        id="compare"
-        class="echartitem"
-      ></div>
+      <div style="display: flex">
+        <div
+          v-if="isPreCompare"
+          style="width: 50%; height: 270px"
+          id="compare"
+          class="echartitem"
+        ></div>
+      </div>
     </div>
     <base-table
       v-else
@@ -276,12 +278,12 @@ export default {
       })
       if (this.isPreCompare) {
         const { series } = this.getCompaseConfig()
-        const yMin = getYMin([...series[0].data, ...series[1].data])
+        // const yMin = getYMin([...series[0].data, ...series[1].data])
         this.echartsCompare.setOption({
-          series: series,
-          yAxis: {
-            min: yMin
-          }
+          series: series
+          // yAxis: {
+          //   min: yMin
+          // }
         })
       }
     },
@@ -438,20 +440,44 @@ export default {
       }
       this.echartsRankName.setOption(options)
     },
+    // getCompaseConfig() {
+    //   let preTable = this.curTable.extend.preTable
+    //   let series = [
+    //     {
+    //       name: this.curTable.name,
+    //       type: 'line',
+    //       label: {
+    //         show: true
+    //       },
+    //       data: []
+    //     },
+    //     {
+    //       name: preTable.name,
+    //       type: 'line',
+    //       label: {
+    //         show: true
+    //       },
+    //       data: []
+    //     }
+    //   ]
+    //   let xAxis = this.curTable.extend.compareColumn
+    //   const name = this.nameCheck[0]
+    //   let curItem = this.nameListObj[name]
+    //   let preItem = this.preNameListObj[name]
+    //   xAxis.forEach(key => {
+    //     curItem && series[0].data.push(curItem[key])
+    //     preItem && series[1].data.push(preItem[key])
+    //   })
+    //   return {
+    //     series,
+    //     xAxis
+    //   }
+    // },
     getCompaseConfig() {
-      let preTable = this.curTable.extend.preTable
       let series = [
         {
           name: this.curTable.name,
-          type: 'line',
-          label: {
-            show: true
-          },
-          data: []
-        },
-        {
-          name: preTable.name,
-          type: 'line',
+          type: 'bar',
           label: {
             show: true
           },
@@ -461,10 +487,8 @@ export default {
       let xAxis = this.curTable.extend.compareColumn
       const name = this.nameCheck[0]
       let curItem = this.nameListObj[name]
-      let preItem = this.preNameListObj[name]
       xAxis.forEach(key => {
-        curItem && series[0].data.push(curItem[key])
-        preItem && series[1].data.push(preItem[key])
+        curItem && series[0].data.push(curItem[`${key}进退`])
       })
       return {
         series,
@@ -479,7 +503,7 @@ export default {
       )
       const options = {
         title: {
-          text: '比较表',
+          text: '进退表',
           textStyle: {
             fontSize: '14px',
             lineHeight: 30
@@ -507,11 +531,11 @@ export default {
         },
         yAxis: {
           name: '名次',
-          type: 'value',
-          inverse: true, //反转坐标轴
-          nameTextStyle: {
-            padding: [0, 50, 5, 0]
-          }
+          type: 'value'
+          // inverse: true, //反转坐标轴
+          // nameTextStyle: {
+          //   padding: [0, 50, 5, 0]
+          // }
         },
         series: series
       }
