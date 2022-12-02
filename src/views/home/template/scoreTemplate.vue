@@ -359,6 +359,12 @@ export default {
             lineHeight: 30
           }
         },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {}
+          }
+        },
         grid: {
           top: 75,
           bottom: 35
@@ -404,6 +410,12 @@ export default {
           textStyle: {
             fontSize: '14px',
             lineHeight: 30
+          }
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {}
           }
         },
         grid: {
@@ -507,6 +519,12 @@ export default {
           textStyle: {
             fontSize: '14px',
             lineHeight: 30
+          }
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {}
           }
         },
         grid: {

@@ -594,6 +594,13 @@ export default {
         title: {
           text: '成绩分析表'
         },
+        toolbox: {
+          show: true,
+          feature: {
+            magicType: { type: ['line', 'bar'] },
+            saveAsImage: {}
+          }
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -641,6 +648,13 @@ export default {
         title: {
           text: '名次分析表'
         },
+        toolbox: {
+          show: true,
+          feature: {
+            magicType: { type: ['line', 'bar'] },
+            saveAsImage: {}
+          }
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -681,6 +695,12 @@ export default {
       let options = {
         title: {
           text: '及格率'
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {}
+          }
         },
         tooltip: {
           trigger: 'item',
@@ -736,6 +756,12 @@ export default {
       const options = {
         title: {
           text: '优秀率'
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {}
+          }
         },
         tooltip: {
           trigger: 'item',
