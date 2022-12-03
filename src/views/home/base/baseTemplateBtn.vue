@@ -15,6 +15,13 @@
       :close-on-click-modal="false"
     >
       <el-button type="primary" @click="onExport">导出</el-button>
+      <div class="rules">
+        <h3>表格规则</h3>
+        <p>1、【姓名】列必须存在；</p>
+        <p>
+          2、列名必须一致，但位置可变，可多可少。例如：姓名、语文、数学、总分、段名
+        </p>
+      </div>
       <table class="table" border>
         <tr>
           <th v-for="item in table.column" :key="item">{{ item }}</th>
@@ -75,6 +82,13 @@ export default {
 <style lang="scss" scoped>
 .baseTemplateBtn {
   display: inline-block;
+  .rules {
+    p {
+      font-size: 15px;
+      line-height: 24px;
+      // text-indent: 2em;
+    }
+  }
   .table {
     td {
       height: 20px;

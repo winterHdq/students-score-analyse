@@ -69,25 +69,23 @@
           style="width: 70px"
         ></el-checkbox>
       </el-checkbox-group>
-      <div style="display: flex">
+      <div class="content" :style="`height: ${tableHeight - 115}px`">
         <div
-          style="width: 50%; height: 270px"
+          style="width: 49%; height: 250px"
           id="scoreName"
           class="echartitem"
-        ></div>
+        />
         <div
-          style="width: 50%; height: 270px"
+          style="width: 49%; height: 250px"
           id="rankName"
           class="echartitem"
-        ></div>
-      </div>
-      <div style="display: flex">
+        />
         <div
           v-if="isPreCompare"
-          style="width: 50%; height: 270px"
+          style="width: 49%; height: 270px"
           id="compare"
           class="echartitem"
-        ></div>
+        />
       </div>
     </div>
     <base-table
@@ -585,9 +583,15 @@ export default {
     .echartitem {
       border: 1px solid #e5e7eb;
       box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
-      margin: 5px;
       border-radius: 5px;
+      margin-bottom: 10px;
       background: #fff;
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      overflow: auto;
     }
     ::v-deep {
       .el-checkbox__label {

@@ -12,7 +12,7 @@ export default [
     element: '.baseTemplateBtn',
     popover: {
       title: '第二步：模版',
-      description: '查看模版，并按模版调整需要上传的表格，以免数据分析错误',
+      description: '查看模版，并按模版规范调整需要上传的表格，以免数据分析错误',
       position: 'bottom-right'
     }
   },
