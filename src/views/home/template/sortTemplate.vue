@@ -597,7 +597,7 @@ export default {
         toolbox: {
           show: true,
           feature: {
-            magicType: { type: ['line', 'bar'] },
+            magicType: { type: ['bar', 'line'] },
             saveAsImage: {}
           }
         },
@@ -651,7 +651,7 @@ export default {
         toolbox: {
           show: true,
           feature: {
-            magicType: { type: ['line', 'bar'] },
+            magicType: { type: ['bar', 'line'] },
             saveAsImage: {}
           }
         },

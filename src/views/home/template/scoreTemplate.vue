@@ -82,7 +82,7 @@
         />
         <div
           v-if="isPreCompare"
-          style="width: 49%; height: 270px"
+          style="width: 100%; height: 270px"
           id="compare"
           class="echartitem"
         />
@@ -522,6 +522,7 @@ export default {
         toolbox: {
           show: true,
           feature: {
+            magicType: { type: ['bar', 'line'] },
             saveAsImage: {}
           }
         },
@@ -546,12 +547,12 @@ export default {
           data: xAxis
         },
         yAxis: {
-          name: '名次',
-          type: 'value'
+          name: '进退名次',
+          type: 'value',
           // inverse: true, //反转坐标轴
-          // nameTextStyle: {
-          //   padding: [0, 50, 5, 0]
-          // }
+          nameTextStyle: {
+            padding: [0, 50, 5, 0]
+          }
         },
         series: series
       }
