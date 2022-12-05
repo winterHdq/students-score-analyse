@@ -7,6 +7,12 @@
         :label="item"
         :name="item"
       ></el-tab-pane>
+      <el-tab-pane
+        v-for="item in totalMap"
+        :key="item.key"
+        :label="item.name"
+        :name="item.name"
+      ></el-tab-pane>
     </el-tabs>
     <div class="btns">
       <el-button type="primary" @click="onExport">导出</el-button>
@@ -40,6 +46,7 @@
 
 <script>
 import baseMixin from '../base/baseMixin'
+import { mapState, mapGetters } from 'vuex'
 import { delectnNoFindTable } from '@/common/utils'
 export default {
   name: 'TotalSortTemplate',
@@ -71,17 +78,14 @@ export default {
     // }
   },
   computed: {
-    tables() {
-      return this.$store.state.tables
-    },
-    isShowMenu() {
-      return this.$store.state.isShowMenu
-    },
-    subjectList() {
-      return this.$store.getters.subjectList
-    },
-    subjectObj() {
-      return this.$store.getters.subjectObj
+    ...mapState({
+      tables: state => state.tables,
+      isShowMenu: state => state.isShowMenu,
+      totalMap: state => state.totalMap
+    }),
+    ...mapGetters(['subjectList', 'subjectObj']),
+    totalList() {
+      return this.totalMap.map(item => item.name)
     }
   },
   data() {
@@ -97,13 +101,15 @@ export default {
           label: '最高分',
           value: 0,
           key: 'maxScore',
-          isName: true
+          isName: true,
+          isTotal: true
         },
         {
           label: '最低分',
           value: 0,
           key: 'minScore',
-          isName: true
+          isName: true,
+          isTotal: true
         },
         {
           label: '不及格数',
@@ -136,7 +142,8 @@ export default {
         {
           label: '与考人数',
           value: 0,
-          key: 'peopleNum'
+          key: 'peopleNum',
+          isTotal: true
         }
       ],
       rangRegionList: [],
@@ -181,16 +188,28 @@ export default {
     },
     getRowName() {
       if (!this.isTable) return false
-      this.subConfig = this.subjectObj[this.subjectName]
-      this.is150 = this.subConfig.fullScore == 150
-      let scoreRegionList = this.getScoreRegionList()
-      let rangRegionList = this.getRangRegionList()
-      this.scoreTable = [
-        ...scoreRegionList,
-        ...this.otherList,
-        ...rangRegionList,
-        ...this.averageList
-      ]
+      if (this.totalList.includes(this.subjectName)) {
+        this.subConfig = this.totalMap.filter(
+          item => item.name === this.subjectName
+        )[0]
+        let rangRegionList = this.getRangRegionList()
+        this.scoreTable = [
+          ...this.otherList.filter(item => item.isTotal),
+          ...rangRegionList,
+          ...this.averageList
+        ]
+      } else {
+        this.subConfig = this.subjectObj[this.subjectName]
+        this.is150 = this.subConfig.fullScore == 150
+        let scoreRegionList = this.getScoreRegionList()
+        let rangRegionList = this.getRangRegionList()
+        this.scoreTable = [
+          ...scoreRegionList,
+          ...this.otherList,
+          ...rangRegionList,
+          ...this.averageList
+        ]
+      }
       this.init()
     },
     // 获取分数区间

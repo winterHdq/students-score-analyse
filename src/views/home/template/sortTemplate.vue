@@ -32,7 +32,7 @@
           width="100"
           align="center"
         ></el-table-column>
-        <template v-for="sub in subjectMap">
+        <template v-for="sub in subjectOptions">
           <el-table-column
             #default="{ row }"
             :label="sub.scoreKey"
@@ -104,9 +104,15 @@ export default {
     ...mapState({
       subjectMap: state => state.subjectMap,
       tables: state => state.tables,
-      isShowMenu: state => state.isShowMenu
+      isShowMenu: state => state.isShowMenu,
+      totalMap: state => state.totalMap
     }),
-    ...mapGetters(['subjectList', 'subjectObj', 'curIndex'])
+    ...mapGetters(['subjectList', 'subjectObj', 'curIndex']),
+    subjectOptions() {
+      const subject = this.subjectMap.filter(item => this.sortObj[item.key])
+      let total = this.totalMap.filter(item => this.sortObj[item.key])
+      return [...subject, ...total]
+    }
   },
   watch: {
     tableId: {
@@ -289,6 +295,9 @@ export default {
       this.subjectMap.forEach(item => {
         sortObj[item.key] = this.classDataHandle(item)
       })
+      this.totalMap.forEach(item => {
+        sortObj[item.key] = this.classDataHandle(item)
+      })
       this.sortObj = sortObj
       this.typeChangeHandle()
     },
@@ -431,8 +440,9 @@ export default {
       if (!is150 && fromNum == 10) fromNum = 9
       if (is150 && fromNum == 15) fromNum = 14
       let toNum = fromNum + 9
-      if (!obj[`score${fromNum}to${toNum}`])
+      if (!obj[`score${fromNum}to${toNum}`]) {
         obj[`score${fromNum}to${toNum}`] = []
+      }
       obj[`score${fromNum}to${toNum}`].push(item)
       obj[`score${fromNum}to${toNum}Num`] =
         obj[`score${fromNum}to${toNum}`].length
@@ -468,8 +478,8 @@ export default {
           let textContent = item.childNodes[0].textContent.trim()
           if (textContent == '类别') return
           _item['类别'] = textContent
-          this.subjectList.forEach((n, index) => {
-            _item[n] = item.childNodes[index + 1].textContent.trim()
+          this.subjectOptions.forEach((n, index) => {
+            _item[n.name] = item.childNodes[index + 1].textContent.trim()
           })
           data.push(_item)
         })
@@ -583,8 +593,10 @@ export default {
       const series = [],
         legendSelected = {}
       this.subjectMap.forEach(item => {
-        legendSelected[item.scoreKey] = false
-        series.push(this.getSeriesData('scoreRegionList', item))
+        if (this.sortObj[item.key]) {
+          legendSelected[item.scoreKey] = false
+          series.push(this.getSeriesData('scoreRegionList', item))
+        }
       })
       ;['语文', '数学', '英语'].forEach(k => (legendSelected[k] = true))
       this.echarts.scoreRegion = this.$echarts.init(
@@ -633,11 +645,19 @@ export default {
     echartsRangRegionInit() {
       const series = []
       const legendSelected = {}
-      this.subjectMap.forEach(item => {
+      this.subjectOptions.forEach((item, index) => {
         legendSelected[item.scoreKey] = false
+        if (index == 0) {
+          legendSelected[item.scoreKey] = true
+        }
         series.push(this.getSeriesData('rangRegionList', item))
       })
-      ;['语文', '数学', '英语'].forEach(k => (legendSelected[k] = true))
+      this.totalMap.reverse().find(item => {
+        if (this.sortObj[item.key]) {
+          legendSelected[item.scoreKey] = true
+          return true
+        }
+      })
       this.echarts.scoreRegion = this.$echarts.init(
         document.getElementById('scoreRegion')
       )
@@ -682,13 +702,12 @@ export default {
     },
     // 及格率
     echartsPassInit() {
-      const data = []
+      const seriesData = [],
+        xAxisData = []
       this.subjectMap.forEach(item => {
         if (this.sortObj[item.key]) {
-          data.push({
-            value: this.sortObj[item.key].passRate,
-            name: item.scoreKey
-          })
+          seriesData.push(this.sortObj[item.key].passRate)
+          xAxisData.push(item.scoreKey)
         }
       })
       this.echarts.pass = this.$echarts.init(document.getElementById('pass'))
@@ -703,51 +722,47 @@ export default {
           }
         },
         tooltip: {
-          trigger: 'item',
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          },
           formatter: '{b}：{c}%'
+        },
+        xAxis: {
+          name: '科目',
+          type: 'category',
+          data: xAxisData,
+          axisLabel: { interval: 0, rotate: 0 }
+        },
+        yAxis: {
+          name: '%'
         },
         series: [
           {
-            name: '人数',
-            type: 'pie',
-            radius: ['10%', '60%'],
-            avoidLabelOverlap: true,
+            type: 'line',
+            data: seriesData,
             label: {
-              show: true,
-              position: 'outside',
-              formatter: '{b}：{c}%'
-            },
-            labelLine: {
               show: true
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: '14',
-                fontWeight: 'bold'
-              }
-            },
-            data: data
+            }
           }
-        ],
-        legend: {
-          show: true,
-          zlevel: 0,
-          z: 2,
-          left: 'center'
-        }
+        ]
+        // legend: {
+        //   show: true,
+        //   zlevel: 0,
+        //   z: 2,
+        //   left: 'center'
+        // }
       }
       this.echarts.pass.setOption(options)
     },
     // 优秀率
     echartsexcellentInit() {
-      const data = []
+      const seriesData = [],
+        xAxisData = []
       this.subjectMap.forEach(item => {
         if (this.sortObj[item.key]) {
-          data.push({
-            value: this.sortObj[item.key].excellentRate,
-            name: item.scoreKey
-          })
+          xAxisData.push(item.scoreKey)
+          seriesData.push(this.sortObj[item.key].excellentRate)
         }
       })
       this.echarts.excellent = this.$echarts.init(
@@ -764,39 +779,30 @@ export default {
           }
         },
         tooltip: {
-          trigger: 'item',
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          },
           formatter: '{b}：{c}%'
+        },
+        xAxis: {
+          name: '科目',
+          type: 'category',
+          data: xAxisData,
+          axisLabel: { interval: 0, rotate: 0 }
+        },
+        yAxis: {
+          name: '%'
         },
         series: [
           {
-            name: '人数',
-            type: 'pie',
-            radius: ['10%', '60%'],
-            avoidLabelOverlap: false,
+            type: 'line',
+            data: seriesData,
             label: {
-              show: true,
-              position: 'outside',
-              formatter: '{b}：{c}%'
-            },
-            labelLine: {
               show: true
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: '14',
-                fontWeight: 'bold'
-              }
-            },
-            data: data
+            }
           }
-        ],
-        legend: {
-          show: true,
-          zlevel: 0,
-          z: 2,
-          left: 'center'
-        }
+        ]
       }
       this.echarts.excellent.setOption(options)
     },

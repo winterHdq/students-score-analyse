@@ -17,7 +17,7 @@
         <el-select
           v-model="formData.initTableId"
           placeholder="请选择"
-          :disabled="curTableId"
+          :disabled="!!curTableId"
           @change="initTableChange"
         >
           <el-option

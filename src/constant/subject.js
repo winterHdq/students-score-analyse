@@ -149,3 +149,22 @@ export const classMap = [
     bgColor: '#8b0000'
   }
 ]
+
+export const totalMap = [
+  {
+    name: '总分',
+    key: 'total',
+    fullScore: 0,
+    scoreKey: '总分',
+    rankKey: '段名',
+    isTotal: true
+  },
+  {
+    name: '折总',
+    key: 'convert',
+    fullScore: 0,
+    scoreKey: '折总',
+    rankKey: '折算名',
+    isTotal: true
+  }
+]

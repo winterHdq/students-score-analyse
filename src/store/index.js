@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { subjectMap } from '../constant/subject'
+import { subjectMap, totalMap } from '../constant/subject'
 
 Vue.use(Vuex)
 
@@ -9,6 +9,7 @@ export default new Vuex.Store({
     tables: [],
     curTableId: null,
     subjectMap,
+    totalMap,
     isShowMenu: true,
     defaultClassName: '',
     downloadSetting: {}
