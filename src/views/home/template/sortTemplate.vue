@@ -381,16 +381,29 @@ export default {
           sortObj.excellent.push(item)
         }
       })
-      sortObj.passNum = sortObj.pass.length
-      sortObj.noPassNum = sortObj.noPass.length
-      sortObj.passRate = ((sortObj.passNum / sortObj.peopleNum) * 100).toFixed(
-        2
-      )
-      sortObj.excellentNum = sortObj.excellent.length
-      sortObj.excellentRate = (
-        (sortObj.excellentNum / sortObj.peopleNum) *
-        100
-      ).toFixed(2)
+      if (subConfig.isTotal) {
+        ;[
+          'passNum',
+          'noPassNum',
+          'passRate',
+          'excellentNum',
+          'excellentRate'
+        ].forEach(key => {
+          sortObj[key] = ''
+        })
+      } else {
+        sortObj.passNum = sortObj.pass.length
+        sortObj.noPassNum = sortObj.noPass.length
+        sortObj.passRate = (
+          (sortObj.passNum / sortObj.peopleNum) *
+          100
+        ).toFixed(2)
+        sortObj.excellentNum = sortObj.excellent.length
+        sortObj.excellentRate = (
+          (sortObj.excellentNum / sortObj.peopleNum) *
+          100
+        ).toFixed(2)
+      }
 
       // 平均分
       sortObj.average = (totalScore / sortObj.peopleNum).toFixed(2)
