@@ -25,13 +25,14 @@
         #default="{ row }"
       >
         <span :style="scoreStyle(row, item)">
-          {{ numHandle(row[item], item) }}
+          {{ numHandle(row[item]) }}
         </span>
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
+import NP from 'number-precision'
 export default {
   name: 'BaseTable',
   props: {
@@ -74,11 +75,10 @@ export default {
     doLayout() {
       this.$refs.table && this.$refs.table.doLayout()
     },
-    numHandle(val, label) {
-      console.log(label)
-      // if (label.indexOf('分') > 0 && !isNaN(val)) {
-      //   return val.toFixed(1)
-      // }
+    numHandle(val) {
+      if (!isNaN(val)) {
+        return NP.strip(val)
+      }
       return val
     },
     scoreStyle(row, key) {
