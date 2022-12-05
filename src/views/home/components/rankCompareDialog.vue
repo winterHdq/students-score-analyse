@@ -121,6 +121,13 @@ export default {
       this.checkData[`${key}Indeterminate`] =
         checkedCount > 0 && checkedCount < this.thList.length
     },
+    getInitOrderTh() {
+      // 保持原本的排序
+      const compareTh = this.thList.filter(item =>
+        this.formData.compareTh.includes(item)
+      )
+      return compareTh
+    },
     async onSave() {
       await this.$refs.form.validate()
       let compareTable = []

@@ -203,6 +203,13 @@ export default {
         this.thList.find(item => item == '姓名') || this.thList[0]
       // this.handleCheckChange(this.thList, 'showTh')
     },
+    getInitOrderTh() {
+      // 保持原本的排序
+      const compareTh = this.thList.filter(item =>
+        this.formData.compareTh.includes(item)
+      )
+      return compareTh
+    },
     compareTableChange(id) {
       if (id == this.formData.initTableId) {
         this.$message.error('比较的是同一张表格，请确认')
@@ -295,7 +302,7 @@ export default {
         className: `${this.initTable.className}`,
         isCompare: true,
         extend: {
-          compareColumn: this.formData.compareTh,
+          compareColumn: this.getInitOrderTh(),
           preTable: this.preTable
         }
       }
