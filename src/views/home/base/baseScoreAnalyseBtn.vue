@@ -169,7 +169,7 @@ export default {
           isCompare: true,
           template: 'studentScoreTemplate',
           extend: {
-            selectTablesId: this.formData.selectTablesId
+            selectTablesId: this.selectTables.map(item => item.id)
           }
         }
         if (this.table?.id) {

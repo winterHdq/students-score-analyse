@@ -22,24 +22,52 @@
             placeholder="请选择"
             value-key="id"
             clearable
-            :multiple-limit="14"
-            style="width: 300px"
+            @change="onSelectHandle"
           >
             <el-option
               v-for="item in options"
               :key="item.id"
               :label="item.name"
-              :value="item"
+              :value="item.id"
             ></el-option>
           </el-select>
+          <el-button type="primary" @click="onAll">全选</el-button>
         </el-form-item>
-        <div>
+        <!-- <div>
           已选择：
           <span v-for="(item, index) in formData.classes" :key="item.id">
             {{ item.name }}【{{ item.className || '未知' }}】
             <span v-if="index !== formData.classes.length - 1">、</span>
-            <!-- <el-link :underline="false" icon="el-icon-d-arrow-left" @click=""></el-link> -->
           </span>
+        </div> -->
+        <div>
+          已选择：
+          <el-table :data="selectTables" :height="300" border>
+            <el-table-column
+              label="序号"
+              type="index"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              label="班级"
+              prop="className"
+              width="70"
+              align="center"
+            ></el-table-column>
+            <el-table-column label="表名" prop="name"></el-table-column>
+            <el-table-column
+              label="操作"
+              #default="{ row, $index }"
+              align="center"
+              width="100"
+            >
+              <el-link
+                type="danger"
+                icon="el-icon-delete-solid"
+                @click="onDelect(row.id, $index)"
+              ></el-link>
+            </el-table-column>
+          </el-table>
         </div>
       </el-form>
       <span slot="footer">
@@ -54,7 +82,7 @@
       top="10vh"
     >
       <total-sort-template
-        :classes="formData.classes.map(item => item.id)"
+        :classes="selectTables.map(item => item.id)"
         :tableName="formData.name"
         :isDialog="true"
         @onAddTable="
@@ -92,6 +120,7 @@ export default {
         name: '年段分析',
         classes: []
       },
+      selectTables: [],
       rules: {
         name: [{ required: true, message: '请输入' }],
         classes: [{ required: true, message: '请选择' }]
@@ -99,15 +128,29 @@ export default {
     }
   },
   methods: {
+    // 全选
+    onAll() {
+      this.formData.classes = this.options.map(item => item.id)
+      this.onSelectHandle()
+    },
+    onSelectHandle() {
+      this.selectTables = this.tables.filter(item =>
+        this.formData.classes.includes(item.id)
+      )
+    },
+    onDelect(id, index) {
+      this.formData.classes.splice(this.formData.classes.indexOf(id), 1)
+      this.selectTables.splice(index, 1)
+    },
     async onSave() {
       try {
         await this.$refs.form.validate()
-        let res = this.formData.classes.find(item => !item.className)
+        let res = this.selectTables.find(item => !item.className)
         if (res) {
           this.$message.error(`请设置【${res.name}】的班级`)
           return false
         }
-        if (isRepeat(this.formData.classes.map(item => item.className))) {
+        if (isRepeat(this.selectTables.map(item => item.className))) {
           this.$message.error('班级重复，请确认')
           return false
         }
@@ -118,6 +161,7 @@ export default {
     },
     onClose() {
       this.formData.classes = []
+      this.selectTables = []
     }
   }
 }
