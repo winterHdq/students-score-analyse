@@ -52,7 +52,7 @@
           <p class="nameTitle" v-if="isShowEhart.name">{{ nameCheck[0] }}</p>
           <div
             v-show="isShowEhart.reducedRank"
-            style="width: 100%; height: 250px"
+            style="width: 100%; height: 250px; margin: 10px"
             id="reducedRank"
             class="echartitem"
           ></div>
@@ -597,7 +597,7 @@ export default {
   .echartitem {
     border: 1px solid #e5e7eb;
     box-shadow: rgb(10 9 9 / 10%) 0px 0px 5px;
-    margin: 5px;
+    margin-bottom: 5px;
     border-radius: 5px;
     background: #fff;
   }
