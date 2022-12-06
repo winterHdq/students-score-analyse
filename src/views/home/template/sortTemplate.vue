@@ -107,12 +107,7 @@ export default {
       isShowMenu: state => state.isShowMenu,
       totalMap: state => state.totalMap
     }),
-    ...mapGetters(['subjectList', 'subjectObj', 'curIndex']),
-    subjectOptions() {
-      const subject = this.subjectMap.filter(item => this.sortObj[item.key])
-      let total = this.totalMap.filter(item => this.sortObj[item.key])
-      return [...subject, ...total]
-    }
+    ...mapGetters(['subjectList', 'subjectObj', 'curIndex'])
   },
   watch: {
     tableId: {
@@ -129,6 +124,7 @@ export default {
     return {
       radio: 1,
       is150: true,
+      subjectOptions: [],
       baseTable: [],
       sortList: {},
       scoreRegionList: [],
@@ -227,6 +223,14 @@ export default {
         return false
       } else {
         this.baseTable = res
+        const column = Object.keys(res.data[0])
+        const subject = this.subjectMap.filter(item => {
+          return column.includes(item.name)
+        })
+        let total = this.totalMap.reverse().find(item => {
+          return column.includes(item.name)
+        })
+        this.subjectOptions = [...subject, { ...total }]
       }
       this.getRowName()
     },
@@ -292,10 +296,7 @@ export default {
     },
     init() {
       let sortObj = {}
-      this.subjectMap.forEach(item => {
-        sortObj[item.key] = this.classDataHandle(item)
-      })
-      this.totalMap.forEach(item => {
+      this.subjectOptions.forEach(item => {
         sortObj[item.key] = this.classDataHandle(item)
       })
       this.sortObj = sortObj
@@ -309,22 +310,24 @@ export default {
       // this.scoreList = list.sort((a, b) => {
       //   return b.score - a.score
       // })
+      const is150 = subConfig.fullScore === 150
+      const isTotal = subConfig.isTotal
       let sortObj = {
-        score0to9Num: 0,
-        score10to19Num: 0,
-        score20to29Num: 0,
-        score30to39Num: 0,
-        score40to49Num: 0,
-        score50to59Num: 0,
-        score60to69Num: 0,
-        score70to79Num: 0,
-        score80to89Num: 0,
-        score90to99Num: 0,
-        score100to109Num: 0,
-        score110to119Num: 0,
-        score120to129Num: 0,
-        score130to139Num: 0,
-        score140to149Num: 0,
+        score0to9Num: isTotal ? '' : 0,
+        score10to19Num: isTotal ? '' : 0,
+        score20to29Num: isTotal ? '' : 0,
+        score30to39Num: isTotal ? '' : 0,
+        score40to49Num: isTotal ? '' : 0,
+        score50to59Num: isTotal ? '' : 0,
+        score60to69Num: isTotal ? '' : 0,
+        score70to79Num: isTotal ? '' : 0,
+        score80to89Num: isTotal ? '' : 0,
+        score90to99Num: isTotal ? '' : 0,
+        score100to109Num: !is150 || isTotal ? '' : 0,
+        score110to119Num: !is150 || isTotal ? '' : 0,
+        score120to129Num: !is150 || isTotal ? '' : 0,
+        score130to139Num: !is150 || isTotal ? '' : 0,
+        score140to149Num: !is150 || isTotal ? '' : 0,
         maxScore: 0, //最高分
         maxScoreList: [],
         minScore: 0, //最低分
@@ -357,7 +360,7 @@ export default {
       let excellentScore = subConfig.fullScore * 0.85
       list.forEach(item => {
         const score = isNaN(item.score) ? 0 : parseFloat(item.score)
-        this.getScoreRange(item, sortObj, subConfig.fullScore === 150)
+        !isTotal && this.getScoreRange(item, sortObj, is150)
         // 总分
         totalScore += score
         // 获得最高分
