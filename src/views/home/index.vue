@@ -68,6 +68,7 @@
           <total-sort-template
             v-else-if="curTable.template == 'totalSortTemplate'"
             :classes="curTable.extend.classes"
+            :tableName="curTable.name"
             :table-height="tableHeight"
           ></total-sort-template>
           <score-template v-else :tableHeight="tableHeight"></score-template>

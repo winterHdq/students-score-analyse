@@ -47,7 +47,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="年段分析"
+      :title="formData.name"
       :visible.sync="tableDialog"
       v-if="tableDialog"
       width="80%"
@@ -55,6 +55,7 @@
     >
       <total-sort-template
         :classes="formData.classes.map(item => item.id)"
+        :tableName="formData.name"
         :isDialog="true"
         @onAddTable="
           tableDialog = false

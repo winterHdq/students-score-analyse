@@ -58,6 +58,10 @@ export default {
         return []
       }
     },
+    tableName: {
+      type: String,
+      default: '年段分析'
+    },
     tableHeight: {
       type: Number,
       default: 450
@@ -68,11 +72,13 @@ export default {
     }
   },
   watch: {
-    // 'curTable.id': {
-    //   handler() {
-    //     this.typeChangeHandle()
-    //   }
-    // },
+    curTableId: {
+      handler() {
+        this.subjectName = this.subjectList[0]
+        this.getTables()
+      },
+      immediate: true
+    }
     // isShowMenu() {
     //   this.echartsResize()
     // }
@@ -81,7 +87,8 @@ export default {
     ...mapState({
       tables: state => state.tables,
       isShowMenu: state => state.isShowMenu,
-      totalMap: state => state.totalMap
+      totalMap: state => state.totalMap,
+      curTableId: state => state.curTableId
     }),
     ...mapGetters(['subjectList', 'subjectObj']),
     totalList() {
@@ -163,10 +170,6 @@ export default {
       dataObj: null,
       isTable: true
     }
-  },
-  created() {
-    this.subjectName = this.subjectList[0]
-    this.getTables()
   },
   methods: {
     getTables() {
@@ -474,7 +477,17 @@ export default {
     },
     // 添加到列表
     onAddTable() {
-      const table = this.tableHandle()
+      const table = {
+        id: Date.now(),
+        name: this.tableName,
+        className: '年段',
+        isCompare: false,
+        column: [],
+        template: 'totalSortTemplate',
+        extend: {
+          classes: this.classes
+        }
+      }
       this.$store.commit('addTable', table)
       this.$store.commit('setCurTableId', table.id)
       this.$emit('onAddTable')
@@ -500,7 +513,7 @@ export default {
         id: Date.now(),
         column: Object.keys(data[0]),
         data: data,
-        name: `${this.subjectName}-年段分析表`,
+        name: `${this.tableName}-${this.subjectName}`,
         className: '年段',
         isCompare: false,
         template: 'totalSortTemplate',
