@@ -6,6 +6,7 @@
     :close-on-click-modal="false"
     @close="onClose"
   >
+    <!-- <p class="tipText">说明：通过与上次成绩比较，显示学生进退情况</p> -->
     <el-form
       :model="formData"
       ref="form"
@@ -327,6 +328,10 @@ export default {
     color: red;
     font-size: 12px;
     margin-left: 10px;
+  }
+  .tipText {
+    color: red;
+    margin: -30px 10px 20px 0px;
   }
 }
 </style>

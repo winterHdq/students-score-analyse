@@ -76,7 +76,7 @@ export default {
       this.$refs.table && this.$refs.table.doLayout()
     },
     numHandle(val) {
-      if (!isNaN(val)) {
+      if (val && !isNaN(val)) {
         return NP.strip(val)
       }
       return val

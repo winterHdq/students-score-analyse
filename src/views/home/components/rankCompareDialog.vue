@@ -6,6 +6,9 @@
     :close-on-click-modal="false"
     @close="onClose"
   >
+    <!-- <p class="tipText">
+      说明：通过差值显示学生的优劣科目（科目差值： 折算名/段名 - 科目名）
+    </p> -->
     <el-form
       :model="formData"
       ref="form"
@@ -183,10 +186,9 @@ export default {
 
 <style lang="scss" scoped>
 .compare-dialog {
-  .tip {
+  .tipText {
     color: red;
-    font-size: 12px;
-    margin-left: 10px;
+    margin: -30px 10px 20px 0px;
   }
 }
 </style>
