@@ -7,7 +7,14 @@
       stripe
       highlight-current-row
       :height="tableHeight"
+      @selection-change="handleSelectionChange"
     >
+      <el-table-column
+        type="selection"
+        width="45"
+        align="center"
+        v-if="isSelection"
+      ></el-table-column>
       <el-table-column
         fixed
         label="序号"
@@ -40,6 +47,10 @@ export default {
       type: Number,
       default: 500
     },
+    isSelection: {
+      type: Boolean,
+      default: false
+    },
     table: {
       type: Object,
       default() {
@@ -69,7 +80,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      multipleSelection: []
+    }
   },
   methods: {
     doLayout() {
@@ -93,6 +106,9 @@ export default {
         }
       }
       return {}
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 }
