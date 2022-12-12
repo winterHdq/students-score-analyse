@@ -20,7 +20,7 @@
             align="center"
             width="70"
           ></el-table-column>
-          <el-table-column label="sheet名" #default="{ $index }" width="200px">
+          <el-table-column label="工作簿名" #default="{ $index }" width="200px">
             <el-form-item
               :prop="`tables.${$index}.name`"
               :rules="rules.tableName"

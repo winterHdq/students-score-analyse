@@ -141,18 +141,17 @@ export default {
         let totalRank = item['折算名'] || item['段名'] || null
         for (let k in item) {
           newItem[k] = item[k]
-          if (
-            item[k] &&
-            this.formData.compareTh.includes(k) &&
-            totalRank &&
-            !isNaN(item[k])
-          ) {
-            let dValue = subtract(totalRank, item[k])
-            newItem[`${k.substr(0, 1)}差`] = dValue
-            if (dValue > 50) {
-              advantage.push(k)
-            } else if (dValue < -50) {
-              inferiority.push(k)
+          if (this.formData.compareTh.includes(k)) {
+            if (item[k] && totalRank && !isNaN(item[k])) {
+              let dValue = subtract(totalRank, item[k])
+              newItem[`${k.substr(0, 1)}差`] = dValue
+              if (dValue > 50) {
+                advantage.push(k)
+              } else if (dValue < -50) {
+                inferiority.push(k)
+              }
+            } else {
+              newItem[`${k.substr(0, 1)}差`] = ''
             }
           }
         }

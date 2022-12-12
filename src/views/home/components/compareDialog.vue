@@ -234,12 +234,12 @@ export default {
         )
         return false
       }
-      let res = this.formData.compareTh.find(
+      let res = this.formData.compareTh.filter(
         item => !this.preTable.column.includes(item)
       )
-      if (res) {
+      if (res.length) {
         this.$message.error(
-          `上次成绩里无【${res}】列，无法进行比较，请重新选择`
+          `上次成绩里无【${res.join('、')}】列，无法进行比较，请重新选择`
         )
         return false
       }
@@ -254,16 +254,16 @@ export default {
             let newItem = {}
             for (let k in item) {
               newItem[k] = item[k]
-              if (
-                item[k] &&
-                tab2[i][k] &&
-                this.formData.compareTh.includes(k) &&
-                !isNaN(item[k])
-              ) {
-                newItem[`${k}进退`] = subtract(item[k], tab2[i][k])
-                // 名次是越小越好
-                if (k.indexOf('名') > 0) {
-                  newItem[`${k}进退`] = 0 - newItem[`${k}进退`]
+              if (this.formData.compareTh.includes(k)) {
+                if (item[k] && tab2[i][k] && !isNaN(item[k])) {
+                  newItem[`${k}进退`] = subtract(item[k], tab2[i][k])
+                  // 名次是越小越好
+                  if (k.indexOf('名') > 0) {
+                    newItem[`${k}进退`] = 0 - newItem[`${k}进退`]
+                  }
+                } else {
+                  // 如果本次/上次该科目无数据，不进行进退计算，但是要有数据，否则导出样式会出错
+                  newItem[`${k}进退`] = ''
                 }
               }
             }
@@ -276,8 +276,9 @@ export default {
         // 新增人员
         if (!isName) {
           // 补齐数据，为了导出有单元格边框
-          this.formData.compareTh.forEach(k => (item[`${k}进退`] = ''))
-          compareTable.push(item)
+          let newItem = JSON.parse(JSON.stringify(item))
+          this.formData.compareTh.forEach(k => (newItem[`${k}进退`] = ''))
+          compareTable.push(newItem)
         }
       })
       const compareTh = Object.keys(compareTable[0])

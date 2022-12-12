@@ -68,7 +68,7 @@
             width="50"
             align="center"
           ></el-table-column>
-          <el-table-column label="表名" #default="{ $index }" width="150">
+          <el-table-column label="工作簿名" #default="{ $index }" width="150">
             <el-form-item :prop="`tables.${$index}.name`" :rules="rules.name">
               <el-input
                 v-model="formDataMul.tables[$index].name"
@@ -209,7 +209,7 @@ export default {
       this.thList.forEach(k => {
         if (this.subjectList.includes(k)) {
           let sheet = {
-            name: `${k}${this.table.isCompare ? '进退分析' : ''}`,
+            name: `${k}`,
             column: ['姓名', '班级', k]
           }
           const rankKey = this.subjectObj[k].rankKey
