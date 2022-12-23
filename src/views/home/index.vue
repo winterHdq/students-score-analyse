@@ -239,6 +239,8 @@ $border-color: #409eff;
 .Excel {
   background-color: #061b2c;
   width: 100%;
+  height: 100%;
+  position: absolute;
   .btns {
     display: flex;
     padding: 10px;
