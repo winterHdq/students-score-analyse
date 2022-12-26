@@ -1,14 +1,12 @@
 <template>
-  <div class="menuList">
+  <div class="menuSide">
     <el-menu
-      default-active=""
-      v-for="item in menu"
-      :key="item.id"
+      :default-active="activeIndex"
       :collapse="!isShowMenu"
       background-color="transparent"
       text-color="#fff"
     >
-      <menu-item :menu-item="item"></menu-item>
+      <menu-item v-for="item in menu" :key="item.id" :menu-item="item" />
     </el-menu>
   </div>
 </template>
@@ -16,7 +14,7 @@
 <script>
 import MenuItem from './menuItem'
 export default {
-  name: 'menuList',
+  name: 'MenuSide',
   props: {
     isShowMenu: {
       type: Boolean,
@@ -28,6 +26,7 @@ export default {
   },
   data() {
     return {
+      activeIndex: '1-1-1-1',
       menu: [
         {
           name: '文件夹1',
@@ -35,13 +34,23 @@ export default {
           childrens: [
             {
               name: '文件1-1',
-              id: '1-1'
-              // childrens: [
-              //   {
-              //     name: '文件1-1-1',
-              //     id: '1-1-1'
-              //   }
-              // ]
+              id: '1-1',
+              childrens: [
+                {
+                  name: '文件1-1-1',
+                  id: '1-1-1',
+                  childrens: [
+                    {
+                      name: '文件1-1-1-1',
+                      id: '1-1-1-1'
+                    }
+                  ]
+                },
+                {
+                  name: '文件1-1-2',
+                  id: '1-1-2'
+                }
+              ]
             },
             {
               name: '文件1-2',
@@ -56,6 +65,10 @@ export default {
             {
               name: '文件2-1',
               id: '2-1'
+            },
+            {
+              name: '文件2-2',
+              id: '2-2'
             }
           ]
         }
@@ -66,51 +79,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.menuList {
-  &:not(.el-menu--collapse) {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-  }
+.menuSide {
   ::v-deep {
-    .el-submenu__title {
-      height: 32px;
-      line-height: 32px;
-    }
-    .el-submenu .el-menu-item {
-      height: 30px;
-      line-height: 30px;
-    }
     .el-menu {
-      .el-menu-item {
-        &:last-child {
-          &::before {
-            height: 18px;
-          }
-        }
-        &::before {
-          content: '';
-          left: 30px;
-          position: absolute;
-          right: auto;
-          border-width: 1px;
-          border-left: 1px dashed #fff;
-          bottom: 0px;
-          height: 100%;
-          top: 0;
-          width: 1px;
-        }
-        &::after {
-          content: '';
-          left: 30px;
-          position: absolute;
-          right: auto;
-          border-width: 1px;
-          border-top: 1px dashed #fff;
-          height: 20px;
-          top: 17px;
-          width: 8px;
-        }
+      border-right: 0px;
+      .el-submenu__title {
+        height: 32px;
+        line-height: 32px;
+      }
+      .el-submenu .el-menu-item {
+        height: 30px;
+        line-height: 30px;
+        position: relative;
       }
     }
   }
