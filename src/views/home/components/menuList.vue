@@ -9,8 +9,8 @@
         @click="$store.commit('setIsShowMenu', !isShowMenu)"
       ></i>
     </div>
-    <menu-list-index :isShowMenu="isShowMenu"></menu-list-index>
-    <!-- <transition name="el-fade-in-linear">
+    <!-- <menu-list-index :isShowMenu="isShowMenu"></menu-list-index> -->
+    <transition name="el-fade-in-linear">
       <div v-show="isShowMenu">
         <p
           v-for="(item, index) in tables"
@@ -67,19 +67,19 @@
           </el-tooltip>
         </p>
       </div>
-    </transition> -->
+    </transition>
   </div>
 </template>
 
 <script>
 import { classMap } from '@/constant/subject'
 import baseMixin from '../base/baseMixin'
-import MenuListIndex from './menuList/index'
+// import MenuListIndex from './menuList/index'
 export default {
   name: 'MenuList',
   mixins: [baseMixin],
   components: {
-    MenuListIndex
+    // MenuListIndex
   },
   computed: {
     isShowMenu() {
