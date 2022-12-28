@@ -49,7 +49,7 @@
       ></base-table>
       <div v-if="radio == 2">
         <div class="echarts" id="echarts">
-          <p class="nameTitle" v-if="isShowEhart.name">{{ nameCheck[0] }}</p>
+          <p class="nameTitle" v-if="isShowEhart.name">{{ printName }}</p>
           <div
             v-show="isShowEhart.reducedRank"
             style="width: 100%; height: 250px; margin: 10px"
@@ -141,6 +141,7 @@ export default {
   data() {
     return {
       radio: 2,
+      printName: '',
       nameCheck: [],
       nameList: [],
       selectTables: [],
@@ -209,6 +210,7 @@ export default {
       )
     },
     getTableData(selectTables = this.selectTables, name = this.nameCheck[0]) {
+      this.printName = name
       let list = [],
         xAxisData = []
       selectTables.forEach(table => {
