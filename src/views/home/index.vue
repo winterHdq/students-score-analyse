@@ -47,6 +47,12 @@
       <div class="right">
         <base-template-btn></base-template-btn>
         <base-setting-btn></base-setting-btn>
+        <!-- <el-link
+          icon="el-icon-full-screen"
+          class="fullBtn"
+          type="primary"
+          @click="onFull"
+        /> -->
       </div>
     </div>
     <div class="content">
@@ -121,7 +127,8 @@ export default {
       tableHeight: 500,
       compaseDialog: {
         show: false
-      }
+      },
+      isFull: false
     }
   },
   computed: {
@@ -228,8 +235,38 @@ export default {
     //   fileReader.onloadend = function () {}
     // },
     onDelete() {
-      this.$store.commit('setCurTableId', null)
-      this.$store.commit('setTables', [])
+      this.$confirm('确认删除当前所有表格数据吗？', '提示')
+        .then(() => {
+          this.$store.commit('setCurTableId', null)
+          this.$store.commit('setTables', [])
+          this.$message.success('删除成功')
+        })
+        .catch()
+    },
+    onFull() {
+      var docElm = document.documentElement
+      if (this.isFull) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen()
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen()
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen()
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen()
+        }
+      } else {
+        if (docElm.requestFullscreen) {
+          docElm.requestFullscreen()
+        } else if (docElm.msRequestFullscreen) {
+          docElm.msRequestFullscreen()
+        } else if (docElm.mozRequestFullScreen) {
+          docElm.mozRequestFullScreen()
+        } else if (docElm.webkitRequestFullScreen) {
+          docElm.webkitRequestFullScreen()
+        }
+      }
+      this.isFull = !this.isFull
     }
   }
 }
@@ -249,6 +286,9 @@ $border-color: #409eff;
     }
     .right {
       margin: 0 auto;
+      .fullBtn {
+        font-size: 25px;
+      }
     }
   }
   .btn {
