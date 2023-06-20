@@ -74,8 +74,9 @@
           _this.close();
         });
       }
-      document.addEventListener('touchmove',function(e){
-        e.preventDefault()
+      window.addEventListener('touchmove',function(e){
+        e.preventDefault();
+        e.stopPropagation();
       },{
         passive: false
       })
