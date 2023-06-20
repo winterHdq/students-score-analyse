@@ -85,9 +85,15 @@
         e.stopPropagation();
       });
       this.$element.on('touchmove', function (e) {
+				e.preventDefault()
+				e.stopPropagation();
+				$('body').append(`<div>yx:${e.originalEvent.targetTouches[0].pageX}</div>`)
         _this.move(e);
       });
       this.$element.on('mousemove', function (e) {
+				e.preventDefault()
+				e.stopPropagation();
+				$('body').append(`<span>x:${e.clientX}；</span>`)
         _this.move(e);
       });
       this.$element.on('touchend', function (e) {
@@ -97,12 +103,14 @@
         _this.end();
       });
       //拖动
-      // window.addEventListener("touchmove", function(e) {
-      // 	_this.move(e);
-      // });
-      // window.addEventListener("mousemove", function(e) {
-      // 	_this.move(e);
-      // });
+      window.addEventListener("touchmove", function(e) {
+				$('body').append(`<div>Pyx:${e.originalEvent.targetTouches[0].pageX}；</div>`)
+      	// _this.move(e);
+      });
+      window.addEventListener("mousemove", function(e) {
+				$('body').append(`<span>Px:${e.clientX}；</span>`)
+      	// _this.move(e);
+      });
       // //鼠标松开
       // window.addEventListener("touchend", function() {
       // 	_this.end();
