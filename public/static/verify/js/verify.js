@@ -92,14 +92,14 @@
       this.htmlDoms.sub_block.on('mousedown', function (e) {
         e.stopPropagation();
       });
-      this.$element.on('touchmove', function (e) {
+      this.htmlDoms.left_bar.on('touchmove', function (e) {
         e.preventDefault()
         e.stopPropagation();
         _this.move(e);
       },{
         passive: false
       });
-      this.$element.on('mousemove', function (e) {
+      this.htmlDoms.left_bar.on('mousemove', function (e) {
         e.stopPropagation();
         _this.move(e);
       });
