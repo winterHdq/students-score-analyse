@@ -1,3 +1,7 @@
+html{
+  touch-action: none;
+  touch-action: pan-y;
+}
 /*弹框*/
 .suc-bg {
   background-color: rgba(92, 184, 92, 0.5);

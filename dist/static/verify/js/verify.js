@@ -91,6 +91,8 @@
         e.preventDefault()
         e.stopPropagation();
         _this.move(e);
+      },{
+        passive: false
       });
       this.$element.on('mousemove', function (e) {
         e.stopPropagation();
