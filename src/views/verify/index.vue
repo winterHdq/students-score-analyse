@@ -2,7 +2,7 @@
   <div>
     <el-button type="primary" @click="onVerify">验证</el-button>
     <el-slider v-model="value1"></el-slider>
-    <div id="verify"></div>
+    <div id="verify" tabindex="0"></div>
   </div>
 </template>
 
