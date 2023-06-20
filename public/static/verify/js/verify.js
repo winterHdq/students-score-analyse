@@ -74,12 +74,19 @@
           _this.close();
         });
       }
+      window.addEventListener('touchstart', function (e) {
+        e.preventDefault()
+      });
       window.addEventListener('touchmove',function(e){
         e.preventDefault();
         e.stopPropagation();
       },{
         passive: false
       })
+      //鼠标松开
+      window.addEventListener("touchend", function(e) {
+      	e.preventDefault()
+      });
       //按下
       this.htmlDoms.move_block.on('touchstart', function (e) {
         e.preventDefault()
