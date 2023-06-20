@@ -76,6 +76,7 @@
       }
       //按下
       this.htmlDoms.move_block.on('touchstart', function (e) {
+        e.preventDefault()
         e.stopPropagation();
         _this.start(e);
       });
@@ -87,6 +88,7 @@
         e.stopPropagation();
       });
       this.$element.on('touchmove', function (e) {
+        e.preventDefault()
         e.stopPropagation();
         _this.move(e);
       });
@@ -95,6 +97,7 @@
         _this.move(e);
       });
       this.$element.on('touchend', function (e) {
+        e.preventDefault()
         e.stopPropagation();
         _this.end();
       });
