@@ -20,6 +20,17 @@ export default {
       }
     }
   },
+  mounted() {
+    window.addEventListener('mousemove', e => {
+      console.log(e.clientX)
+      // eslint-disable-next-line no-undef
+      $('body').append('1;')
+    })
+    window.addEventListener('touchmove', () => {
+      document.append('1;')
+      // $('body').append('1')
+    })
+  },
   methods: {
     onVerify() {
       this.slideVerify('test', this.verifyData)
