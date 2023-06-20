@@ -74,6 +74,11 @@
           _this.close();
         });
       }
+      document.addEventListener('touchmove',function(e){
+        e.preventDefault()
+      },{
+        passive: false
+      })
       //按下
       this.htmlDoms.move_block.on('touchstart', function (e) {
         e.preventDefault()
