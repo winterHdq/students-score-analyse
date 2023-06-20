@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-button type="primary" @click="onVerify">验证</el-button>
+    <el-slider v-model="value1"></el-slider>
     <div id="verify"></div>
   </div>
 </template>
@@ -11,6 +12,7 @@ export default {
   name: 'verify-demo',
   data() {
     return {
+      value1: 0,
       verifyData: {
         wordList: ['测', '试'],
         backImg: null,
