@@ -17,12 +17,6 @@ const routes = [
       import('../views/test/index' /* webpackChunkName: "test-view" */)
   },
   {
-    path: '/verify',
-    name: 'verify',
-    component: () =>
-      import('../views/verify/index' /* webpackChunkName: "verify-view" */)
-  },
-  {
     path: '/echarts',
     name: 'echarts',
     component: () =>
