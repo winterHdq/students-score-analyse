@@ -2,13 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { MessageBox } from 'element-ui'
 // eslint-disable-next-line no-unused-vars
-import { aesEncrypt, aesDecrypt } from '@/common/aes'
+import { aesEncrypt, aesDecrypt } from '@/utils/aes'
 import { subjectMap, totalMap } from '../constant/subject'
 
 Vue.use(Vuex)
 
 function setTablesLocalStorage(tables) {
+  console.time('start')
   const saveTables = aesEncrypt(JSON.stringify(tables))
+  console.timeEnd('start')
   if (saveTables.length > 5 * 1024 * 1024) {
     MessageBox.alert(
       '超出存储大小，只可当前查看，无法保存，如需保存，请删除其他数据',
@@ -16,7 +18,9 @@ function setTablesLocalStorage(tables) {
     )
     return false
   }
+  console.time('localStorage')
   localStorage.setItem('tables', saveTables)
+  console.timeEnd('localStorage')
 }
 
 export default new Vuex.Store({

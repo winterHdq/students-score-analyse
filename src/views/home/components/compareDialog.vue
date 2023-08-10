@@ -124,7 +124,7 @@
 import BaseTable from '../base/baseTable'
 import BaseExportBtn from '../base/baseExportBtn'
 import baseMixin from '../base/baseMixin'
-import { isRepeat, subtract } from '@/common/utils'
+import { isRepeat, subtract } from '@/utils/utils'
 export default {
   name: 'CompareDialog',
   components: { BaseTable, BaseExportBtn },

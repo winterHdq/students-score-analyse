@@ -60,7 +60,7 @@
 import BaseTable from '../base/baseTable'
 import BaseExportBtn from '../base/baseExportBtn'
 import baseMixin from '../base/baseMixin'
-import { subtract } from '@/common/utils'
+import { subtract } from '@/utils/utils'
 export default {
   name: 'CompareDialog',
   components: { BaseTable, BaseExportBtn },

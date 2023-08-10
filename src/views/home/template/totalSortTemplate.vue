@@ -47,7 +47,7 @@
 <script>
 import baseMixin from '../base/baseMixin'
 import { mapState, mapGetters } from 'vuex'
-import { delectnNoFindTable } from '@/common/utils'
+import { delectnNoFindTable } from '@/utils/utils'
 export default {
   name: 'TotalSortTemplate',
   mixins: [baseMixin],

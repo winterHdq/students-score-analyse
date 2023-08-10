@@ -97,7 +97,7 @@
 <script>
 import TotalSortTemplate from '../template/totalSortTemplate'
 import baseMixin from './baseMixin'
-import { isRepeat } from '@/common/utils'
+import { isRepeat } from '@/utils/utils'
 export default {
   name: 'BaseMulClassAnalyseBtn',
   mixins: [baseMixin],

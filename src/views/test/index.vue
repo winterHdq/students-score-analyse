@@ -29,7 +29,7 @@
 </template>
 <script>
 // import * as XLSX from 'xlsx/xlsx.mjs'
-import { aesEncrypt, aesDecrypt } from '@/common/aes'
+import { aesEncrypt, aesDecrypt } from '@/utils/aes'
 import { encode, decode } from 'js-base64'
 
 import XLSX from 'xlsx-js-style'

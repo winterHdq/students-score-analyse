@@ -93,7 +93,7 @@ import html2canvas from 'html2canvas'
 import BaseTable from '../base/baseTable'
 import BaseScoreAnalyseBtn from '../base/baseScoreAnalyseBtn'
 import BaseEchartDownloadBtn from '../base/baseEchartDownloadBtn'
-import { delectnNoFindTable, subtract, getYMin } from '@/common/utils'
+import { delectnNoFindTable, subtract, getYMin } from '@/utils/utils'
 
 export default {
   name: 'StudentScoreTemplate',

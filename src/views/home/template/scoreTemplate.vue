@@ -120,7 +120,7 @@ import { mapState, mapGetters } from 'vuex'
 import BaseExportBtn from '../base/baseExportBtn'
 import RankCompareDialog from '../components/rankCompareDialog'
 import CompaseDialog from '../components/compareDialog'
-import { getYMin } from '@/common/utils'
+import { getYMin } from '@/utils/utils'
 // import baseMixin from '../base/baseMixin'
 export default {
   name: 'ScoreTemplate',

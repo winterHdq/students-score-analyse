@@ -82,7 +82,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import baseMixin from '../base/baseMixin'
-import { delectnNoFindTable } from '@/common/utils'
+import { delectnNoFindTable } from '@/utils/utils'
 export default {
   name: 'sortTemplate',
   mixins: [baseMixin],

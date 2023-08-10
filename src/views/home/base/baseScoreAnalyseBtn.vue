@@ -89,7 +89,6 @@
 <script>
 import StudentScoreTemplate from '../template/studentScoreTemplate'
 import baseMixin from './baseMixin'
-// import { isRepeat } from '@/common/utils'
 export default {
   name: 'BaseMulClassAnalyseBtn',
   mixins: [baseMixin],
