@@ -8,7 +8,7 @@
         ></base-class-setting>
         <template v-if="curTable.sortObj">
           <el-button
-            type="danger"
+            type="primary"
             class="btn"
             plain
             @click="compaseDialog.show = true"
@@ -24,7 +24,7 @@
               劣势科目：科目差值 &lt; -50
             </div>
             <el-button
-              type="success"
+              type="primary"
               plain
               @click="rankCompareDialog.show = true"
             >
