@@ -12,13 +12,14 @@
     <!-- <menu-list-index :isShowMenu="isShowMenu"></menu-list-index> -->
     <transition name="el-fade-in-linear">
       <div v-show="isShowMenu">
-        <p
+        <div
           v-for="(item, index) in tables"
           :key="item.index"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
           @click="changeTable(item)"
         >
+          <div class="index">{{ index + 1 }}</div>
           <span
             v-if="item.className"
             class="className"
@@ -27,34 +28,37 @@
             {{ item.className }}
           </span>
           <span class="name">{{ item.name }}</span>
-          <i
-            v-if="item.data"
-            class="el-icon-download btn"
-            @click="exportExcel(item, $event)"
-          ></i>
-          <i
-            class="el-icon-delete-solid btn"
-            style="padding-left: 5px"
-            @click="delectTable(item, index, $event)"
-          ></i>
-          <i
-            class="el-icon-top btn"
-            style="padding-left: 3px"
-            @click="upMove(index, $event)"
-          ></i>
-          <i class="el-icon-bottom btn" @click="downMove(index, $event)"></i>
-        </p>
+          <div class="btns">
+            <i
+              v-if="item.data"
+              class="el-icon-download btn"
+              @click="exportExcel(item, $event)"
+            ></i>
+            <i
+              class="el-icon-delete-solid btn"
+              style="padding-left: 5px"
+              @click="delectTable(item, index, $event)"
+            ></i>
+            <i
+              class="el-icon-top btn"
+              style="padding-left: 3px"
+              @click="upMove(index, $event)"
+            ></i>
+            <i class="el-icon-bottom btn" @click="downMove(index, $event)"></i>
+          </div>
+        </div>
       </div>
     </transition>
     <transition name="el-fade-in">
       <div v-show="!isShowMenu">
-        <p
-          v-for="item in tables"
+        <div
+          v-for="(item, index) in tables"
           :key="item.index"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
           @click="changeTable(item)"
         >
+          <div class="index">{{ index + 1 }}</div>
           <span
             v-if="item.className"
             class="className"
@@ -65,7 +69,7 @@
           <el-tooltip effect="dark" :content="item.name" placement="right">
             <i class="el-icon-document"></i>
           </el-tooltip>
-        </p>
+        </div>
       </div>
     </transition>
   </div>
@@ -134,6 +138,7 @@ $border-color: #409eff;
 .menuList {
   height: 100%;
   overflow: auto;
+  overflow-x: hidden;
   transition: width 0.5s;
   .title {
     background: #415f7d;
@@ -167,14 +172,35 @@ $border-color: #409eff;
       padding: 0 5px;
       font-weight: bold;
     }
+    .index {
+      padding: 3px;
+      margin: 0 5px 0 -3px;
+      width: 15px;
+      text-align: center;
+      font-size: 12px;
+      border-radius: 5px;
+      border: 1px solid #05f3e8;
+      border-block-style: initial;
+    }
     .name {
       flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
-    .btn {
-      margin: 0 auto;
-      cursor: pointer;
-      &:hover {
-        color: #b7c6c7;
+    &:hover {
+      .btns {
+        display: block;
+      }
+    }
+    .btns {
+      display: none;
+      .btn {
+        margin: 0 auto;
+        cursor: pointer;
+        &:hover {
+          color: #b7c6c7;
+        }
       }
     }
   }

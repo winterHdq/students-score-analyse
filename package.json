@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "crypto-js": "^4.1.1",
     "driver.js": "^0.9.8",
     "echarts": "^5.4.0",
     "element-ui": "^2.15.10",
     "html2canvas": "^1.4.1",
     "jquery": "^3.6.1",
+    "js-base64": "^3.7.5",
     "number-precision": "^1.6.0",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",

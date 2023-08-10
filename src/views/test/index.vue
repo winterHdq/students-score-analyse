@@ -12,10 +12,26 @@
     </el-upload>
     <el-button @click="exportExcel">导出</el-button>
     <el-button @click="testExcel">测试导出</el-button>
+    <!-- <div>
+      <el-input
+        v-model="text"
+        type="textarea"
+        placeholder="请输入需要加解密的文字"
+      />
+      <p>加密/解密后内容：</p>
+      <el-input v-model="encryptText" type="textarea" />
+      <el-button type="primary" @click="onEncrypt">aes加密</el-button>
+      <el-button type="primary" @click="onDecrypt">aes解密</el-button>
+      <el-button type="primary" @click="onBase64Encrypt">base64加密</el-button>
+      <el-button type="primary" @click="onBase64Decrypt">base64解密</el-button>
+    </div> -->
   </div>
 </template>
 <script>
 // import * as XLSX from 'xlsx/xlsx.mjs'
+import { aesEncrypt, aesDecrypt } from '@/common/aes'
+import { encode, decode } from 'js-base64'
+
 import XLSX from 'xlsx-js-style'
 export default {
   name: 'Test-view',
@@ -25,6 +41,8 @@ export default {
   data() {
     return {
       fileList: [],
+      text: '',
+      encryptText: '',
       exportArr: [
         ['姓名', '语文'],
         ['小张', 90],
@@ -137,12 +155,25 @@ export default {
       }
       XLSX.utils.book_append_sheet(wb, sheet2, '表格2')
       XLSX.writeFile(wb, `测试表格.xlsx`)
+    },
+    onEncrypt() {
+      if (!this.text) return
+      this.encryptText = aesEncrypt(this.text)
+    },
+    onDecrypt() {
+      if (!this.text) return
+      this.encryptText = aesDecrypt(this.text)
+    },
+    onBase64Encrypt() {
+      if (!this.text) return
+      this.encryptText = encode(this.text)
+    },
+    onBase64Decrypt() {
+      if (!this.text) return
+      this.encryptText = decode(this.text)
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.Test {
-}
-</style>
+<style lang="scss" scoped></style>

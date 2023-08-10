@@ -1,8 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { MessageBox } from 'element-ui'
+// eslint-disable-next-line no-unused-vars
+import { aesEncrypt, aesDecrypt } from '@/common/aes'
 import { subjectMap, totalMap } from '../constant/subject'
 
 Vue.use(Vuex)
+
+function setTablesLocalStorage(tables) {
+  const saveTables = aesEncrypt(JSON.stringify(tables))
+  if (saveTables.length > 5 * 1024 * 1024) {
+    MessageBox.alert(
+      '超出存储大小，只可当前查看，无法保存，如需保存，请删除其他数据',
+      '提示'
+    )
+    return false
+  }
+  localStorage.setItem('tables', saveTables)
+}
 
 export default new Vuex.Store({
   state: {
@@ -48,34 +63,46 @@ export default new Vuex.Store({
   },
   mutations: {
     getTables(state) {
-      state.tables = JSON.parse(localStorage.getItem('tables')) || []
+      const tables = localStorage.getItem('tables')
+      if (/[\u4e00-\u9fa5]|\[\]/gm.test(tables)) {
+        state.tables = JSON.parse(tables) || []
+      } else {
+        state.tables = JSON.parse(aesDecrypt(tables)) || []
+      }
+    },
+    setTablesLocalStorage(state) {
+      setTablesLocalStorage(state.tables)
     },
     setTables(state, table) {
       state.tables = table
-      localStorage.setItem('tables', JSON.stringify(state.tables))
+      setTablesLocalStorage(state.tables)
     },
     addTable(state, table) {
       state.tables.push(table)
-      localStorage.setItem('tables', JSON.stringify(state.tables))
+      setTablesLocalStorage(state.tables)
+    },
+    addTables(state, tables) {
+      state.tables.push(...tables)
+      setTablesLocalStorage(state.tables)
     },
     deleteTable(state, index) {
       if (index == null) return
       state.tables.splice(index, 1)
-      localStorage.setItem('tables', JSON.stringify(state.tables))
+      setTablesLocalStorage(state.tables)
     },
     upMoveTables(state, index) {
       if (index == 0) return
       let moveItem = state.tables[index]
       Vue.set(state.tables, index, state.tables[index - 1])
       Vue.set(state.tables, index - 1, moveItem)
-      localStorage.setItem('tables', JSON.stringify(state.tables))
+      setTablesLocalStorage(state.tables)
     },
     downMoveTables(state, index) {
       if (index == state.tables.length - 1) return
       let moveItem = state.tables[index]
       Vue.set(state.tables, index, state.tables[index + 1])
       Vue.set(state.tables, index + 1, moveItem)
-      localStorage.setItem('tables', JSON.stringify(state.tables))
+      setTablesLocalStorage(state.tables)
     },
     setCurTableId(state, curTableId) {
       state.curTableId = curTableId

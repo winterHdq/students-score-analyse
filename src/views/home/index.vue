@@ -1,5 +1,10 @@
 <template>
-  <div class="Excel">
+  <div
+    class="Excel"
+    v-loading="loading"
+    element-loading-background="rgba(0, 0, 0, 0.7)"
+    element-loading-text="拼命加载中"
+  >
     <div class="btns">
       <div class="left">
         <el-upload
@@ -22,18 +27,9 @@
         >
           进退比较
         </el-button> -->
-        <base-mul-class-analyse-btn
-          class="btn"
-          id="mulClassAnalyseBtn"
-        ></base-mul-class-analyse-btn>
-        <base-score-analyse-btn
-          class="btn"
-          id="scoreAnalyseBtn"
-        ></base-score-analyse-btn>
-        <base-mul-sheet-export-btn
-          class="btn"
-          id="mulSheetExportBtn"
-        ></base-mul-sheet-export-btn>
+        <base-mul-class-analyse-btn class="btn" id="mulClassAnalyseBtn" />
+        <base-score-analyse-btn class="btn" id="scoreAnalyseBtn" />
+        <base-mul-sheet-export-btn class="btn" id="mulSheetExportBtn" />
         <el-button
           type="primary"
           plain
@@ -43,10 +39,11 @@
         >
           一键删除
         </el-button>
+        <el-button type="danger" @click="onSave">保存</el-button>
       </div>
       <div class="right">
-        <base-template-btn></base-template-btn>
-        <base-setting-btn></base-setting-btn>
+        <base-template-btn />
+        <base-setting-btn />
         <!-- <el-link
           icon="el-icon-full-screen"
           class="fullBtn"
@@ -57,7 +54,7 @@
     </div>
     <div class="content">
       <div class="left">
-        <menu-list></menu-list>
+        <menu-list />
       </div>
       <div class="right">
         <div v-if="curTable.column">
@@ -65,19 +62,19 @@
             v-if="curTable.template == 'sortTemplate'"
             :tableId="curTable.extend.tableId"
             :table-height="tableHeight"
-          ></sort-template>
+          />
           <student-score-template
             v-else-if="curTable.template == 'studentScoreTemplate'"
             :selectTablesId="curTable.extend.selectTablesId"
             :table-height="tableHeight"
-          ></student-score-template>
+          />
           <total-sort-template
             v-else-if="curTable.template == 'totalSortTemplate'"
             :classes="curTable.extend.classes"
             :tableName="curTable.name"
             :table-height="tableHeight"
-          ></total-sort-template>
-          <score-template v-else :tableHeight="tableHeight"></score-template>
+          />
+          <score-template v-else :table-height="tableHeight" />
         </div>
       </div>
     </div>
@@ -85,7 +82,7 @@
       v-if="compaseDialog.show"
       :tables="tables"
       @onClose="compaseDialog.show = false"
-    ></compase-dialog>
+    />
   </div>
 </template>
 
@@ -124,6 +121,7 @@ export default {
   mixins: [baseMixin],
   data() {
     return {
+      loading: false,
       tableHeight: 500,
       compaseDialog: {
         show: false
@@ -174,39 +172,50 @@ export default {
       let curTableId = this.curTable
       const reader = new FileReader()
       reader.readAsArrayBuffer(file.raw)
-      reader.onload = ev => {
-        const data = ev.target.result
-        // 解析二进制格式数据
-        const workBook = XLSX.read(data, {
-          type: 'binary'
-        })
-        // 获取第一张表数据
-        // const wsname = workBook.SheetNames[0]
-        // const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[wsname])
-        // const curTable = {
-        //   name: file.name,
-        //   data: tableData,
-        //   id: Date.now(),
-        //   column: Object.keys(tableData[0]),
-        //   sortObj: this.sortCompare(tableData)
-        // }
-        // 获取多张表格
-        workBook.SheetNames.forEach(name => {
-          const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[name])
-          if (tableData.length == 0) return
-          const curTable = {
-            name: name.indexOf('Sheet') < 0 ? name : file.name,
-            data: tableData,
-            id: Date.now(),
-            column: Object.keys(tableData[0]),
-            className: this.defaultClassName,
-            isCompare: false,
-            sortObj: this.sortCompare(tableData)
-          }
-          this.$store.commit('addTable', curTable)
-          curTableId = curTable.id
-        })
-        this.$store.commit('setCurTableId', curTableId)
+      reader.onload = async ev => {
+        try {
+          this.loading = true
+          const data = ev.target.result
+          // 解析二进制格式数据
+          const workBook = XLSX.read(data, {
+            type: 'binary'
+          })
+          // 获取第一张表数据
+          // const wsname = workBook.SheetNames[0]
+          // const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[wsname])
+          // const curTable = {
+          //   name: file.name,
+          //   data: tableData,
+          //   id: Date.now(),
+          //   column: Object.keys(tableData[0]),
+          //   sortObj: this.sortCompare(tableData)
+          // }
+          // 获取多张表格
+          const addTables = []
+          workBook.SheetNames.forEach(name => {
+            const tableData = XLSX.utils.sheet_to_json(workBook.Sheets[name])
+            if (tableData.length == 0) return
+            const curTable = {
+              name: name.indexOf('Sheet') < 0 ? name : file.name,
+              data: tableData,
+              id: Date.now() + addTables.length, // 如果不加addTables.length， 可能存在相同id
+              column: Object.keys(tableData[0]),
+              className: this.defaultClassName,
+              isCompare: false,
+              sortObj: this.sortCompare(tableData)
+            }
+            addTables.push(curTable)
+            curTableId = curTable.id
+          })
+          this.$store.commit('addTables', addTables)
+          this.$store.commit('setCurTableId', curTableId)
+          // 滚动到可视区域
+          this.$nextTick(() => {
+            $('.name-item-active')[0].scrollIntoView()
+          })
+        } finally {
+          this.loading = false
+        }
       }
     },
     sortCompare(list) {
@@ -267,6 +276,10 @@ export default {
         }
       }
       this.isFull = !this.isFull
+    },
+    onSave() {
+      this.$store.commit('setTablesLocalStorage')
+      this.$message.success('保存成功')
     }
   }
 }
