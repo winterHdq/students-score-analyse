@@ -18,9 +18,7 @@ function setTablesLocalStorage(tables) {
     )
     return false
   }
-  console.time('localStorage')
   localStorage.setItem('tables', saveTables)
-  console.timeEnd('localStorage')
 }
 
 export default new Vuex.Store({
@@ -68,6 +66,7 @@ export default new Vuex.Store({
   mutations: {
     getTables(state) {
       const tables = localStorage.getItem('tables')
+      if (!tables) return
       if (/[\u4e00-\u9fa5]|\[\]/gm.test(tables)) {
         state.tables = JSON.parse(tables) || []
       } else {
