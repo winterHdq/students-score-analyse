@@ -177,6 +177,7 @@ export default {
     if (this.curTableId) {
       this.formData.initTableId = this.curTableId
       this.initTableChange(this.curTableId)
+      this.setCompareTable(this.curTableId)
     }
   },
   methods: {
@@ -203,6 +204,19 @@ export default {
       this.formData.baseTh =
         this.thList.find(item => item == '姓名') || this.thList[0]
       // this.handleCheckChange(this.thList, 'showTh')
+    },
+    // 自动赋值上一张表格
+    setCompareTable(curId) {
+      let compareTableId = null
+      this.scoreTables.find((item, index) => {
+        if (item.id === curId) {
+          let preIndex = index === 0 ? 0 : index - 1
+          compareTableId = this.scoreTables[preIndex].id
+          return true
+        }
+      })
+      this.formData.compareTableId = compareTableId
+      this.compareTableChange(compareTableId)
     },
     getInitOrderTh() {
       // 保持原本的排序
