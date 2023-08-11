@@ -42,6 +42,7 @@
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
+        <el-divider></el-divider>
         <el-form-item label="打印图表">
           <el-checkbox
             :indeterminate="isIndeterminate"
