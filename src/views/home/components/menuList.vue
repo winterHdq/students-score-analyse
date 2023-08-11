@@ -120,6 +120,7 @@ export default {
       if (item.id == this.curTableId) {
         this.$store.commit('setCurTableId', null)
       }
+      this.$message.success('删除成功')
     },
     upMove(index, e) {
       e.stopPropagation()
