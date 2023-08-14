@@ -12,7 +12,7 @@
     </el-upload>
     <el-button @click="exportExcel">导出</el-button>
     <el-button @click="testExcel">测试导出</el-button>
-    <div>
+    <!-- <div>
       <el-input
         v-model="text"
         type="textarea"
@@ -24,7 +24,7 @@
       <el-button type="primary" @click="onDecrypt">aes解密</el-button>
       <el-button type="primary" @click="onBase64Encrypt">base64加密</el-button>
       <el-button type="primary" @click="onBase64Decrypt">base64解密</el-button>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
