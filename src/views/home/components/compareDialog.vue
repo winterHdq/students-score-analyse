@@ -121,6 +121,7 @@
   </el-dialog>
 </template>
 <script>
+import $ from 'jquery'
 import BaseTable from '../base/baseTable'
 import BaseExportBtn from '../base/baseExportBtn'
 import baseMixin from '../base/baseMixin'
@@ -329,6 +330,10 @@ export default {
       this.$store.commit('addTable', this.compareTable)
       this.$store.commit('setCurTableId', this.compareTable.id)
       this.onClose()
+      // 滚动到可视区域
+      this.$nextTick(() => {
+        $('.name-item-active')[0].scrollIntoView()
+      })
     },
     onClose() {
       this.$emit('onClose')

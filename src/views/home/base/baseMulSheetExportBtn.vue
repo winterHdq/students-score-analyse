@@ -4,7 +4,7 @@
       合表导出
     </el-button>
     <el-dialog
-      title="分表导出"
+      title="合表导出"
       :visible.sync="visiableDialog"
       :close-on-click-modal="false"
       width="80%"

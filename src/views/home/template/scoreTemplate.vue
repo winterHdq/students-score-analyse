@@ -488,6 +488,7 @@ export default {
         {
           name: this.curTable.name,
           type: 'bar',
+          barMaxWidth: '60',
           label: {
             show: true
           },
@@ -592,6 +593,7 @@ export default {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-around;
+      align-content: flex-start;
       overflow: auto;
     }
     ::v-deep {
