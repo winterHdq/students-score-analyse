@@ -309,7 +309,7 @@ $border-color: #409eff;
   }
   .content {
     display: flex;
-    height: calc(100vh - 55px);
+    height: calc(100% - 55px);
     .left {
       border-right: 1px solid $border-color;
       font-size: 14px;
