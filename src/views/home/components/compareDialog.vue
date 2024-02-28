@@ -24,7 +24,7 @@
           <el-option
             v-for="item in scoreTables"
             :key="item.id"
-            :label="item.name"
+            :label="`${item.className}-${item.name}`"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -38,7 +38,7 @@
           <el-option
             v-for="item in scoreTables"
             :key="item.id"
-            :label="item.name"
+            :label="`${item.className}-${item.name}`"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -312,7 +312,7 @@ export default {
         compareTable.push(_item)
       })
       let compare = {
-        name: `${this.initTable.name}-${this.initTable.className}-进退比较`,
+        name: `${this.initTable.name}-${this.preTable.name}-进退比较`,
         data: compareTable,
         id: Date.now(),
         column: compareTh,

@@ -23,7 +23,7 @@
           <span
             v-if="item.className"
             class="className"
-            :style="{ background: classNameObj[item.className].bgColor }"
+            :style="{ background: bgColor(item) }"
           >
             {{ item.className }}
           </span>
@@ -62,7 +62,7 @@
           <span
             v-if="item.className"
             class="className"
-            :style="{ background: classNameObj[item.className].bgColor }"
+            :style="{ background: bgColor(item) }"
           >
             {{ item.className }}
           </span>
@@ -107,6 +107,9 @@ export default {
     this.$store.commit('getIsShowMenu')
   },
   methods: {
+    bgColor(item) {
+      return this.classNameObj[item.className]?.bgColor || '#de5b5b'
+    },
     changeTable(item) {
       this.$store.commit('setCurTableId', item.id)
     },

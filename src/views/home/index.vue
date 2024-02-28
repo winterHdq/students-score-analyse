@@ -31,15 +31,14 @@
         <base-score-analyse-btn class="btn" id="scoreAnalyseBtn" />
         <base-mul-sheet-export-btn class="btn" id="mulSheetExportBtn" />
         <el-button
-          type="primary"
-          plain
+          type="danger"
           class="btn"
           @click="onDelete"
           id="allDeleteBtn"
         >
           一键删除
         </el-button>
-        <el-button type="danger" @click="onSave">保存</el-button>
+        <!-- <el-button type="danger" @click="onSave">保存</el-button> -->
       </div>
       <div class="right">
         <base-template-btn />
@@ -58,22 +57,26 @@
       </div>
       <div class="right">
         <div v-if="curTable.column">
+          <!-- 班级科目分析表 -->
           <sort-template
             v-if="curTable.template == 'sortTemplate'"
             :tableId="curTable.extend.tableId"
             :table-height="tableHeight"
           />
+          <!-- 学生成绩分析表 -->
           <student-score-template
             v-else-if="curTable.template == 'studentScoreTemplate'"
             :selectTablesId="curTable.extend.selectTablesId"
             :table-height="tableHeight"
           />
+          <!-- 年段分析表 -->
           <total-sort-template
             v-else-if="curTable.template == 'totalSortTemplate'"
             :classes="curTable.extend.classes"
             :tableName="curTable.name"
             :table-height="tableHeight"
           />
+          <!-- 成绩表 -->
           <score-template v-else :table-height="tableHeight" />
         </div>
       </div>

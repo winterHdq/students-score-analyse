@@ -144,6 +144,21 @@ export const classMap = [
     bgColor: '#9fb7cc'
   },
   {
+    label: '15班',
+    value: '15班',
+    bgColor: '#9fb7cc'
+  },
+  {
+    label: '16班',
+    value: '16班',
+    bgColor: '#9fb7cc'
+  },
+  {
+    label: '17班',
+    value: '17班',
+    bgColor: '#9fb7cc'
+  },
+  {
     label: '年段',
     value: '年段',
     bgColor: '#8b0000'

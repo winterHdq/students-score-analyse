@@ -12,6 +12,7 @@
           添加到列表
         </el-button>
       </div>
+      <div class="title">{{ curTable.name }}</div>
       <div class="right">
         <el-radio-group v-model="radio" @change="typeChangeHandle">
           <el-radio-button :label="1">表格</el-radio-button>
@@ -107,7 +108,7 @@ export default {
       isShowMenu: state => state.isShowMenu,
       totalMap: state => state.totalMap
     }),
-    ...mapGetters(['subjectList', 'subjectObj', 'curIndex'])
+    ...mapGetters(['curTable', 'subjectList', 'subjectObj', 'curIndex'])
   },
   watch: {
     tableId: {
@@ -846,10 +847,19 @@ export default {
     display: flex;
     padding: 10px;
     .left {
+      flex-shrink: 0;
+    }
+    .title {
       flex: 1;
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .right {
       margin: 0 auto;
+      flex-shrink: 0;
     }
     .btn {
       margin-right: 5px;

@@ -42,6 +42,7 @@
           </el-button>
         </template>
       </div>
+      <div class="title">{{ curTable.name }}</div>
       <div class="right">
         <el-radio-group v-model="radio" @change="typeChangeHandle">
           <el-radio-button :label="1">表格</el-radio-button>
@@ -572,10 +573,19 @@ export default {
     .left {
       flex-wrap: wrap;
       display: flex;
+      flex-shrink: 0;
+    }
+    .title {
       flex: 1;
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .right {
       margin: 0 auto;
+      flex-shrink: 0;
     }
   }
   .nameCheck {
