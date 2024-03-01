@@ -8,6 +8,7 @@ import { subjectMap, totalMap } from '../constant/subject'
 Vue.use(Vuex)
 
 function setTablesLocalStorage(tables) {
+  console.log('排序改变')
   console.time('start')
   const saveTables = aesEncrypt(JSON.stringify(tables))
   console.timeEnd('start')
@@ -105,6 +106,11 @@ export default new Vuex.Store({
       let moveItem = state.tables[index]
       Vue.set(state.tables, index, state.tables[index + 1])
       Vue.set(state.tables, index + 1, moveItem)
+      setTablesLocalStorage(state.tables)
+    },
+    moveTables(state, { oldIndex, newIndex }) {
+      const currRow = state.tables.splice(oldIndex, 1)[0]
+      state.tables.splice(newIndex, 0, currRow)
       setTablesLocalStorage(state.tables)
     },
     setCurTableId(state, curTableId) {

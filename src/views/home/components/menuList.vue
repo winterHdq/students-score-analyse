@@ -2,6 +2,14 @@
   <div class="menuList" :style="{ width: isShowMenu ? '250px' : '50px' }">
     <div class="title">
       <p class="text" v-if="isShowMenu">列表</p>
+      <el-tooltip
+        v-if="isShowMenu"
+        placement="top"
+        content="列表可拖拽移动"
+        effect="light"
+      >
+        <i class="el-icon-rank" style="margin-right: 10px" />
+      </el-tooltip>
       <i
         class="btn"
         id="menuHide"
@@ -11,10 +19,10 @@
     </div>
     <!-- <menu-list-index :isShowMenu="isShowMenu"></menu-list-index> -->
     <transition name="el-fade-in-linear">
-      <div v-show="isShowMenu">
+      <div v-show="isShowMenu" class="menu-item">
         <div
           v-for="(item, index) in tables"
-          :key="item.index"
+          :key="item.id"
           class="name-item"
           :class="{ 'name-item-active': item.id == curTable.id }"
           @click="changeTable(item)"
@@ -39,12 +47,12 @@
               style="padding-left: 5px"
               @click="delectTable(item, index, $event)"
             ></i>
-            <i
+            <!-- <i
               class="el-icon-top btn"
               style="padding-left: 3px"
               @click="upMove(index, $event)"
             ></i>
-            <i class="el-icon-bottom btn" @click="downMove(index, $event)"></i>
+            <i class="el-icon-bottom btn" @click="downMove(index, $event)"></i> -->
           </div>
         </div>
       </div>
@@ -76,6 +84,7 @@
 </template>
 
 <script>
+import Sortable from 'sortablejs'
 import { classMap } from '@/constant/subject'
 import baseMixin from '../base/baseMixin'
 // import MenuListIndex from './menuList/index'
@@ -105,6 +114,7 @@ export default {
   },
   created() {
     this.$store.commit('getIsShowMenu')
+    this.dragSortEnhance()
   },
   methods: {
     bgColor(item) {
@@ -132,6 +142,18 @@ export default {
     downMove(index, e) {
       e.stopPropagation()
       this.$store.commit('downMoveTables', index)
+    },
+    // 拖拽排序
+    dragSortEnhance() {
+      this.$nextTick(() => {
+        const el = this.$el.querySelectorAll('.menu-item')[0]
+        this.sortable = Sortable.create(el, {
+          onChoose: () => {},
+          onEnd: ({ newIndex, oldIndex }) => {
+            this.$store.commit('moveTables', { oldIndex, newIndex })
+          }
+        })
+      })
     }
   }
 }
