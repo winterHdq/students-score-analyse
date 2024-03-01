@@ -301,6 +301,18 @@ export default {
         label: {
           show: true
         },
+        markLine: {
+          data: [
+            {
+              type: 'average',
+              name: '平均'
+            }
+          ],
+          label: {
+            show: true,
+            formatter: '{b}：{c}'
+          }
+        },
         data: data
       }
     },
