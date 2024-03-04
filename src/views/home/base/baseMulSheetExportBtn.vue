@@ -31,7 +31,7 @@
                 @change="tableChangeHandle($event, $index)"
               >
                 <el-option
-                  v-for="item in tables"
+                  v-for="item in dataTables"
                   :key="item.id"
                   :value="item.id"
                   :label="item.name"
@@ -85,6 +85,9 @@ export default {
   computed: {
     tables() {
       return this.$store.state.tables
+    },
+    dataTables() {
+      return this.tables.filter(item => item.data)
     }
   },
   data() {

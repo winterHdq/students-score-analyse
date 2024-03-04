@@ -1,14 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { MessageBox } from 'element-ui'
-// eslint-disable-next-line no-unused-vars
 import { aesEncrypt, aesDecrypt } from '@/utils/aes'
 import { subjectMap, totalMap } from '../constant/subject'
 
 Vue.use(Vuex)
 
 function setTablesLocalStorage(tables) {
-  console.log('排序改变')
   console.time('start')
   const saveTables = aesEncrypt(JSON.stringify(tables))
   console.timeEnd('start')

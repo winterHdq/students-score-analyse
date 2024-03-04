@@ -6,10 +6,10 @@
       plain
       @click="dialogVisiable = !dialogVisiable"
     >
-      模版
+      使用说明
     </el-button>
     <el-dialog
-      title="模板"
+      title="使用说明"
       :visible.sync="dialogVisiable"
       width="80%"
       :close-on-click-modal="false"
@@ -23,7 +23,7 @@
           </p>
         </div>
         <div style="margin-left: auto">
-          <el-button type="primary" @click="onExport">导出</el-button>
+          <el-button type="primary" @click="onExport">模版导出</el-button>
         </div>
       </div>
       <table class="table" border>

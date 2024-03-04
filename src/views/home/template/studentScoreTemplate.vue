@@ -16,6 +16,21 @@
             style="width: 70px"
           ></el-checkbox>
         </el-checkbox-group>
+        <div class="selectName">
+          <el-select
+            v-model="search.name"
+            filterable
+            placeholder="姓名查询"
+            @change="nameSelectChange"
+          >
+            <el-option
+              v-for="item in defaultTable.data"
+              :key="item['姓名']"
+              :label="item['姓名']"
+              :value="item['姓名']"
+            />
+          </el-select>
+        </div>
       </div>
       <div class="right">
         <el-radio-group v-model="radio" @change="typeChangeHandle">
@@ -49,7 +64,11 @@
       ></base-table>
       <div v-if="radio == 2">
         <div class="echarts" id="echarts">
-          <p class="nameTitle" v-if="isShowEhart.name">{{ printName }}</p>
+          <p class="nameTitle" v-if="isShowEhart.name">
+            姓名：{{ printName }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 班级：{{
+              defaultTable.className
+            }}
+          </p>
           <div
             v-show="isShowEhart.reducedRank"
             style="width: 100%; height: 250px; margin: 10px"
@@ -145,7 +164,7 @@ export default {
       nameCheck: [],
       nameList: [],
       selectTables: [],
-      defaultTable: [],
+      defaultTable: {},
       column: [],
       contentHeight: 500,
       table: {},
@@ -161,7 +180,10 @@ export default {
         totalRank: true
       },
       downloadLoading: null,
-      isCancelDownload: false
+      isCancelDownload: false,
+      search: {
+        name: null
+      }
     }
   },
   created() {
@@ -195,6 +217,7 @@ export default {
     getInit(selectTables) {
       this.defaultTable = selectTables[0]
       this.nameCheck = [this.defaultTable.data[0]['姓名']]
+      this.search.name = this.nameCheck[0]
       this.getColumn()
       this.getTable()
     },
@@ -265,6 +288,11 @@ export default {
     },
     nameCheckChange(val) {
       this.nameCheck = val.splice(1, 1)
+      this.search.name = this.nameCheck[0]
+      this.getTable()
+    },
+    nameSelectChange(val) {
+      this.nameCheck = [val]
       this.getTable()
     },
     typeChangeHandle() {
@@ -301,18 +329,18 @@ export default {
         label: {
           show: true
         },
-        markLine: {
-          data: [
-            {
-              type: 'average',
-              name: '平均'
-            }
-          ],
-          label: {
-            show: true,
-            formatter: '{b}：{c}'
-          }
-        },
+        // markLine: {
+        //   data: [
+        //     {
+        //       type: 'average',
+        //       name: '平均'
+        //     }
+        //   ],
+        //   label: {
+        //     show: true,
+        //     formatter: '{b}：{c}'
+        //   }
+        // },
         data: data
       }
     },
@@ -586,6 +614,15 @@ export default {
     padding: 10px;
     .name {
       flex: 1;
+      .selectName {
+        text-align: center;
+        ::v-deep .el-input__inner {
+          background: transparent;
+          border: 0;
+          color: #fff;
+          width: 95px;
+        }
+      }
       ::v-deep {
         .el-checkbox__label {
           color: #fff;
@@ -621,8 +658,7 @@ export default {
     justify-content: space-around;
     .nameTitle {
       width: 100%;
-      text-align: center;
-      padding: 5px;
+      padding: 5px 20px;
       font-size: 16px;
     }
   }

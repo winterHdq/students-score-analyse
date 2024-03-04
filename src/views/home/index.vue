@@ -43,6 +43,16 @@
       <div class="right">
         <base-template-btn />
         <base-setting-btn />
+        <!-- <el-tooltip content="问题反馈" effect="light">
+          <el-link
+            icon="el-icon-question"
+            class="fullBtn"
+            type="primary"
+            :underline="false"
+            href="https://gitee.com/WinterSpirit/students-score-analyse/issues"
+            target="_blank"
+          />
+        </el-tooltip> -->
         <!-- <el-link
           icon="el-icon-full-screen"
           class="fullBtn"
