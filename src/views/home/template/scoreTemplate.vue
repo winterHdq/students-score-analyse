@@ -19,7 +19,7 @@
             <div slot="content">
               科目差值：折算名/段名 - 科目名
               <br />
-              优势科目：科目差值 > 50
+              优势科目：科目差值 &gt; 50
               <br />
               劣势科目：科目差值 &lt; -50
             </div>
@@ -83,7 +83,7 @@
         />
         <div
           v-if="isPreCompare"
-          style="width: 100%; height: 270px"
+          style="width: 49%; height: 270px"
           id="compare"
           class="echartitem"
         />
@@ -293,7 +293,7 @@ export default {
       }
       this.nameCheck.forEach(name => {
         let item = {
-          name: this.curTable.name,
+          name: this.curTable.name.split('-')[0],
           type: 'line',
           label: {
             show: true
@@ -301,7 +301,7 @@ export default {
           data: []
         }
         let rankItem = {
-          name: this.curTable.name,
+          name: this.curTable.name.split('-')[0],
           type: 'line',
           label: {
             show: true
@@ -500,7 +500,14 @@ export default {
       const name = this.nameCheck[0]
       let curItem = this.nameListObj[name]
       xAxis.forEach(key => {
-        curItem && series[0].data.push(curItem[`${key}进退`])
+        const value = curItem[`${key}进退`]
+        curItem &&
+          series[0].data.push({
+            value,
+            itemStyle: {
+              color: value > 0 ? '#3ba272' : '#ee6666'
+            }
+          })
       })
       return {
         series,

@@ -264,6 +264,13 @@ export default {
         })
         list.push(_item)
       })
+      // 平均
+      // const avg = { this.selectTables[0].name: '平均' }
+      // list.push(avg)
+      // Object.keys(list[0]).forEach(key=>{
+      //   avg[key] =
+      // })
+
       this.xAxisData = xAxisData
       return {
         name: `${name}-成绩分析`,
